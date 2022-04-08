@@ -1,0 +1,33 @@
+{
+  "depConfig": [],
+  "depVersion": [
+    ""
+  ],
+  "hostVerifier": [],
+  "portConfig": [
+    {
+      "ip": "",
+      "port": ""
+    }
+  ],
+  "portDisclaimer": [
+    ""
+  ],
+  "portEnvDoNotPrompt": [],
+  "portVersion": [
+    "2.3.T10"
+  ],
+  "autoLoginConfig": [
+    {
+      "userName": "",
+      "savePassword": false,
+      "autoLogin": false
+    }
+  ],
+  "pkg_url": [
+    {
+      "arm": "https://mirror.iscas.ac.cn/kunpeng/archive/Tuning_kit/Packages/Hyper-Tuner-2.3.T10.tar.gz",
+      "key": "https://download.huawei.com/edownload/e/download.do?actionFlag=download%26mid=SUPE_SERTOOL_VERSION%26nid=TV1100000147%26partNo=2005"
+    }
+  ]
+}

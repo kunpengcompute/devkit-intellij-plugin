@@ -1,0 +1,5 @@
+// 本文件存放公共配置
+apply plugin: 'java'
+apply plugin: 'org.jetbrains.intellij'
+group 'com.huawei.kunpeng'
+version '2.3.3'

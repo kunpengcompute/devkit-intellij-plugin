@@ -1,0 +1,13 @@
+# Ignore Gradle project-specific cache directory
+.idea
+.gradle
+gradle
+gradle/wrapper/
+
+gradlew
+gradlew.bat
+
+# Ignore Gradle build output directory
+build
+ideaSandbox
+portingadvisor/out

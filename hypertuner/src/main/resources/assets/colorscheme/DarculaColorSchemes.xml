@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<list>
+    <option name="TUNING">
+        <value>
+            <option name="EFFECT_COLOR" protanopia="4b734f" deuteranopia="4b734f" value="83ddff"/>
+            <option name="ERROR_STRIPE_COLOR" value="9E7629"/>
+            <option name="EFFECT_TYPE" value="2"/>
+        </value>
+    </option>
+    <option name="TUNING_INLINED_VALUES_DESCRIPTION">
+        <value>
+            <option name="FOREGROUND" value="C15940"/>
+            <option name="FONT_TYPE" value="2"/>
+        </value>
+    </option>
+</list>

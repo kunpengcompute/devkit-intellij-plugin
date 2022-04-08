@@ -1,0 +1,90 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2020-2022. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.huawei.kunpeng.intellij.common;
+
+import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
+import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
+import com.huawei.kunpeng.intellij.common.enums.SystemOS;
+import com.huawei.kunpeng.intellij.common.log.Logger;
+import com.huawei.kunpeng.intellij.common.util.CommonUtil;
+import com.huawei.kunpeng.intellij.common.util.StringUtil;
+
+import org.cef.OS;
+
+/**
+ * IDE 请求相关缓存数据操作
+ *
+ * @since 1.0.0
+ */
+public class BaseCacheDataOpt {
+    /**
+     * 更新全局token
+     *
+     * @param module 模块
+     * @param token  token口令
+     */
+    public static void updateGlobalToken(String module, String token) {
+        if (!StringUtil.stringIsEmpty(module) && !StringUtil.stringIsEmpty(token)) {
+            IDEContext.setValueForGlobalContext(module, BaseCacheVal.TOKEN.vaLue(), token);
+        }
+    }
+
+    /**
+     * 更新全局ip和端口
+     *
+     * @param module 模块
+     * @param ip     ip地址
+     * @param port   端口
+     */
+    public static void updateGlobalIPAndPort(String module, String ip, String port) {
+        Logger.info("update Global IP And Port");
+        if (!StringUtil.stringIsEmpty(module) && ip != null && port != null) {
+            IDEContext.setValueForGlobalContext(module, BaseCacheVal.IP.vaLue(), ip);
+            IDEContext.setValueForGlobalContext(module, BaseCacheVal.PORT.vaLue(), port);
+        }
+        Logger.info("update Global IP And Port successful");
+    }
+
+    /**
+     * 获取系统信息及动态库的环境path
+     */
+    public static void loadingSystemOS() {
+        Logger.info("loading SystemOS");
+        if (OS.isLinux()) {
+            Logger.info("SystemOS is linux");
+            IDEContext.setValueForGlobalContext(
+                null, BaseCacheVal.CURRENT_CHARSET.vaLue(), IDEConstant.CHARSET_UTF8);
+            IDEContext.setValueForGlobalContext(null, BaseCacheVal.SYSTEM_OS.vaLue(), SystemOS.LINUX);
+            IDEContext.setValueForGlobalContext(null, BaseCacheVal.JCEF_DLL_EVN_PATH.vaLue(),
+                CommonUtil.getPluginJCEFPath());
+        } else if (OS.isWindows()) {
+            Logger.info("SystemOS is windows");
+            IDEContext.setValueForGlobalContext(null,
+                BaseCacheVal.CURRENT_CHARSET.vaLue(), IDEConstant.CHARSET_ISO_8859_1);
+            IDEContext.setValueForGlobalContext(null, BaseCacheVal.SYSTEM_OS.vaLue(), SystemOS.WINDOWS);
+            IDEContext.setValueForGlobalContext(null, BaseCacheVal.JCEF_DLL_EVN_PATH.vaLue(),
+                CommonUtil.getPluginJCEFPath());
+        } else {
+            Logger.info("SystemOS is others");
+            IDEContext.setValueForGlobalContext(null,
+                BaseCacheVal.CURRENT_CHARSET.vaLue(), IDEConstant.CHARSET_ISO_8859_1);
+            IDEContext.setValueForGlobalContext(null, BaseCacheVal.SYSTEM_OS.vaLue(), SystemOS.OTHER);
+            IDEContext.setValueForGlobalContext(null, BaseCacheVal.JCEF_DLL_EVN_PATH.vaLue(), null);
+        }
+        Logger.info("loading SystemOS successful");
+    }
+}

@@ -1,0 +1,20 @@
+# This is a Gradle generated file for dependency locking.
+# Manual edits can break the build and are not advised.
+# This file is expected to be part of source control.
+ch.qos.logback:logback-classic:1.2.9=compileClasspath,runtimeClasspath
+ch.qos.logback:logback-core:1.2.9=compileClasspath,runtimeClasspath
+com.alibaba:fastjson:1.2.75=compileClasspath,runtimeClasspath
+com.jcraft:jsch:0.1.55=compileClasspath,runtimeClasspath
+com.jetbrains:ideaIC:2020.2=compileClasspath
+com.melloware:jasypt:1.9.3=compileClasspath,runtimeClasspath
+com.zaxxer:SparseBitSet:1.2=compileClasspath,runtimeClasspath
+commons-codec:commons-codec:1.15=compileClasspath,runtimeClasspath
+org.apache.commons:commons-collections4:4.4=compileClasspath,runtimeClasspath
+org.apache.commons:commons-csv:1.8=compileClasspath,runtimeClasspath
+org.apache.commons:commons-math3:3.6.1=compileClasspath,runtimeClasspath
+org.apache.poi:poi:5.0.0=compileClasspath,runtimeClasspath
+org.jetbrains:annotations:19.0.0=compileClasspath
+org.projectlombok:lombok:1.18.12=annotationProcessor,compileClasspath
+org.slf4j:jcl-over-slf4j:1.7.30=compileClasspath,runtimeClasspath
+org.slf4j:slf4j-api:1.7.30=compileClasspath,runtimeClasspath
+empty=

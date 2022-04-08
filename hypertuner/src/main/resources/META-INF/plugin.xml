@@ -1,0 +1,370 @@
+<idea-plugin require-restart="true">
+    <version>2.3.3</version>
+    <!--插件的id，注意不要跟其他插件重复，这个id全局唯一，尽可能复杂些-->
+    <id>com.huawei.kunpeng.hyper.tuner</id>
+    <!--插件的名称-->
+    <name>Kunpeng Hyper Tuner</name>
+    <!--插件供应商相关信息-->
+    <vendor email="kunpengcompute@huawei.com" url="https://kunpeng.huawei.com">Huawei Technologies Co., Ltd.</vendor>
+
+    <idea-version since-build="202"/>
+
+    <!--描述该插件作用-->
+    <description><![CDATA[
+      <p>Supports system profiling and Java profiling on the Kunpeng platform, performs system-level and scenario-specific performance data sampling and analysis, and provides tuning suggestions.</p>
+      <ul>
+        <li>One-click deployment
+          <p>You can download the plugin from the JetBrains Marketplace, install it online, and deploy the server environment by simply clicking the mouse.</p>
+        </li>
+        <li>System Profiler
+          <p>The tool collects system data of Kunpeng-powered servers, analyzes system configuration and performance metrics, accurately locates performance bottlenecks and hotspot functions, and provides one-stop analysis reports, multi-dimensional data association, and tuning suggestions.</p>
+        </li>
+        <li>Java Profiler
+          <p>The tool graphically displays the heap, thread, lock, and garbage collection information about Java programs running on Kunpeng-powered servers, collects hotspot functions, and locates performance bottlenecks to help users take proper tuning measures.</p>
+        </li>
+      </ul>
+      <h2>Version Mapping</h2>
+      This plug-in needs to run with the background service, which must be installed on Kunpeng-powered servers. The version mapping is as follows:
+      <br/>
+      <table cellpadding="0" cellspacing="0" style="border:1px solid gray; border-bottom: none; border-right: none;">
+         <tr>
+            <th style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">Plug-in Version</th>
+            <th style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">Background Version</th>
+         </tr>
+          <tr>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.3</td>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.T10</td>
+         </tr>
+         <tr>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.2</td>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.T10</td>
+         </tr>
+      </table>
+      <br>
+      <p> You can use either of the following method to obtain the background version:</p>
+      <ol>
+          <li>Use the one-click deployment function of the plug-in to automatically install it.</li>
+          <li>Go to the <a href="https://www.hikunpeng.com/developer/devkit/hyper-tuner?data=web">Kunpeng Community</a> to obtain the background service installation package and installation method.</li>
+      </ol>
+      <h2>Introduction to the System Profiler</h2>
+      <p>The System Profiler is a system performance analysis tool for Kunpeng-powered servers. It collects performance data of processor hardware, operating system, processes or threads, and functions, analyzes system performance metrics, locates system bottlenecks and hotspot functions, and provides tuning suggestions. This tool helps you quickly locate and handle software performance problems.</p>
+      <p>The System Profiler provides the following functions:</p>
+      <ul>
+        <li>Overall analysis
+          <p>The tool collects the software and hardware configuration information of the entire system and the running status of system resources, such as CPU, memory, storage I/O, and network I/O, to obtain the performance metrics such as resource usage, saturation, and errors. The performance metrics help users identify system bottlenecks. Based on the existing reference values and tuning experience, the tool provides tuning suggestions for certain system metrics. In addition, the tool checks the hardware configuration, system configuration, and component configuration in big data and software-defined storage scenarios, displays the configuration items that are not optimal, and analyzes and provides typical hardware configuration and software version information.</p>
+        </li>
+        <li>Resource scheduling analysis
+          <p>The tool analyzes system resource scheduling based on CPU scheduling events. In detail, it analyzes:</p>
+          <ul type="circle">
+            <li>The running status, such as Idle or Running, of the CPU core at each time point. If a CPU core is in the Running state, information about processes or threads running on the CPU core and the duration proportion of each status can be associated.</li>
+            <li>The running status of processes or threads at each time point, which can be Wait, Schedule, and Running, and the duration proportion of each status.</li>
+            <li>Process/thread switching information, including the number of switches, average scheduling delay, minimum scheduling delay, and maximum delay time.</li>
+            <li>The number of times that each process or thread switches between different non-uniform memory access (NUMA) nodes. If the number of switches is greater than the reference value, core binding suggestions will be provided.</li>
+        </ul>
+        </li>
+        <li>Microarchitecture analysis
+          <p>The tool obtains the running status of instructions on the CPU pipeline based on the ARM Performance Monitor Unit (PMU) event. It helps users quickly locate the performance bottleneck of the current application on the CPU and modify the program to maximize the utilization of hardware resources.</p>
+        </li>
+        <li>Memory access analysis
+          <p>By analyzing the events related to the CPU's access to the cache and memory, the tool identifies potential performance bottlenecks on memory access, locates the possible causes, and provides the corresponding tuning suggestions.</p>
+          <ul type="circle">
+            <li>Memory access statistics analysis: The tool accesses the PMU events of the cache and memory and analyzes the number of storage access times, hit rate, and bandwidth.</li>
+            <li>Miss event analysis: This function is implemented based on the ARM Statistical Profiling Extension (SPE) capability. SPE samples instructions and records event triggering information, including accurate PC pointer information. By using SPE, the tool analyzes miss events, such as LLC Miss, TLB Miss, Remote Access, and Long Latency Load, and accurately identifies the code that causes the events. Based on the analysis information, users can modify their programs to reduce the probability of certain events and improve the performance of their programs.</li>
+            <li>Pseudo sharing analysis: This function is implemented based on the ARM SPE capability. SPE samples instructions and records event triggering information, including accurate PC pointer information. By using SPE for false sharing analysis on services, the tool obtains information about the number and proportion of false sharing times, instruction addresses, code line numbers, and NUMA nodes. Based on the information, users can modify their programs to reduce the probability of false sharing and improve the performance of their programs.</li>
+          </ul>
+        </li>
+        <li>Process/Thread performance analysis
+          <p>The tool collects information about the resources (such as CPU, memory, and storage I/O) consumed by processes or threads to obtain the performance metrics such as the utilization, saturation, and errors. The performance metrics help users identify process or thread bottlenecks. Based on the existing reference values and tuning experience, the tool provides tuning suggestions for certain system metrics. The tool also analyzes the system calling information for a single process.</p>
+        </li>
+        <li>Locks and waits
+          <p>The tool analyzes the lock and wait functions (including sleep, usleep, mutex, cond, spinlock, rwlock, and semaphore) of glibc and open-source software such as MySQL and Open MP, associates the processes and call sites to which the lock and wait functions belong, and provides tuning suggestions based on the existing tuning experience.</p>
+        </li>
+        <li>Hotspot Function Analysis
+          <p>The tool analyzes C/C++ program code, identifies performance bottlenecks, and displays hotspot functions, source code, and assembly instructions. The function call relationship can be displayed in flame graphs, and the tuning path is provided.</p>
+        </li>
+        <li>I/O analysis
+          <p>The tool analyzes block storage devices to obtain performance data such as the number of I/O operations, I/O data size, I/O queue depth, and I/O operation delay, and associates the data with specific I/O operations, processes, threads, call stacks, and I/O APIs of the application layer. Based on the I/O performance data, the tool provides tuning suggestions.</p>
+        </li>
+      </ul>
+      <h2>Introduction to the Java Profiler</h2>
+      <p>The Java Profiler is a Java performance analysis and tuning tool for Kunpeng-powered servers. It graphically displays the heap,thread, lock, and garbage collection (GC) information about Java programs running on the servers, collects hotspot functions,and locates performance bottlenecks to help users take proper tuning measures.</p>
+      <p>The Java Profiler provides the following functions:</p>
+      <ul>
+        <li>Profiling analysis
+            <p>Online profiling is to analyze the target Java virtual machine (JVM) and Java programs. The JVM performance analysis includes data about the internal JVM status, such as the heap, GC activities, and thread status. The Java program performance analysis includes analysis of called chains, hotspot functions, lock analysis, program thread status, and object distribution. JVM running data is obtained in an online manner using the agent for precise analysis. The major functions are as follows:</p>
+            <ul type = "circle">
+                <li>Real-time display of the JVM system status.</li>
+                <li>Real-time display of JVM information, including the heap size, GC activities, number of threads, number of loaded classes, and CPU usage.</li>
+                <li>By capturing heap snapshots, the tool analyzes the heap histogram distribution and dominator tree of an application at a certain time point and traces the reference relationship chain from each Java object in the heap memory to the GC root, helping locate potential memory problems; compares and analyzes heap snapshots at different time points and analyzes the changes of heap usage and allocation, helping users detect exceptions.</li>
+                <li>I/O analysis. The tool analyzes the file I/O, socket I/O latency, and consumed bandwidth in an online manner to identify hotspot I/O operations.</li>
+                <li>Java process/thread performance analysis.</li>
+                <li>Workload-related analysis for upper-layer applications.</li>
+                <li>Snapshots can be generated during online analysis of heap, I/O, and workload data. By comparing snapshots, the tool helps users detect the change trends of resources and service indicators and identify potential risks on resource leakage or performance indicator deterioration.</li>
+            </ul>
+        </li>
+        <li>Sampling analysis
+            <p>The tool samples data of internal activities and performance events of the JVM and performs offline analysis through data recording and playback. This analysis features little overhead and has little impact on services. It applies to large Java programs. The major functions are as follows:</p>
+            <ul type = "circle">
+                <li>Display of the JVM system status.</li>
+                <li>Playback of recorded JVM information, including the heap size, GC activities, I/O consumption, and CPU usage.</li>
+                <li>By sampling objects with a long retention period, the tool enables users to analyze potential heap memory leakage in Java applications and locate possible causes.</li>
+                <li>The system provides reports and tuning suggestions on startup parameters and GC based on the sampling analysis records.</li>
+                <li>I/O analysis. The tool analyzes the file I/O, socket I/O latency, and consumed bandwidth in an online manner to identify hotspot I/O operations.</li>
+                <li>Java process/thread performance analysis.</li>
+                <li>Function performance analysis.</li>
+            </ul>
+        </li>
+      </ul>
+      <br>
+      <h2>Disclaimer</h2>
+      <ol>
+        <li>This plugin is intended for enterprise users who need to use the plugin for work. You can use this plugin for work in compliance with laws, regulations, and government policies.</li>
+        <li>No individual or organization shall spread the plugin without the authorization of the plugin owner. You shall not delete the license information or other information in this plugin, or perform reverse engineering, disassembly, or decompilation on this plugin.</li>
+        <li>Unless otherwise specified in laws, regulations, or contracts, this plugin is provided "AS IS" without warranties, guarantees or representations of any kind, either expressed or implied.</li>
+        <li>This plugin is a beta version and is used only for the development and testing environment and open beta test (OBT). The feedback you obtain when you use this plugin is for reference only and does not constitute specific guidance or suggestions in any way or form.</li>
+        <li>You shall bear all risks arising from your use of this plugin. Huawei is not liable for any damage or loss of any nature in any case.</li>
+        <li>If you violate this disclaimer when using this plugin, Huawei is not liable for any consequences and does not assume any legal liabilities. If necessary, the responsible party will be held legally liable.</li>
+      </ol>
+      <br>
+    ]]></description>
+    <change-notes><![CDATA[
+    <h2><b>2.3.3（2021-12-30）</b></h2>
+     <ul type="circle">
+        <li>Added the entrance for helping developers new to Kunpeng.</li>
+    </ul>
+    <h2><b>2.3.2（2021-09-30）</b></h2>
+    <ul>
+        <li>New functions of System Profiler:
+            <ul type="circle">
+                <li>Added the function for creating, viewing, modifying, and deleting a project.</li>
+                <li>Added the function for creating, viewing, modifying, deleting, re-analyzing, stopping, importing, and exporting tasks.</li>
+                <li>Added the function for viewing the task node information and task execution result.</li>
+                <li>Added the function for creating, viewing, modifying, and deleting scheduled tasks.</li>
+                <li>Added the function for creating, viewing, deleting, and importing task templates.</li>
+                <li>Added the function for viewing and exporting performance analysis logs.</li>
+                <li>Added the function for checking the Agent service certificate.</li>
+                <li>Added the function for adding, viewing, modifying, and deleting nodes.</li>
+            </ul>
+        </li>
+        <li>New functions of Java Profiler:
+            <ul type="circle">
+                <li>Added the Java Profiler configuration panel to allow users to add, delete, and restart the target environment, view Java Profiler logs, configure Java Profiler, and modify report thresholds.</li>
+                <li>Added the function to display the root certificate installation dialog box, instructing users to install the root certificate for the first profiling.</li>
+                <li>Added the Java process profiling. Supports users to view and save data on the Overview, CPU, Memory, GC, I/O, Database, Web, and Snapshot tab pages. Users can import and export data reports and stop analysis records.</li>
+                <li>Added Java process sampling analysis. Supports users to view overview, CPU, memory, and GC data. Users can import, export, delete, stop, and cancel data reports.</li>
+                <li>Added the function of providing optimization suggestions for online analysis and sampling analysis of Java processes.</li>
+                <li>Added the data list function. Users can view memory dump, thread dump, and GC log reports in process analysis, and import, export, and delete data reports.</li>
+            </ul>
+        </li>
+    </ul>
+    ]]></change-notes>
+    <!-- 插件工程需要依赖的各种插件-->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.plugins.terminal</depends>
+
+    <!--声明对intellij标准插件的扩展，
+    Extensions/Extensions Points扩展和扩展点，前者是指引入其他插件的扩展点，后者是当前工程暴露出的扩展点。-->
+    <extensions defaultExtensionNs="com.intellij">
+        <additionalTextAttributes scheme="Default" file="/assets/colorscheme/DefaultColorSchemes.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="/assets/colorscheme/DarculaColorSchemes.xml"/>
+        <!--应用初始化-->
+        <postStartupActivity implementation="com.huawei.kunpeng.hyper.tuner.listener.IDEProjectStartupListener"/>
+        <fileType name="kpht" extensions="kpht"
+                  implementationClass="com.huawei.kunpeng.hyper.tuner.webview.TuningWebFileType"/>
+        <fileEditorProvider implementation="com.huawei.kunpeng.hyper.tuner.webview.WebFileProvider"/>
+        <!--显示工具窗口-->
+        <toolWindow id="Hyper Tuner" secondary="true" icon="/assets/img/toolwindow.png" anchor="left"
+                    factoryClass="com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning.HyperTunerToolWindowFactory"
+                    order="last"/>
+        <!-- Porting Advisor Settings顶层节点 -->
+        <!--定义Mindstudio应用的配置信息-->
+        <applicationConfigurable
+                parentId="root"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.tuningsettings.TuningSettingsConfigProvider"
+                id="Tuning Setting"/>
+        <!-- 用户管理界面添加到setting界面 -->
+        <applicationConfigurable parentId="Tuning Setting"
+                                 provider="com.huawei.kunpeng.hyper.tuner.setting.user.UseSettingsConfProvider"
+                                 id="com.huawei.kunpeng.tuning.UseSettings"/>
+        <!-- 弱口令界面添加到setting界面 -->
+        <applicationConfigurable parentId="Tuning Setting"
+                                 provider="com.huawei.kunpeng.hyper.tuner.setting.weakpwd.WeakPwdSetConfProvider"
+                                 id="com.huawei.kunpeng.tuning.settings.weakPwdPanel"/>
+        <!-- 系统配置添加到setting界面 -->
+        <applicationConfigurable parentId="Tuning Setting"
+                                 provider="com.huawei.kunpeng.hyper.tuner.setting.sys.SysSettingsConfProvider"
+                                 id="com.huawei.kunpeng.tuning.settings.SystemSettingPanel"/>
+        <!-- 登录管理界面添加到setting界面 -->
+        <applicationConfigurable parentId="Tuning Setting"
+                                 provider="com.huawei.kunpeng.hyper.tuner.setting.login.LoginConfigProvider"
+                                 id="com.huawei.kunpeng.kunpeng.tuning.LoginSettings"/>
+        <!-- 日志管理界面添加到setting界面 -->
+        <applicationConfigurable
+                parentId="Tuning Setting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.log.LogConfigProvider"
+                id="com.huawei.kunpeng.tuning.LogSettings"/>
+        <!-- web服务证书界面添加到setting界面 -->
+        <applicationConfigurable
+                parentId="Tuning Setting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.webservercert.WebServerCertificateProvider"
+                id="com.huawei.kunpeng.tuning.webservercert"/>
+        <!-- sysperf性能管理到setting界面 -->
+        <applicationConfigurable
+                parentId="Tuning Setting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.SysperfConfigProvider"
+                id="sysperfSetting"/>
+        <!-- 节点管理界面添加到setting界面 -->
+        <applicationConfigurable
+                parentId="sysperfSetting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.nodemanager.NodeManagerConfProvider"
+                id="sysperf.nodemanager"/>
+        <!-- 预约任务-->
+        <applicationConfigurable
+                parentId="sysperfSetting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.schtask.SchTaskConfigProvider"
+                id="sysperf.schTask"/>
+        <!-- 导入导出任务-->
+        <applicationConfigurable
+                parentId="sysperfSetting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.impandexptask.ImpAndExpTaskConfigProvider"
+                id="sysperf.impAndExpTask"/>
+        <!-- 任务模板-->
+        <applicationConfigurable
+                parentId="sysperfSetting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.tasktemplete.TaskTemplateConfigProvider"
+                id="sysperf.taskTemplate"/>
+        <!-- 日志-->
+        <applicationConfigurable
+                parentId="sysperfSetting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.sysperflog.SysPrefLogConfigProvider"
+                id="sysperf.sysperfLog"/>
+        <!-- Agent服务证书界面添加到setting界面 -->
+        <applicationConfigurable
+                parentId="sysperfSetting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.agentcert.AgentCertConfProvider"
+                id="sysperf.agentcert"/>
+
+        <!-- javaPerf-->
+        <applicationConfigurable
+                parentId="Tuning Setting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.JavaPerfConfigProvider"
+                id="javaPerfSetting"/>
+        <!-- javaPerf 目标环境管理 -->
+        <applicationConfigurable
+                parentId="javaPerfSetting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.guardianmanager.GuardianManagerConfProvider"
+                id="javaperf.guardianmanager"/>
+        <!-- javaPerf 内部通信证书-->
+        <applicationConfigurable
+                parentId="javaPerfSetting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.internalcommcert.InternalCommCertConfigProvider"
+                id="javaperf.internalCommCert"/>
+        <!--日志 添加 到 Java 性能管理-->
+        <applicationConfigurable
+                parentId="javaPerfSetting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.javaperflogs.JavaPerfLogsConfigProvider"
+                id="javaperf.javaPerfLogs"/>
+        <!--java性能分析配置 添加 到 Java 性能管理-->
+        <applicationConfigurable
+                parentId="javaPerfSetting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.javaprofilersettings.JavaSettingsConfProvider"
+                id="javaperf.javaprofilersettings"/>
+        <!-- 报告阈值界面添加到到 Java 性能管理 -->
+        <applicationConfigurable
+                parentId="javaPerfSetting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.reportthresholds.ReportThresholdConfigProvide"
+                id="javaperf.reportthresholds"/>
+        <!--工作密钥 添加 到 Java性能管理-->
+        <applicationConfigurable
+                parentId="javaPerfSetting"
+                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.workingkey.WorkingKeyConfigProvider"
+                id="javaperf.workingkey"/>
+
+    </extensions>
+
+    <!--应用级别监听器，可以让应用程序从Intellij消息总线中监听消息。是整个plugin的入口。-->
+    <applicationListeners>
+        <!--主题和项目启动和关闭监听-->
+        <listener class="com.huawei.kunpeng.hyper.tuner.listener.IDEProjectListener"
+                  topic="com.intellij.openapi.project.ProjectManagerListener">
+        </listener>
+        <listener class="com.huawei.kunpeng.hyper.tuner.listener.IDEThemeListener"
+                  topic="com.intellij.ide.ui.LafManagerListener">
+        </listener>
+        <listener class="com.huawei.kunpeng.hyper.tuner.listener.IDEInitListener"
+                  topic="com.intellij.ide.AppLifecycleListener">
+        </listener>
+    </applicationListeners>
+
+    <projectListeners>
+        <listener class="com.huawei.kunpeng.hyper.tuner.listener.IDEFileEditorManagerListener"
+                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener$Before"/>
+    </projectListeners>
+
+    <actions>
+        <action id="ide.kunpeng.action.tuning.config"
+                class="com.huawei.kunpeng.hyper.tuner.action.serverconfig.IDEServerConfigAction"
+                text="Config Hyper tuner" description="Config Hyper tuner" icon="/assets/img/logo.png">
+        </action>
+        <action id="ide.kunpeng.action.tuning.install"
+                class="com.huawei.kunpeng.hyper.tuner.action.install.TuningIDEInstallAction"
+                text="Install Hyper tuner" description="Install Hyper tuner">
+        </action>
+        <action id="ide.kunpeng.action.tuning.uninstall"
+                class="com.huawei.kunpeng.hyper.tuner.action.uninstall.IDEUninstallAction"
+                text="Uninstall Hyper tuner" description="Uninstall Hyper tuner">
+        </action>
+        <action id="ide.kunpeng.action.tuning.login" class="com.huawei.kunpeng.hyper.tuner.action.IDELoginAction"
+                text="Log In" description="Log In" icon="/assets/img/logo.png">
+        </action>
+        <action id="ide.kunpeng.action.tuning.logout" class="com.huawei.kunpeng.hyper.tuner.action.IDELogoutAction"
+                text="Log Out" description="Log Out" icon="/assets/img/logo.png">
+        </action>
+        <action id="ide.kunpeng.action.tuning.logout.showTuningAdvisorToolWindow"
+                class="com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning.ShowTuningAdvisorToolWindowAction"
+                text="Porting Advisor" icon="/assets/img/logo.png"/>
+        <action id="sysperf.createProject" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
+                text="createProject" description="Enhanced functions" icon="/assets/img/sysperf/createProject.svg">
+        </action>
+        <action id="sysperf.createTask" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
+                text="createTask" description="Enhanced functions" icon="/assets/img/sysperf/createTask.svg">
+        </action>
+        <action id="sysperf.node" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
+                text="node" description="Enhanced functions" icon="/assets/img/sysperf/node.svg">
+        </action>
+        <action id="sysperf.scheduledTask" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
+                text="scheduledTask" description="Enhanced functions" icon="/assets/img/sysperf/scheduledTasks.svg">
+        </action>
+        <action id="sysperf.taskTemplate" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
+                text="taskTemplate" description="Enhanced functions" icon="/assets/img/sysperf/taskTemplate.svg">
+        </action>
+        <action id="sysperf.export" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
+                text="export" description="Enhanced functions" icon="/assets/img/sysperf/export.svg"/>
+        <action id="sysperf.import" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
+                text="import" description="Enhanced functions" icon="/assets/img/sysperf/import.svg"/>
+        <action id="sysperf.nodeUpdate" class="com.huawei.kunpeng.hyper.tuner.action.sysperf.NodeUpdateAnAction"
+                text="nodeUpdates" description="Enhanced functions" icon="/assets/img/settings/refresh.svg">
+        </action>
+        <!-- javaPerf toolWindows 工具栏-->
+        <action id="javaperf.environment" class="com.huawei.kunpeng.hyper.tuner.action.JavaPerfTreeAction"
+                text="environment" description="Enhanced functions"
+                icon="/assets/img/javaperf/toolbar/target_environment_add@1x.svg">
+        </action>
+        <action id="javaperf.environmentmanage" class="com.huawei.kunpeng.hyper.tuner.action.JavaPerfTreeAction"
+                text="environmentmanage" description="Enhanced functions"
+                icon="/assets/img/javaperf/toolbar/target_environment_management@1x.svg">
+        </action>
+        <action id="javaperf.sampling" class="com.huawei.kunpeng.hyper.tuner.action.JavaPerfTreeAction"
+                text="sampling" description="Enhanced functions"
+                icon="/assets/img/javaperf/toolbar/analysis_record_management@1x.svg">
+        </action>
+        <action id="javaperf.export" class="com.huawei.kunpeng.hyper.tuner.action.JavaPerfTreeAction"
+                text="export" description="Enhanced functions" icon="/assets/img/javaperf/toolbar/export@1x.svg"/>
+        <action id="javaperf.import" class="com.huawei.kunpeng.hyper.tuner.action.JavaPerfTreeAction"
+                text="import" description="Enhanced functions" icon="/assets/img/javaperf/toolbar/import@1x.svg"/>
+        <action id="javaperf.guardianUpdate"
+                class="com.huawei.kunpeng.hyper.tuner.action.javaperf.GuardianUpdateAnAction"
+                text="guardianUpdates" description="Enhanced functions" icon="/assets/img/settings/refresh.svg">
+        </action>
+    </actions>
+</idea-plugin>

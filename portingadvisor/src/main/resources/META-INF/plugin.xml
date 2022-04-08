@@ -1,0 +1,291 @@
+<idea-plugin>
+    <version>2.3.3</version>
+    <id>Kunpeng Porting Advisor</id>
+    <name>Kunpeng Porting Advisor</name>
+    <vendor email="kunpengcompute@huawei.com" url="https://kunpeng.huawei.com">Huawei Technologies Co., Ltd.</vendor>
+    <idea-version since-build="202" />
+
+    <description><![CDATA[
+      <p>The Kunpeng Porting Advisor Plugin automatically scans and analyzes the software to be ported and provides professional porting guidance.</p>
+      <ul>
+        <li>One-click deployment</li>
+        <br>
+        <p>You can download the plugin from the JetBrains Marketplace and install it online, and deploy the server environment by simply clicking the mouse.</p>
+        <br>
+        <li>Analysis and scanning</li>
+        <br>
+        <p>The plugin scans and analyzes software packages and source code files, and provides porting feasibility reports.</p>
+        <br>
+        <li>Code porting</li>
+        <br>
+        <p>The plugin analyzes the cross-platform compatibility of software source code, identifies the code to be ported, and provides porting guidance.</p>
+      </ul>
+      <h2>Version Mapping</h2>
+      This plug-in needs to run with the background service, which must be installed on Kunpeng-powered servers. The version mapping is as follows:
+      <br/>
+      <table cellpadding="0" cellspacing="0" style="border:1px solid gray; border-bottom: none; border-right: none;">
+        <tr>
+            <th style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">Plug-in Version</th>
+            <th style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">Background Version</th>
+        </tr>
+        <tr>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.3</td>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.0</td>
+        </tr>
+        <tr>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.2</td>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.T20</td>
+        </tr>
+         <tr>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.1</td>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.T10</td>
+        </tr>
+        <tr>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.2.8</td>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.2.T4</td>
+        </tr>
+        <tr>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.2.7</td>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.2.T4</td>
+        </tr>
+        <tr>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.2.6</td>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.2.1</td>
+        </tr>
+        <tr>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.2.5</td>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.2.T3</td>
+        </tr>
+        </table>
+        You can use either of the following method to obtain the background version:<br>
+        <ol>
+            <li>Use the one-click deployment function of the plug-in to automatically install it./li>
+            <li>Go to the <a href="https://www.hikunpeng.com/developer/devkit/porting-advisor?data=web">Kunpeng Community</a> to obtain the background service installation package and installation method.</li>
+        </ol>
+      <h2>Introduction to the Kunpeng Porting Advisor</h2>
+      <p>The Kunpeng Porting Advisor functions as a client to call the functions of the server to complete scanning and porting tasks. It quickly scans and analyzes the software to be ported and provides professional code porting guidance, greatly simplifying the process of porting applications to the Kunpeng platform. This tool addresses the problems of heavy workload, low accuracy, and poor overall efficiency in manual analysis.</p>
+      <br>
+      <p>The Kunpeng Porting Advisor provides the following functions:</p>
+      <ul>
+        <li>Software porting assessment</li>
+        <br>
+        <p>Scans and analyzes software packages (not source code packages) and installed software, and provides porting assessment reports.</p>
+        <li>Source code porting</li>
+        <br>
+        <p>The Kunpeng Porting Advisor can automatically check and analyze users' source code, C/C++ software build project files, link libraries used by C/C++ software build project files, and content that needs to be modified in x86 assembly code. It provides automatic code compatibility check, removes the dependency on manual expertise in code porting, and increases accuracy and efficiency in code compilation and debugging.</p>
+        <li>Software Package rebuilding</li>
+        <br>
+        <p>Analyzes the x86 software package (in RPM or DEB format) structure and hardware dependency, and rebuilds the software package applicable to the Kunpeng platform.</p>
+        <li>Dedicated software porting</li>
+        <br>
+        <p>Modifies, compiles, and builds software packages based on the software porting template of the Kunpeng solution, facilitating software porting.</p>
+        <li>Enhanced functions</li>
+        <br>
+        <p>Provides static checks of software code quality, including 64-bit mode compatibility check, structure byte alignment check, and memory consistency check.</p>
+      </ul>
+      <h2>Disclaimer</h2>
+      <ol>
+        <li>This plugin is intended for enterprise users who need to use the plugin for work. You can use this plugin for work in compliance with laws, regulations, and government policies.</li>
+        <li>No individual or organization shall spread the plugin without the authorization of the plugin owner. You shall not delete the license information or other information in this plugin, or perform reverse engineering, disassembly, or decompilation on this plugin.</li>
+        <li>Unless otherwise specified in laws, regulations, or contracts, this plugin is provided "AS IS" without warranties, guarantees or representations of any kind, either expressed or implied.</li>
+        <li>This plugin is a beta version and is used only for the development and testing environment and open beta test (OBT). The feedback you obtain when you use this plugin is for reference only and does not constitute specific guidance or suggestions in any way or form.</li>
+        <li>You shall bear all risks arising from your use of this plugin. Huawei is not liable for any damage or loss of any nature in any case.</li>
+        <li>If you violate this disclaimer when using this plugin, Huawei is not liable for any consequences and does not assume any legal liabilities. If necessary, the responsible party will be held legally liable.</li>
+      </ol>
+    ]]></description>
+    <resource-bundle></resource-bundle>
+    <change-notes><![CDATA[
+    <h2><b>2.3.3（2021-12-30）</b></h2>
+    <ol>
+        <li>Added the entrance for helping developers new to Kunpeng.</li>
+        <li>Updated porting support for 4 pieces of HPC software.</li>
+        <li>Completed porting of identified Intel Fortran compilation options.</li>
+        <li>Moved the Cacheline Alignment check to the Enhanced Functions.</li>
+        <li>Added 64-bit Running Mode check and Structure Byte Alignment check functions for Kunpeng servers.</li>
+        <li>Optimized the Memory Consistency check function.</li>
+        <li>Optimized assembly instruction translation function.</li>
+        <li>Added the function of checking the code affinity of the Kunpeng architecture.</li>
+    </ol>
+    <h2><b>2.3.2（2021-09-30）</b></h2>
+    <ol>
+        <li>Optimized the Fortran porting check capability, the identification of inline functions and compilation options.</li>
+        <li>Optimized the identification and processing of C/C++ source code scanning conditions.</li>
+        <li>Optimized the analysis of the ctype call function in Python.</li>
+        <li>Optimized the quick fix effect of the intrinsic function.</li>
+        <li>Optimized the alias algorithm for memory consistency to improve analysis coverage.</li>
+        <li>Added the function of sorting memory consistency check reports.</li>
+        <li>Added the function of downloading BC files generated by the memory consistency static tool.</li>
+        <li>Updated the procedure of porting CDH and HDP components.</li>
+        <li>Supports porting of 5 new HPC software models.</li>
+        <li>Supports compatibility check of C/C++ so files used in Java and Scala code.</li>
+        <li>Supports the compatibility check and replacement of CGO compilation options and macro definitions.</li>
+    </ol>
+    <h2><b>2.3.1（2021-06-30）</b></h2>
+    <ol>
+        <li>Multiple users are supported.</li>
+        <li>Remembering passwords for automatic login is supported for common users.</li>
+        <li>Optimized the Fortran porting check capability.</li>
+        <li>Optimized the CMake/Make resolution and porting capabilities.</li>
+        <li>Optimized the memory consistency scan function to improve the accuracy.</li>
+        <li>Added the capability of scanning C/C++ .so files in Python code for compatibility check.</li>
+        <li>Added the support for BC-Linux 7.6, 7.7, UOS 20 SP1, and iSoft 5.1.</li>
+    </ol>
+    ]]></change-notes>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.plugins.terminal</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!--应用初始化-->
+        <additionalTextAttributes scheme="Default" file="/assets/colorscheme/DefaultColorSchemes.xml" />
+        <additionalTextAttributes scheme="Darcula" file="/assets/colorscheme/DarculaColorSchemes.xml" />
+        <postStartupActivity implementation="com.huawei.kunpeng.porting.listener.IDEProjectStartupListener" />
+        <fileType name="kppa" extensions="kppa"
+            implementationClass="com.huawei.kunpeng.intellij.common.filetype.WebFileType" />
+        <fileEditorProvider implementation="com.huawei.kunpeng.porting.webview.WebFileProvider" />
+        <fileType name="PortingText"
+            implementationClass="com.huawei.kunpeng.intellij.common.filetype.PortingTextFileType" language="PortingText"
+            fieldName="INSTANCE" />
+        <toolWindow id="Porting Advisor" secondary="true" icon="/assets/img/toolwindow_porting.png" anchor="left"
+            factoryClass="com.huawei.kunpeng.porting.action.toolwindow.PortingToolWindowFactory" order="last" />
+        <!-- Porting Advisor Settings顶层节点 -->
+        <applicationConfigurable parentId="root"
+            provider="com.huawei.kunpeng.porting.action.setting.portingsettings.PortingSettingsConfigProvider"
+            id="Porting Settings" />
+        <!-- 用户管理界面添加到setting界面 -->
+        <applicationConfigurable parentId="Porting Settings"
+            provider="com.huawei.kunpeng.porting.action.setting.user.UseSettingsConfProvider"
+            id="com.huawei.kunpeng.porting.UseSettings" />
+        <!-- 弱口令界面添加到setting界面 -->
+        <applicationConfigurable parentId="Porting Settings"
+            provider="com.huawei.kunpeng.porting.action.setting.weakpwd.WeakPwdSetConfProvider"
+            id="com.huawei.kunpeng.porting.settings.weakPwdPanel" />
+        <!-- 系统配置添加到setting界面 -->
+        <applicationConfigurable parentId="Porting Settings"
+            provider="com.huawei.kunpeng.porting.action.setting.syssetting.SysSettingsConfProvider"
+            id="com.huawei.kunpeng.porting.settings.SystemSettingPanel" />
+        <!-- 登录管理界面添加到setting界面 -->
+        <applicationConfigurable parentId="Porting Settings"
+            provider="com.huawei.kunpeng.porting.ui.panel.loginsettings.LoginConfigProvider"
+            id="com.huawei.kunpeng.porting.LoginSettings" />
+        <!-- 日志管理界面添加到setting界面 -->
+        <applicationConfigurable parentId="Porting Settings"
+            provider="com.huawei.kunpeng.porting.ui.panel.log.LogConfigProvider"
+            id="com.huawei.kunpeng.porting.LogSettings" />
+        <!-- 白名单管理界面添加到setting界面 -->
+        <applicationConfigurable parentId="Porting Settings"
+            provider="com.huawei.kunpeng.porting.action.setting.whitelist.WhitelistManageConfigProvider"
+            id="Whitelist Management" />
+        <!-- 软件迁移模版界面添加到setting界面 -->
+        <applicationConfigurable parentId="Porting Settings"
+            provider="com.huawei.kunpeng.porting.action.setting.template.PortingTemplateConfigProvider"
+            id="Porting Template" />
+        <!-- 配置扫描参数界面添加到setting界面 -->
+        <applicationConfigurable parentId="Porting Settings"
+            provider="com.huawei.kunpeng.porting.action.setting.scanparam.ScanParameterConfigProvider"
+            id="Configure Scan Parameter" />
+        <!-- 阈值设置界面添加到setting界面 -->
+        <applicationConfigurable parentId="Porting Settings"
+            provider="com.huawei.kunpeng.porting.ui.panel.threshold.ThresholdConfigProvider"
+            id="com.huawei.kunpeng.porting.ThresholdSettings" />
+        <!-- web服务证书界面添加到setting界面 -->
+        <applicationConfigurable parentId="Porting Settings"
+            provider="com.huawei.kunpeng.porting.ui.panel.settings.webservercert.WebServerCertificateProvider"
+            id="com.huawei.kunpeng.porting.webservercert" />
+        <!-- 证书吊销列表界面添加到setting界面 -->
+        <applicationConfigurable parentId="Porting Settings"
+            provider="com.huawei.kunpeng.porting.action.setting.crl.CertificateRevocationListProvider"
+            id="com.huawei.kunpeng.porting.webservercert.revocation.list" />
+        <!-- 添加porting的severity类型，PortingInspectionAction默认此类型 -->
+        <severitiesProvider implementation="com.huawei.kunpeng.porting.action.report.PortingSeveritiesProvider" />
+        <!-- 添加编辑区的inspection -->
+        <localInspection implementationClass="com.huawei.kunpeng.porting.action.report.PortingInspectionAction"
+            groupName="kunpeng" displayName="kunpeng inspection" shortName="portingInspection" level="PORTING"
+            enabledByDefault="false"></localInspection>
+        <!-- 编辑区左侧line num添加标记 -->
+        <codeInsight.lineMarkerProvider language=""
+            implementationClass="com.huawei.kunpeng.porting.action.report.ReportProblemLineMarkerProvider"></codeInsight.lineMarkerProvider>
+    </extensions>
+
+    <projectListeners>
+        <!-- 文件编辑区事件监听器 -->
+        <listener class="com.huawei.kunpeng.porting.listener.IDEFileEditorListener"
+            topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"></listener>
+        <listener class="com.huawei.kunpeng.porting.listener.IDEFileEditorListener"
+            topic="com.intellij.openapi.fileEditor.FileEditorManagerListener$Before"></listener>
+        <listener class="com.huawei.kunpeng.porting.listener.IDEFileDocumentManagerListener"
+            topic="com.intellij.openapi.fileEditor.FileDocumentManagerListener"></listener>
+    </projectListeners>
+
+    <applicationListeners>
+        <!--主题和项目启动和关闭监听-->
+        <listener class="com.huawei.kunpeng.porting.listener.IDEProjectListener"
+            topic="com.intellij.openapi.project.ProjectManagerListener"></listener>
+        <listener class="com.huawei.kunpeng.porting.listener.IDEThemeListener"
+            topic="com.intellij.ide.ui.LafManagerListener"></listener>
+        <listener class="com.huawei.kunpeng.porting.listener.IDEInitListener"
+            topic="com.intellij.ide.AppLifecycleListener"></listener>
+    </applicationListeners>
+
+    <actions>
+        <action id="ide.kunpeng.action.porting.config"
+            class="com.huawei.kunpeng.porting.action.serverconfig.IDEServerConfigAction" text="Config Porting Advisor"
+            description="Config Porting Advisor" icon="/assets/img/logo.png"></action>
+        <action id="ide.kunpeng.action.porting.install"
+            class="com.huawei.kunpeng.porting.action.install.IDEInstallAction" text="Install Porting Advisor"
+            description="Install Porting Advisor"></action>
+        <action id="ide.kunpeng.action.porting.uninstall"
+            class="com.huawei.kunpeng.porting.action.uninstall.IDEUninstallAction" text="Uninstall Porting Advisor"
+            description="Uninstall Porting Advisor"></action>
+        <!-- IDE鲲鹏工具右键菜单-->
+        <group id="ide.kunpeng.tool" text="Kunpeng Porting Advisor" popup="true" icon="/assets/img/logo.png"
+               class="com.huawei.kunpeng.porting.action.rightclick.PortingRightClickGroupAction">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
+        </group>
+        <group>
+            <add-to-group group-id="ide.kunpeng.tool" anchor="first"/>
+            <action id="ide.kunpeng.action.PortingSourceAction"
+                    class="com.huawei.kunpeng.porting.action.rightclick.PortingSourceAction" text="Source Code Porting"
+                    description="Right click porting"/>
+        </group>
+        <group>
+            <add-to-group group-id="ide.kunpeng.tool" anchor="after" relative-to-action="ide.kunpeng.action.PortingSourceAction"/>
+            <action id="ide.kunpeng.action.PortingEnhancedAction"
+                    class="com.huawei.kunpeng.porting.action.rightclick.PortingEnhancedAction" text="Affinity Check"
+                    description="Right click porting"/>
+        </group>
+        <!-- Add your actions here -->
+        <action id="ide.kunpeng.action.porting.IDEPortingAction"
+            class="com.huawei.kunpeng.porting.action.IDEPortingAction" text="Porting Advisor"
+            description="Porting Advisor" icon="/assets/img/porting.svg"></action>
+
+        <action id="ide.kunpeng.action.porting.IDEAnalysisAction"
+            class="com.huawei.kunpeng.porting.action.IDEAnalysisAction" text="Analysis Advisor"
+            description="Analysis Advisor" icon="/assets/img/analysis.svg"></action>
+
+        <action id="ide.kunpeng.action.porting.IDEMigrationAppraiseAction"
+            class="com.huawei.kunpeng.porting.action.IDEMigrationAppraiseAction" text="Software Porting Assessment"
+            description="Software Porting Assessment" icon="/assets/img/migration_appraise.svg"></action>
+        <action id="ide.kunpeng.action.porting.IDEEnhancedAction"
+            class="com.huawei.kunpeng.porting.action.IDEEnhancedAction" text="Enhanced Functions"
+            description="Enhanced functions" icon="/assets/img/enhanced_function.svg"></action>
+
+        <action id="ide.kunpeng.action.porting.deleteAllReportsAction"
+            class="com.huawei.kunpeng.porting.action.toolwindow.DeleteAllReportsAction" text="Delete All Reports"
+            description="Delete All Reports" icon="/assets/img/delete.png"></action>
+        <action id="ide.kunpeng.action.porting.MigrationCenterAction"
+            class="com.huawei.kunpeng.porting.action.MigrationCenterAction" text="Migration Center"
+            description="Migration Center" icon="/assets/img/migration_center.svg"></action>
+        <action id="ide.kunpeng.action.login" class="com.huawei.kunpeng.porting.action.IDELoginAction" text="Log In"
+            description="Log In" icon="/assets/img/logo.png"></action>
+        <action id="ide.kunpeng.action.logout" class="com.huawei.kunpeng.porting.action.IDELogoutAction" text="Log Out"
+            description="Log Out" icon="/assets/img/logo.png"></action>
+        <action id="ide.kunpeng.action.logout.showPortingAdvisorToolWindow"
+            class="com.huawei.kunpeng.porting.action.toolwindow.ShowPortingAdvisorToolWindowAction"
+            text="Porting Advisor" icon="/assets/img/logo.png" />
+        <!--鲲鹏主菜单组-->
+        <group id="ide.kunpeng" text="Kunpeng Devkit" description="IDE main menu" popup="true">
+            <reference id="ide.kunpeng.action.logout.showPortingAdvisorToolWindow" />
+        </group>
+    </actions>
+</idea-plugin>

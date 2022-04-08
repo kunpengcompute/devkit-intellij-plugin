@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="10px" height="10px" viewBox="0 0 10 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>服务器</title>
+    <g id="切图" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="画板" transform="translate(-137.000000, -9.000000)" fill="#BBBBBB" fill-rule="nonzero">
+            <g id="服务器" transform="translate(137.000000, 9.000000)">
+                <path d="M0,0 L0,3 L10,3 L10,0 L0,0 Z M3,2 L1,2 L1,1 L3,1 L3,2 Z M0,6.5 L10,6.5 L10,3.5 L0,3.5 L0,6.5 Z M1,4.5 L3,4.5 L3,5.5 L1,5.5 L1,4.5 Z M0,10 L10,10 L10,7 L0,7 L0,10 Z M1,8 L3,8 L3,9 L1,9 L1,8 Z" id="形状"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,60 @@
+buildscript {
+    repositories {
+        maven {
+            // 内网maven库地址，下载依赖的第三方库
+            url 'http://cmc.centralrepo.rnd.huawei.com/maven/'
+            allowInsecureProtocol true
+        }
+    }
+    dependencies {
+        classpath 'org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.6.1'
+    }
+}
+
+allprojects {
+    group 'com.huawei.kunpeng'
+    version '1.0.0'
+    apply plugin: 'java' // 依赖的gradle java插件
+    sourceCompatibility = javaVersion // 指定编译.java文件的jdk版本
+    targetCompatibility = javaVersion // 确保class文件与targetCompatibility指定版本，或者更新的java虚拟机兼容
+    compileJava.options.encoding = 'UTF-8' // 以UTF-8编码编译.java文件
+    repositories {
+        mavenLocal()
+        maven {
+            url 'http://cmc.centralrepo.rnd.huawei.com/maven/'
+            allowInsecureProtocol true
+        }
+    }
+
+    configurations {
+        compileClasspath {
+            resolutionStrategy.activateDependencyLocking()
+        }
+        runtimeClasspath {
+            resolutionStrategy.activateDependencyLocking()
+        }
+        annotationProcessor {
+            resolutionStrategy.activateDependencyLocking()
+        }
+    }
+
+    dependencies {
+        compileOnly "org.projectlombok:lombok:1.18.12"
+        annotationProcessor "org.projectlombok:lombok:1.18.12"
+        implementation 'com.alibaba:fastjson:1.2.75'
+        implementation 'com.jcraft:jsch:0.1.55'
+        implementation group: 'org.apache.poi', name: 'poi', version: '5.0.0'
+        implementation group: "org.slf4j", name: "slf4j-api", version: "1.7.30"
+        implementation group: "ch.qos.logback", name: "logback-classic", version: "1.2.9"
+        implementation group: "ch.qos.logback", name: "logback-core", version: "1.2.9"
+        implementation group: 'com.melloware', name: 'jasypt', version: "1.9.3"
+        implementation group: 'org.apache.commons', name: 'commons-csv', version: "1.8"
+        testImplementation "junit:junit:4.13.1"
+    }
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = 11
+        targetCompatibility = 11
+        options.compilerArgs << '-Xlint:all'
+    }
+}

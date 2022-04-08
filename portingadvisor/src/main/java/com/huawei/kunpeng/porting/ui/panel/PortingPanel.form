@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.huawei.kunpeng.porting.ui.panel.PortingPanel">
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="13" column-count="8" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="233" y="48" width="757" height="524"/>
+    </constraints>
+    <properties>
+      <autoscrolls value="true"/>
+      <maximumSize width="660" height="310"/>
+      <minimumSize width="660" height="310"/>
+      <preferredSize width="702" height="310"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <component id="1dbf6" class="javax.swing.JCheckBox" binding="cCheckBox">
+        <constraints>
+          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="C/C++/ASM"/>
+        </properties>
+      </component>
+      <component id="3a59d" class="javax.swing.JComboBox" binding="cComboBox">
+        <constraints>
+          <grid row="5" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="81304" class="javax.swing.JComboBox" binding="buildToolComboBox">
+        <constraints>
+          <grid row="6" column="3" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <clientProperties>
+          <html.disable class="java.lang.Boolean" value="false"/>
+        </clientProperties>
+      </component>
+      <component id="eb069" class="javax.swing.JLabel" binding="buildToolLabel">
+        <constraints>
+          <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="构建工具"/>
+        </properties>
+      </component>
+      <component id="5c7ae" class="javax.swing.JLabel" binding="buildComLabel">
+        <constraints>
+          <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <icon value="assets/img/settings/redstar.png"/>
+          <text value="编译命令"/>
+        </properties>
+      </component>
+      <component id="48a45" class="javax.swing.JLabel" binding="codeText">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Source Code File Path"/>
+        </properties>
+      </component>
+      <component id="c4075" class="javax.swing.JLabel" binding="codeDir">
+        <constraints>
+          <grid row="0" column="3" row-span="1" col-span="5" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <preferredSize width="215" height="30"/>
+          <text value="/opt/portadv/portadmin/sourcecode"/>
+        </properties>
+      </component>
+      <component id="88c8a" class="javax.swing.JTextField" binding="buildTextField">
+        <constraints>
+          <grid row="7" column="3" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="make"/>
+        </properties>
+      </component>
+      <component id="ad176" class="javax.swing.JLabel" binding="builderVersionLabel">
+        <constraints>
+          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="编译器版本"/>
+        </properties>
+      </component>
+      <component id="fe481" class="javax.swing.JEditorPane" binding="portingTipPane">
+        <constraints>
+          <grid row="2" column="3" row-span="1" col-span="4" vsize-policy="2" hsize-policy="6" anchor="1" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="456" height="18"/>
+          </grid>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+          <enabled value="true"/>
+          <font size="10"/>
+          <foreground color="-9474193"/>
+          <margin top="0" left="2" bottom="2" right="2"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="f49bb" class="javax.swing.JLabel" binding="systemTypeLabel">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="目标操作系统"/>
+        </properties>
+      </component>
+      <component id="48a81" class="javax.swing.JComboBox" binding="systemTypeComboBox">
+        <constraints>
+          <grid row="3" column="3" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="66f1d" class="javax.swing.JLabel" binding="systemKernelVLable">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="目标系统内核版本"/>
+        </properties>
+      </component>
+      <component id="f3e9b" class="javax.swing.JComboBox" binding="systemKernelVComboBox">
+        <constraints>
+          <grid row="4" column="3" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="4ebb7" class="javax.swing.JLabel" binding="typeLabel">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <icon value="assets/img/settings/redstar.png"/>
+          <text value="源码类型"/>
+        </properties>
+      </component>
+      <component id="e7ca6" class="javax.swing.JCheckBox" binding="fortranCheckBox">
+        <constraints>
+          <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Fortran"/>
+        </properties>
+      </component>
+      <component id="eb28c" class="javax.swing.JCheckBox" binding="goCheckBox">
+        <constraints>
+          <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Go"/>
+        </properties>
+      </component>
+      <component id="b9eba" class="javax.swing.JLabel" binding="firstBlankLabel">
+        <constraints>
+          <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <maximumSize width="88" height="30"/>
+          <minimumSize width="88" height="30"/>
+          <preferredSize width="88" height="30"/>
+          <text value="firshBlankLabel"/>
+        </properties>
+      </component>
+      <component id="94694" class="javax.swing.JLabel" binding="secondBlankLabel">
+        <constraints>
+          <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <maximumSize width="105" height="30"/>
+          <minimumSize width="105" height="30"/>
+          <preferredSize width="105" height="30"/>
+          <text value="secondBlankLabel"/>
+        </properties>
+      </component>
+      <component id="c5b43" class="javax.swing.JLabel" binding="thirdBlankLabel">
+        <constraints>
+          <grid row="10" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <maximumSize width="90" height="30"/>
+          <minimumSize width="90" height="30"/>
+          <preferredSize width="90" height="30"/>
+          <text value="thridBlankLabel"/>
+        </properties>
+      </component>
+      <component id="4b97c" class="javax.swing.JEditorPane" binding="secondBlankPane">
+        <constraints>
+          <grid row="12" column="3" row-span="1" col-span="4" vsize-policy="2" hsize-policy="6" anchor="1" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="456" height="35"/>
+          </grid>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+          <enabled value="true"/>
+          <font size="10"/>
+          <foreground color="-9474193"/>
+          <margin top="2" left="2" bottom="2" right="2"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="6e266" class="javax.swing.JEditorPane" binding="firstBlankPane">
+        <constraints>
+          <grid row="11" column="3" row-span="1" col-span="4" vsize-policy="2" hsize-policy="6" anchor="1" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="456" height="35"/>
+          </grid>
+        </constraints>
+        <properties>
+          <editable value="false"/>
+          <enabled value="true"/>
+          <font size="10"/>
+          <foreground color="-9474193"/>
+          <margin top="2" left="2" bottom="2" right="2"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="dc4f" class="javax.swing.JComboBox" binding="fortranComboBox">
+        <constraints>
+          <grid row="5" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="e2d22" class="javax.swing.JCheckBox" binding="interpretedCheckBox">
+        <constraints>
+          <grid row="1" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Interpreted"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

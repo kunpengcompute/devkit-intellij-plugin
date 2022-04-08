@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+    <!--定义日志文件的存储地址 IDEInitListener中设置临时环境变量log.path为插件安装目录-->
+    <property name="log_home" value="${log.path}/log" />
+    <property name="log_pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{200} %msg%n" />
+    <property name="charset" value="UTF-8" />
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log_info_pattern}</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+    </appender>
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log_home}/ide.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${log_home}/ide.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <maxFileSize>20MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log_pattern}</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+    </appender>
+    <!-- root日志输出级别 -->
+    <root level="info">
+        <appender-ref ref="console" />
+        <!-- 文件输出 -->
+        <appender-ref ref="file" />
+    </root>
+</configuration>
