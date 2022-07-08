@@ -16,7 +16,7 @@
 
 package com.huawei.kunpeng.intellij.ui.dialog;
 
-import com.huawei.kunpeng.intellij.common.constant.WeakPwdConstant;
+import com.huawei.kunpeng.intellij.common.constant.InstallConstant;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
@@ -87,7 +87,7 @@ public abstract class ConfigSaveConfirmDialog extends IdeaDialog {
      */
     public ConfigSaveConfirmDialog(String title, String dialogName, IDEBasePanel panel, Rectangle rectangle,
         Dimension dimension, boolean resizable) {
-        this.title = ValidateUtils.isEmptyString(title) ? WeakPwdConstant.CONFIG_SAVE_CONFIRM_TITLE : title;
+        this.title = ValidateUtils.isEmptyString(title) ? InstallConstant.CONFIG_SAVE_CONFIRM_TITLE : title;
         this.dialogName = ValidateUtils.isEmptyString(dialogName) ? "CONFIG_SAVE_CONFIRM" : dialogName;
         this.mainPanel = panel;
         // 设置弹框中按钮的名称

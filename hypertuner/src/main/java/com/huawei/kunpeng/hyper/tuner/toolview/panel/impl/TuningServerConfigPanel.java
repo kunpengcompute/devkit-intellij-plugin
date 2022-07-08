@@ -17,12 +17,11 @@
 package com.huawei.kunpeng.hyper.tuner.toolview.panel.impl;
 
 import com.huawei.kunpeng.hyper.tuner.action.serverconfig.TuningServerConfigAction;
-import com.huawei.kunpeng.hyper.tuner.common.constant.TuningWeakPwdConstant;
+import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.InstallDisclaimerDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.IDEBaseDialog;
 import com.huawei.kunpeng.intellij.ui.panel.ServerConfigPanel;
-
 import com.intellij.openapi.wm.ToolWindow;
 
 import java.awt.event.MouseAdapter;
@@ -61,11 +60,10 @@ public class TuningServerConfigPanel extends ServerConfigPanel {
                      *
                      * @param mouseEvent mouseEvent
                      */
+                    @Override
                     public void mouseClicked(MouseEvent mouseEvent) {
-                        IDEBaseDialog dialog = new InstallDisclaimerDialog(TuningWeakPwdConstant.BEFORE_INSTALL, null);
-                        if (dialog != null) {
-                            dialog.displayPanel();
-                        }
+                        IDEBaseDialog dialog = new InstallDisclaimerDialog(InstallManageConstant.BEFORE_INSTALL, null);
+                        dialog.displayPanel();
                     }
                 });
     }

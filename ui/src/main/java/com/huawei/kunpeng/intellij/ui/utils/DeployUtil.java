@@ -22,47 +22,23 @@ import com.huawei.kunpeng.intellij.common.bean.SshConfig;
 import com.huawei.kunpeng.intellij.common.enums.SftpAction;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-import com.huawei.kunpeng.intellij.common.util.FileUtil;
-import com.huawei.kunpeng.intellij.common.util.I18NServer;
-import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
-import com.huawei.kunpeng.intellij.common.util.JsonUtil;
-import com.huawei.kunpeng.intellij.common.util.Procedure;
-import com.huawei.kunpeng.intellij.common.util.ShellTerminalUtil;
-import com.huawei.kunpeng.intellij.common.util.StringUtil;
-import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
+import com.huawei.kunpeng.intellij.common.util.*;
 import com.huawei.kunpeng.intellij.ui.dialog.AccountTipsDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.FingerTipDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.InstallServerConfirmDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.InstallUpgradeWrapDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.UninstallWrapDialog;
 import com.huawei.kunpeng.intellij.ui.panel.FingerPanel;
-
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.KeyPair;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
-import com.jcraft.jsch.UserInfo;
+import com.jcraft.jsch.*;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Timer;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -297,13 +273,13 @@ public class DeployUtil extends ShellTerminalUtil {
     }
 
     private static void showErrorMessage(SshConfig config) {
-        String message = I18NServer.toLocale("plugins_porting_testConn_keyFail");
+        String message = CommonI18NServer.toLocale("plugins_porting_testConn_keyFail");
         if (ValidateUtils.isNotEmptyString(config.getPassword())) {
-            message = I18NServer.toLocale("plugins_porting_testConn_psdFail");
+            message = CommonI18NServer.toLocale("plugins_porting_testConn_psdFail");
         }
         IDENotificationUtil.notificationCommon(
                 new NotificationBean(
-                        I18NServer.toLocale("plugins_porting_testConn_title"), message, NotificationType.ERROR));
+                        CommonI18NServer.toLocale("plugins_porting_testConn_title"), message, NotificationType.ERROR));
     }
 
     /**
@@ -352,8 +328,8 @@ public class DeployUtil extends ShellTerminalUtil {
                             if (connect(config)) {
                                 IDENotificationUtil.notificationCommon(
                                         new NotificationBean(
-                                                I18NServer.toLocale("plugins_porting_testConn_title"),
-                                                I18NServer.toLocale("plugins_porting_testConn_ok"),
+                                                CommonI18NServer.toLocale("plugins_porting_testConn_title"),
+                                                CommonI18NServer.toLocale("plugins_porting_testConn_ok"),
                                                 NotificationType.INFORMATION));
                                 // 解开okAction禁用
                                 actionOperate.actionOperate(true);

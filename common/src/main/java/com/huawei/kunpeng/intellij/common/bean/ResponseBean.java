@@ -26,7 +26,7 @@ import lombok.ToString;
  * @since 1.0.0
  */
 @Data
-@ToString(of = {"status", "info", "infochinese", "message", "realStatus", "messageArgs"})
+@ToString(of = {"status", "data", "info", "infochinese", "message", "realStatus", "responseJsonStr", "token", "code", "messageArgs"})
 @EqualsAndHashCode(callSuper = false)
 public class ResponseBean extends DataBean {
     /**

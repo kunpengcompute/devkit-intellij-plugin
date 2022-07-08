@@ -1,15 +1,14 @@
 <idea-plugin require-restart="true">
     <version>2.3.3</version>
-    <!--插件的id，注意不要跟其他插件重复，这个id全局唯一，尽可能复杂些-->
+    <!--插件id-->
     <id>com.huawei.kunpeng.hyper.tuner</id>
-    <!--插件的名称-->
+    <!--插件name-->
     <name>Kunpeng Hyper Tuner</name>
-    <!--插件供应商相关信息-->
     <vendor email="kunpengcompute@huawei.com" url="https://kunpeng.huawei.com">Huawei Technologies Co., Ltd.</vendor>
 
     <idea-version since-build="202"/>
 
-    <!--描述该插件作用-->
+    <!--插件description-->
     <description><![CDATA[
       <p>Supports system profiling and Java profiling on the Kunpeng platform, performs system-level and scenario-specific performance data sampling and analysis, and provides tuning suggestions.</p>
       <ul>
@@ -162,8 +161,7 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>org.jetbrains.plugins.terminal</depends>
 
-    <!--声明对intellij标准插件的扩展，
-    Extensions/Extensions Points扩展和扩展点，前者是指引入其他插件的扩展点，后者是当前工程暴露出的扩展点。-->
+    <!--声明对intellij标准插件的扩展-->
     <extensions defaultExtensionNs="com.intellij">
         <additionalTextAttributes scheme="Default" file="/assets/colorscheme/DefaultColorSchemes.xml"/>
         <additionalTextAttributes scheme="Darcula" file="/assets/colorscheme/DarculaColorSchemes.xml"/>
@@ -176,110 +174,6 @@
         <toolWindow id="Hyper Tuner" secondary="true" icon="/assets/img/toolwindow.png" anchor="left"
                     factoryClass="com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning.HyperTunerToolWindowFactory"
                     order="last"/>
-        <!-- Porting Advisor Settings顶层节点 -->
-        <!--定义Mindstudio应用的配置信息-->
-        <applicationConfigurable
-                parentId="root"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.tuningsettings.TuningSettingsConfigProvider"
-                id="Tuning Setting"/>
-        <!-- 用户管理界面添加到setting界面 -->
-        <applicationConfigurable parentId="Tuning Setting"
-                                 provider="com.huawei.kunpeng.hyper.tuner.setting.user.UseSettingsConfProvider"
-                                 id="com.huawei.kunpeng.tuning.UseSettings"/>
-        <!-- 弱口令界面添加到setting界面 -->
-        <applicationConfigurable parentId="Tuning Setting"
-                                 provider="com.huawei.kunpeng.hyper.tuner.setting.weakpwd.WeakPwdSetConfProvider"
-                                 id="com.huawei.kunpeng.tuning.settings.weakPwdPanel"/>
-        <!-- 系统配置添加到setting界面 -->
-        <applicationConfigurable parentId="Tuning Setting"
-                                 provider="com.huawei.kunpeng.hyper.tuner.setting.sys.SysSettingsConfProvider"
-                                 id="com.huawei.kunpeng.tuning.settings.SystemSettingPanel"/>
-        <!-- 登录管理界面添加到setting界面 -->
-        <applicationConfigurable parentId="Tuning Setting"
-                                 provider="com.huawei.kunpeng.hyper.tuner.setting.login.LoginConfigProvider"
-                                 id="com.huawei.kunpeng.kunpeng.tuning.LoginSettings"/>
-        <!-- 日志管理界面添加到setting界面 -->
-        <applicationConfigurable
-                parentId="Tuning Setting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.log.LogConfigProvider"
-                id="com.huawei.kunpeng.tuning.LogSettings"/>
-        <!-- web服务证书界面添加到setting界面 -->
-        <applicationConfigurable
-                parentId="Tuning Setting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.webservercert.WebServerCertificateProvider"
-                id="com.huawei.kunpeng.tuning.webservercert"/>
-        <!-- sysperf性能管理到setting界面 -->
-        <applicationConfigurable
-                parentId="Tuning Setting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.SysperfConfigProvider"
-                id="sysperfSetting"/>
-        <!-- 节点管理界面添加到setting界面 -->
-        <applicationConfigurable
-                parentId="sysperfSetting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.nodemanager.NodeManagerConfProvider"
-                id="sysperf.nodemanager"/>
-        <!-- 预约任务-->
-        <applicationConfigurable
-                parentId="sysperfSetting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.schtask.SchTaskConfigProvider"
-                id="sysperf.schTask"/>
-        <!-- 导入导出任务-->
-        <applicationConfigurable
-                parentId="sysperfSetting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.impandexptask.ImpAndExpTaskConfigProvider"
-                id="sysperf.impAndExpTask"/>
-        <!-- 任务模板-->
-        <applicationConfigurable
-                parentId="sysperfSetting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.tasktemplete.TaskTemplateConfigProvider"
-                id="sysperf.taskTemplate"/>
-        <!-- 日志-->
-        <applicationConfigurable
-                parentId="sysperfSetting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.sysperflog.SysPrefLogConfigProvider"
-                id="sysperf.sysperfLog"/>
-        <!-- Agent服务证书界面添加到setting界面 -->
-        <applicationConfigurable
-                parentId="sysperfSetting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.sysperf.agentcert.AgentCertConfProvider"
-                id="sysperf.agentcert"/>
-
-        <!-- javaPerf-->
-        <applicationConfigurable
-                parentId="Tuning Setting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.JavaPerfConfigProvider"
-                id="javaPerfSetting"/>
-        <!-- javaPerf 目标环境管理 -->
-        <applicationConfigurable
-                parentId="javaPerfSetting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.guardianmanager.GuardianManagerConfProvider"
-                id="javaperf.guardianmanager"/>
-        <!-- javaPerf 内部通信证书-->
-        <applicationConfigurable
-                parentId="javaPerfSetting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.internalcommcert.InternalCommCertConfigProvider"
-                id="javaperf.internalCommCert"/>
-        <!--日志 添加 到 Java 性能管理-->
-        <applicationConfigurable
-                parentId="javaPerfSetting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.javaperflogs.JavaPerfLogsConfigProvider"
-                id="javaperf.javaPerfLogs"/>
-        <!--java性能分析配置 添加 到 Java 性能管理-->
-        <applicationConfigurable
-                parentId="javaPerfSetting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.javaprofilersettings.JavaSettingsConfProvider"
-                id="javaperf.javaprofilersettings"/>
-        <!-- 报告阈值界面添加到到 Java 性能管理 -->
-        <applicationConfigurable
-                parentId="javaPerfSetting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.reportthresholds.ReportThresholdConfigProvide"
-                id="javaperf.reportthresholds"/>
-        <!--工作密钥 添加 到 Java性能管理-->
-        <applicationConfigurable
-                parentId="javaPerfSetting"
-                provider="com.huawei.kunpeng.hyper.tuner.setting.javaperf.workingkey.WorkingKeyConfigProvider"
-                id="javaperf.workingkey"/>
-
     </extensions>
 
     <!--应用级别监听器，可以让应用程序从Intellij消息总线中监听消息。是整个plugin的入口。-->
@@ -303,7 +197,7 @@
 
     <actions>
         <action id="ide.kunpeng.action.tuning.config"
-                class="com.huawei.kunpeng.hyper.tuner.action.serverconfig.IDEServerConfigAction"
+                class="com.huawei.kunpeng.hyper.tuner.action.serverconfig.TuningIDEServerConfigAction"
                 text="Config Hyper tuner" description="Config Hyper tuner" icon="/assets/img/logo.png">
         </action>
         <action id="ide.kunpeng.action.tuning.install"
@@ -311,60 +205,8 @@
                 text="Install Hyper tuner" description="Install Hyper tuner">
         </action>
         <action id="ide.kunpeng.action.tuning.uninstall"
-                class="com.huawei.kunpeng.hyper.tuner.action.uninstall.IDEUninstallAction"
+                class="com.huawei.kunpeng.hyper.tuner.action.uninstall.TuningIDEUninstallAction"
                 text="Uninstall Hyper tuner" description="Uninstall Hyper tuner">
-        </action>
-        <action id="ide.kunpeng.action.tuning.login" class="com.huawei.kunpeng.hyper.tuner.action.IDELoginAction"
-                text="Log In" description="Log In" icon="/assets/img/logo.png">
-        </action>
-        <action id="ide.kunpeng.action.tuning.logout" class="com.huawei.kunpeng.hyper.tuner.action.IDELogoutAction"
-                text="Log Out" description="Log Out" icon="/assets/img/logo.png">
-        </action>
-        <action id="ide.kunpeng.action.tuning.logout.showTuningAdvisorToolWindow"
-                class="com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning.ShowTuningAdvisorToolWindowAction"
-                text="Porting Advisor" icon="/assets/img/logo.png"/>
-        <action id="sysperf.createProject" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
-                text="createProject" description="Enhanced functions" icon="/assets/img/sysperf/createProject.svg">
-        </action>
-        <action id="sysperf.createTask" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
-                text="createTask" description="Enhanced functions" icon="/assets/img/sysperf/createTask.svg">
-        </action>
-        <action id="sysperf.node" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
-                text="node" description="Enhanced functions" icon="/assets/img/sysperf/node.svg">
-        </action>
-        <action id="sysperf.scheduledTask" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
-                text="scheduledTask" description="Enhanced functions" icon="/assets/img/sysperf/scheduledTasks.svg">
-        </action>
-        <action id="sysperf.taskTemplate" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
-                text="taskTemplate" description="Enhanced functions" icon="/assets/img/sysperf/taskTemplate.svg">
-        </action>
-        <action id="sysperf.export" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
-                text="export" description="Enhanced functions" icon="/assets/img/sysperf/export.svg"/>
-        <action id="sysperf.import" class="com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction"
-                text="import" description="Enhanced functions" icon="/assets/img/sysperf/import.svg"/>
-        <action id="sysperf.nodeUpdate" class="com.huawei.kunpeng.hyper.tuner.action.sysperf.NodeUpdateAnAction"
-                text="nodeUpdates" description="Enhanced functions" icon="/assets/img/settings/refresh.svg">
-        </action>
-        <!-- javaPerf toolWindows 工具栏-->
-        <action id="javaperf.environment" class="com.huawei.kunpeng.hyper.tuner.action.JavaPerfTreeAction"
-                text="environment" description="Enhanced functions"
-                icon="/assets/img/javaperf/toolbar/target_environment_add@1x.svg">
-        </action>
-        <action id="javaperf.environmentmanage" class="com.huawei.kunpeng.hyper.tuner.action.JavaPerfTreeAction"
-                text="environmentmanage" description="Enhanced functions"
-                icon="/assets/img/javaperf/toolbar/target_environment_management@1x.svg">
-        </action>
-        <action id="javaperf.sampling" class="com.huawei.kunpeng.hyper.tuner.action.JavaPerfTreeAction"
-                text="sampling" description="Enhanced functions"
-                icon="/assets/img/javaperf/toolbar/analysis_record_management@1x.svg">
-        </action>
-        <action id="javaperf.export" class="com.huawei.kunpeng.hyper.tuner.action.JavaPerfTreeAction"
-                text="export" description="Enhanced functions" icon="/assets/img/javaperf/toolbar/export@1x.svg"/>
-        <action id="javaperf.import" class="com.huawei.kunpeng.hyper.tuner.action.JavaPerfTreeAction"
-                text="import" description="Enhanced functions" icon="/assets/img/javaperf/toolbar/import@1x.svg"/>
-        <action id="javaperf.guardianUpdate"
-                class="com.huawei.kunpeng.hyper.tuner.action.javaperf.GuardianUpdateAnAction"
-                text="guardianUpdates" description="Enhanced functions" icon="/assets/img/settings/refresh.svg">
         </action>
     </actions>
 </idea-plugin>

@@ -6,7 +6,7 @@
     <property name="charset" value="UTF-8" />
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>${log_info_pattern}</pattern>
+            <pattern>${log_pattern}</pattern>
             <charset>${charset}</charset>
         </encoder>
     </appender>

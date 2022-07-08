@@ -16,31 +16,15 @@
 
 package com.huawei.kunpeng.intellij.ui.utils;
 
-import com.huawei.kunpeng.intellij.common.action.ActionOperate;
-import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
-import com.huawei.kunpeng.intellij.common.bean.ResponseBean;
-import com.huawei.kunpeng.intellij.common.enums.RespondStatus;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-import com.huawei.kunpeng.intellij.common.util.FileUtil;
-import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.panel.LeftTreeLoadingPanel;
-
-import com.intellij.ide.actions.RevealFileAction;
-import com.intellij.openapi.fileChooser.FileChooserFactory;
-import com.intellij.openapi.fileChooser.FileSaverDescriptor;
-import com.intellij.openapi.fileChooser.FileSaverDialog;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFileWrapper;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 
 import java.util.HashMap;
-
-import javax.swing.JOptionPane;
 
 /**
  * 弹框工具类
@@ -48,66 +32,6 @@ import javax.swing.JOptionPane;
  * @since 1.0.0
  */
 public class UIUtils {
-    /**
-     * responseMessage
-     *
-     * @param responseStatus 响应状态
-     * @param parentPanel 父面板
-     * @param responseInfo 响应信息
-     */
-    public static void responseMessage(String responseStatus, IDEBasePanel parentPanel, ResponseBean responseInfo) {
-        switch (RespondStatus.getStatusByValue(responseStatus)) {
-            case PROCESS_STATUS_NORMAL:
-                JOptionPane.showMessageDialog(parentPanel, CommonUtil.getRspTipInfo(responseInfo), "SUCCESS",
-                    JOptionPane.INFORMATION_MESSAGE);
-                break;
-            case PROCESS_STATUS_NOT_NORMAL:
-                JOptionPane.showMessageDialog(parentPanel, CommonUtil.getRspTipInfo(responseInfo), "WARN",
-                    JOptionPane.WARNING_MESSAGE);
-                break;
-            default:
-                JOptionPane.showMessageDialog(parentPanel, CommonUtil.getRspTipInfo(responseInfo), "FAIL",
-                    JOptionPane.ERROR_MESSAGE);
-                break;
-        }
-    }
-
-    /**
-     * 弹出保存文本文件选择框并保存文件给出提示通知
-     *
-     * @param content 保存的内容
-     * @param fileName 默认文件名
-     * @param notification 通知信息
-     */
-    public static void saveTXTFileToLocalForDialog(String content, String fileName, NotificationBean notification) {
-        Logger.info("saveFileToLocalForDialog start.");
-        // 弹出弹框
-        FileSaverDialog dialog = FileChooserFactory.getInstance()
-            .createSaveFileDialog(new FileSaverDescriptor("Save File", "Select local file"),
-                CommonUtil.getDefaultProject());
-        VirtualFileWrapper fileWrapper = dialog.save(
-                LocalFileSystem.getInstance().findFileByPath(CommonUtil.getDefaultProject().getBasePath()), fileName);
-        if (fileWrapper == null) {
-            return;
-        }
-        // 写文件到本地
-        FileUtil.writeFile(content, fileWrapper.getFile().getPath(), fileWrapper.getFile());
-        // 修改文件权限
-        FileUtil.changeFoldersPermission600(fileWrapper.getFile());
-        // 弹出通知信息
-        if (notification == null) {
-            return;
-        }
-        notification.setContent(notification.getContent().replace(fileName, fileWrapper.getFile().getPath()));
-        IDENotificationUtil.notificationForHyperlink(notification, new ActionOperate() {
-            @Override
-            public void actionOperate(Object data) {
-                RevealFileAction.openFile(fileWrapper.getFile());
-            }
-        });
-        Logger.info("downloadReport successful:{}", fileName);
-    }
-
     /**
      * toolWindow面板更换
      *

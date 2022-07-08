@@ -16,34 +16,45 @@
 
 package com.huawei.kunpeng.hyper.tuner.listener;
 
-import com.huawei.kunpeng.hyper.tuner.common.constant.javaperf.JavaProviderSettingConstant;
-import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.sourceporting.JavaPerfToolWindowPanel;
-import com.huawei.kunpeng.intellij.common.UserInfoContext;
+import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
+import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
+import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
+import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
+import com.huawei.kunpeng.intellij.common.log.Logger;
+import com.huawei.kunpeng.intellij.common.util.CommonUtil;
+import com.huawei.kunpeng.intellij.common.util.ConfigUtils;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
-
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.vfs.VirtualFile;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 
 /**
  * 监听编辑器中文件关闭之前的事件状态
  *
- * @date 2021/8/4 16:08
- * @since 2021/8/4
+ * @since 2021-08-04
  */
 public class IDEFileEditorManagerListener implements FileEditorManagerListener.Before {
+    // 关闭HyperTuner页面时关闭nginx服务
     @Override
     public void beforeFileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-        if (file.getName().endsWith("_pro.kpht") || file.getName().contains("-profiling")) {
-            JavaPerfToolWindowPanel.refreshProfilingNode(file.getName(), false);
-            if (UserInfoContext.getInstance().getUserName() != null) {
-                IDENotificationUtil.notificationCommon(new NotificationBean("",
-                        JavaProviderSettingConstant.PROFILING_LIMIT, NotificationType.WARNING));
+        if (file.getName().contains("HyperTuner")) {
+            String pluginPath = CommonUtil.getPluginInstalledPath() + NginxUtil.STOP_NGINX_BAT;
+            File stopNginxBatFile = new File(pluginPath);
+            if (stopNginxBatFile.exists()) {
+                NginxUtil.startStopVbs();
+            } else {
+                Logger.info("file does not exist");
             }
+            TuningCommonUtil.refreshServerConfigPanel();
+            IDENotificationUtil.notificationCommon(new NotificationBean("",
+                    TuningI18NServer.toLocale("plugins_hyper_tuner_config_closure"), NotificationType.WARNING));
+            // 清空本地 ip 缓存
+            ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "","", "");
         }
     }
 }

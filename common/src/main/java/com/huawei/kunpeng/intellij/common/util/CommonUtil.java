@@ -25,7 +25,6 @@ import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.enums.Language;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.TaskInfo;
@@ -38,8 +37,7 @@ import com.intellij.openapi.wm.ex.StatusBarEx;
 import com.intellij.openapi.wm.impl.ProjectFrameHelper;
 import com.intellij.openapi.wm.impl.WindowManagerImpl;
 
-import java.awt.Desktop;
-import java.awt.Window;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,7 +84,7 @@ public class CommonUtil {
     }
 
     /**
-     *  getCurUserCryptRootPath
+     * getCurUserCryptRootPath
      *
      * @return String
      */
@@ -312,10 +310,10 @@ public class CommonUtil {
         StringBuilder stringBuilder = new StringBuilder("");
         for (int i = 0; i < bytes.length; i++) {
             // 转成16进制数
-            int v = bytes[i] & 0xFF;
+            int xff = bytes[i] & 0xFF;
 
             // 16进制数转换成字符
-            hv = Integer.toHexString(v);
+            hv = Integer.toHexString(xff);
             if (hv.length() == 1) {
                 hv = "0" + hv;
             }
@@ -436,7 +434,7 @@ public class CommonUtil {
     /**
      * 设置Window-BackGround Tasks-Show是否选中
      *
-     * @param isOpen   true表示选中，show processes弹框; false表示取消选中，hide processes弹框。
+     * @param isOpen true表示选中，show processes弹框; false表示取消选中，hide processes弹框。
      * @param window 发起任务的window
      */
     public static void setBackGroundProcessWindowOpen(boolean isOpen, Window window) {
@@ -469,7 +467,7 @@ public class CommonUtil {
         if (list == null) {
             return count;
         }
-        for (Pair<TaskInfo, ProgressIndicator> pair :list) {
+        for (Pair<TaskInfo, ProgressIndicator> pair : list) {
             TaskInfo taskInfo = pair.getFirst();
             if (taskInfo == null) {
                 continue;

@@ -18,24 +18,18 @@ package com.huawei.kunpeng.intellij.common.task;
 
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-
-import com.intellij.openapi.progress.PerformInBackgroundOption;
-import com.intellij.openapi.progress.ProcessCanceledException;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.DumbModeTask;
 import com.intellij.openapi.project.DumbServiceImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
-
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.Window;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.swing.JComponent;
+import java.util.Map;
 
 /**
  * IDE插件任务进度条基类
@@ -51,7 +45,7 @@ public abstract class IDEBaseTask {
     /**
      * 当前正在进行中的任务
      */
-    private static HashMap<String, ArrayList<String>> taskInfo = new HashMap<>();
+    private static final HashMap<String, ArrayList<String>> TASK_INFO = new HashMap<>();
 
     /**
      * 任务是否成功，退出登录或其他处登录导致未登录，在运行的任务isTaskSuccess=false
@@ -94,11 +88,10 @@ public abstract class IDEBaseTask {
                 try {
                     // 执任务
                     task.runTask(indicator);
-                    Logger.info("running");
+                    Logger.info("task is running");
                 } catch (ProcessCanceledException exception) {
                     // 任务非正常退出
                     task.cancel(indicator);
-                    return;
                 }
             }
         });
@@ -167,7 +160,7 @@ public abstract class IDEBaseTask {
                 try {
                     // 执任务
                     task.runTask(progressIndicator);
-                    Logger.info("running");
+                    Logger.info("task is running");
                 } catch (ProcessCanceledException exception) {
                     // 任务非正常退出
                     CommonUtil.setBackGroundProcessWindowOpen(false, window);
@@ -208,8 +201,8 @@ public abstract class IDEBaseTask {
      *
      * @return key userName, value 任务信息
      */
-    public static HashMap<String, ArrayList<String>> getTaskInfo() {
-        return taskInfo;
+    public static Map<String, ArrayList<String>> getTaskInfo() {
+        return TASK_INFO;
     }
 
     /**

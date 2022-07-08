@@ -17,14 +17,11 @@
 package com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl;
 
 import com.huawei.kunpeng.hyper.tuner.action.serverconfig.TuningServerConfigAction;
-import com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning.LeftTreeUtil;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.util.ConfigUtils;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.CertConfirmWrapDialog;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
-
-import com.intellij.openapi.application.ApplicationManager;
 
 /**
  * Intellij 类型弹框
@@ -32,7 +29,7 @@ import com.intellij.openapi.application.ApplicationManager;
  * @since 2020-09-25
  */
 public class TuningCertConfirmWrapDialog extends CertConfirmWrapDialog {
-    private String toolName;
+    private final String toolName;
 
     /**
      * 带位置信息的构造函数
@@ -52,7 +49,6 @@ public class TuningCertConfirmWrapDialog extends CertConfirmWrapDialog {
     protected void onOKAction() {
         // 提示语添加登录跳转
         TuningServerConfigAction.instance.showNotification();
-        ApplicationManager.getApplication().invokeLater(LeftTreeUtil::refresh2LoginPanel);
     }
 
     /**
@@ -63,8 +59,6 @@ public class TuningCertConfirmWrapDialog extends CertConfirmWrapDialog {
         // 将plugin设置为初始状态
         IDEContext.setIDEPluginStatus(toolName, IDEPluginStatus.IDE_STATUS_INIT);
         // 清空本地 ip 缓存
-        ConfigUtils.fillIp2JsonFile(toolName, "", "", "");
-        // 左侧树面板刷新到配置服务器面板
-        ApplicationManager.getApplication().invokeLater(LeftTreeUtil::refresh2ConfigPanel);
+        ConfigUtils.fillIp2JsonFile(toolName, "", "", "","");
     }
 }

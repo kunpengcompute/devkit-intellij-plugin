@@ -1,3 +1,25 @@
+# 项目分支说明
+## main
+    稳定版本，目前与 r_release_2.3.0 分支大体保持一致。
+## br_release_origin
+    与Github初始开源版本保持一致。
+## br_release_2.3.0
+    派生自 br_release_origin ，删除与服务器配置，安装，部署，卸载无关的内容。为打通插件开发流程的临时版本。
+
+    使用方案为：
+    1、使用index.html中嵌套iframe，iframe访问本地端口，nginx监听本地端口，将请求转发到远端服务器。
+    2、java 性能分析模块 websocket 连接需要web端修改，插件端配合进行修改。
+    3、左侧树操作逻辑为 Java Swing 原生弹窗。
+
+## br_release_2.5.0
+    派生自 br_release_2.3.0 ，在该分支基础上将 vscode 插件中安装卸载升级的功能集成到本插件中，
+    保证IDE端VSCode与Intellij整体交互保持一致。
+
+    使用方案为：
+    1、将vscode 插件安装卸载升级的页面功能打包为 tuning.zip，使用 br_release_origin 分支的技术，使用webview方式打开。
+    2、代理页面的功能另外由 html页面进行执行。
+
+
 # KunpengIntellIJPlugin
 
 The Kunpeng DevKit contains Porting Advisor, Hyper Tuner, and other tools. The IntelliJ plugin, functioning as the client of Porting Advisor and Hyper Tuner, works with the server to help developers accelerate application porting and computing power upgrade.

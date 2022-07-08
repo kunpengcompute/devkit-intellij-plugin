@@ -16,6 +16,9 @@
 
 package com.huawei.kunpeng.intellij.js2java.webview.pagewebview;
 
+import com.esotericsoftware.minlog.Log;
+import com.google.common.base.Splitter;
+import com.google.gson.Gson;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.bean.ResponseBean;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
@@ -24,26 +27,16 @@ import com.huawei.kunpeng.intellij.common.enums.Language;
 import com.huawei.kunpeng.intellij.common.exception.IDEException;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-import com.huawei.kunpeng.intellij.common.util.FileUtil;
-import com.huawei.kunpeng.intellij.common.util.I18NServer;
-import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
-import com.huawei.kunpeng.intellij.common.util.JsonUtil;
-import com.huawei.kunpeng.intellij.common.util.StringUtil;
+import com.huawei.kunpeng.intellij.common.util.*;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
 import com.huawei.kunpeng.intellij.js2java.bean.NavigatorPageBean;
 import com.huawei.kunpeng.intellij.js2java.util.JcefDevToolsUtil;
 import com.huawei.kunpeng.intellij.js2java.webview.HandlerAction;
-
-import com.esotericsoftware.minlog.Log;
-import com.google.common.base.Splitter;
-import com.google.gson.Gson;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfoRt;
 import com.intellij.ui.jcef.JBCefApp;
 import com.intellij.ui.jcef.JBCefClient;
-
 import org.cef.OS;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
@@ -52,20 +45,15 @@ import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefFocusHandlerAdapter;
 import org.cef.handler.CefMessageRouterHandler;
 
-import java.awt.BorderLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 /**
  * 自定义webview
@@ -154,21 +142,21 @@ public abstract class AbstractWebView {
         router.addHandler(new CefMessageRouterHandler() {
             @Override
             public boolean onQuery(CefBrowser browser, CefFrame cefFrame, long requestNo, String queryName,
-                boolean persistent, CefQueryCallback cefQueryCallback) {
+                                   boolean persistent, CefQueryCallback cefQueryCallback) {
                 handlerAction.handlerAction(queryName);
                 return true;
             }
 
             @Override
-            public void onQueryCanceled(CefBrowser cefBrowser, CefFrame cefFrame, long l) {
+            public void onQueryCanceled(CefBrowser cefBrowser, CefFrame cefFrame, long longVar) {
             }
 
             @Override
-            public void setNativeRef(String s, long l) {
+            public void setNativeRef(String str, long longVar) {
             }
 
             @Override
-            public long getNativeRef(String s) {
+            public long getNativeRef(String str) {
                 return 0;
             }
         }, true);
@@ -261,7 +249,7 @@ public abstract class AbstractWebView {
                 message = "light";
             }
             // 给页面发送消息
-            cefBrowser.executeJavaScript("window.switchTheme('" + message + "')", null, 0);
+            cefBrowser.executeJavaScript("switchTheme('" + message + "')", null, 0);
         };
         // 给webview的component注册监听
         cefBrowser.getUIComponent().addPropertyChangeListener("background", propertyChangeListener);

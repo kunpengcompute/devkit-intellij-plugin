@@ -16,48 +16,29 @@
 
 package com.huawei.kunpeng.intellij.ui.panel;
 
-import static com.huawei.kunpeng.intellij.common.constant.CSSConstant.ICON_INFO_ICON;
-
 import com.huawei.kunpeng.intellij.common.constant.CSSConstant;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
-import com.huawei.kunpeng.intellij.common.constant.WeakPwdConstant;
+import com.huawei.kunpeng.intellij.common.constant.InstallConstant;
 import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
-import com.huawei.kunpeng.intellij.common.util.CheckedUtils;
-import com.huawei.kunpeng.intellij.common.util.FileUtil;
-import com.huawei.kunpeng.intellij.common.util.JsonUtil;
-import com.huawei.kunpeng.intellij.common.util.StringUtil;
-import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
+import com.huawei.kunpeng.intellij.common.util.*;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
 import com.huawei.kunpeng.intellij.ui.action.ServerConfigAction;
 import com.huawei.kunpeng.intellij.ui.enums.Panels;
-
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.wm.ToolWindow;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import static com.huawei.kunpeng.intellij.common.constant.CSSConstant.ICON_INFO_ICON;
 
 /**
  * 服务器配置面板
@@ -238,7 +219,7 @@ public abstract class ServerConfigPanel extends IDEBasePanel {
         ipLabel.setText(CommonI18NServer.toLocale("common_config_address"));
         portLabel.setText(CommonI18NServer.toLocale("common_config_port"));
         // 在descriptionLabel2组件中追加超链接
-        descriptionLabel2.setText(WeakPwdConstant.CLICK_DEPLOY);
+        descriptionLabel2.setText(InstallConstant.CLICK_DEPLOY);
         descriptionLabel2.setForeground(CSSConstant.RESET_DELETE_LABEL_COLOR);
         descriptionLabel2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         String hintText = getDefaultServerPort();
@@ -266,7 +247,7 @@ public abstract class ServerConfigPanel extends IDEBasePanel {
     private void addPortFieldListener(String hintText) {
         portField.addFocusListener(new FocusListener() {
             @Override
-            public void focusGained(FocusEvent e) {
+            public void focusGained(FocusEvent event) {
                 String temp = portField.getText();
                 if (temp.equals(hintText)) {
                     portField.setText("");
@@ -275,7 +256,7 @@ public abstract class ServerConfigPanel extends IDEBasePanel {
             }
 
             @Override
-            public void focusLost(FocusEvent e) {
+            public void focusLost(FocusEvent event) {
                 if (portField == null) {
                     return;
                 }
@@ -313,7 +294,7 @@ public abstract class ServerConfigPanel extends IDEBasePanel {
                 Map configDef = (Map) portConfig.get(0);
                 String ip = JsonUtil.getValueIgnoreCaseFromMap(configDef, "ip", String.class);
                 String port = JsonUtil.getValueIgnoreCaseFromMap(configDef, "port", String.class);
-                ipField.setText(ip);
+                ipField.setText("");
                 portField.setText(port);
             }
         }
@@ -362,6 +343,14 @@ public abstract class ServerConfigPanel extends IDEBasePanel {
         params.put("noCertFlag", noneCertRadioButton.isSelected() ? "true" : "false");
         params.put("useCertFlag", useCertRadioButton.isSelected() ? "true" : "false");
         params.put("certFile", certFileField.getText());
+        Random random = new Random();
+        random.setSeed(10000L);
+        int randomPort = random.nextInt(10240) + 45295;
+        // 随机寻找一个未被占用的端口
+        while (IDENetUtils.isLocalePortUsing(randomPort)) {
+            randomPort = random.nextInt(10240) + 45295;
+        }
+        params.put("localPort", randomPort + "");
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("param", params);
 
@@ -382,7 +371,7 @@ public abstract class ServerConfigPanel extends IDEBasePanel {
         }
 
         // 端口校验处理
-        if (!CheckedUtils.checkPort(portField.getText())) {
+        if (!CheckedUtils.checkConfigPort(portField.getText())) {
             result.add(new ValidationInfo(CommonI18NServer.toLocale("common_message_portError"), portField));
         }
 

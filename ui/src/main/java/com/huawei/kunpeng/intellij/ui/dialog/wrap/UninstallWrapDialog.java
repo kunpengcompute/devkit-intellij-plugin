@@ -19,7 +19,6 @@ package com.huawei.kunpeng.intellij.ui.dialog.wrap;
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
-import com.huawei.kunpeng.intellij.common.util.I18NServer;
 import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
 import com.huawei.kunpeng.intellij.ui.action.SshAction;
@@ -28,23 +27,18 @@ import com.huawei.kunpeng.intellij.ui.enums.Dialogs;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.panel.LeftTreeLoadingPanel;
 import com.huawei.kunpeng.intellij.ui.panel.UninstallPanel;
-
 import com.intellij.openapi.ui.DialogEarthquakeShaker;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.util.ui.UIUtil;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Rectangle;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 
 /**
  * 安装弹框
@@ -62,7 +56,7 @@ public abstract class UninstallWrapDialog extends IdeaDialog implements ActionOp
      */
     public static JLabel gifLabel;
 
-    private static final String HELP_URL = I18NServer.toLocale("plugins_ui_common_uninstall_help_url");
+    private static final String HELP_URL = CommonI18NServer.toLocale("plugins_ui_common_uninstall_help_url");
 
     /**
      * 将要卸载的服务器ip
@@ -100,7 +94,7 @@ public abstract class UninstallWrapDialog extends IdeaDialog implements ActionOp
                 CommonI18NServer.toLocale("plugins_common_button_cancel"),
                 CommonI18NServer.toLocale("plugins_common_button_connect"));
         // 设置帮助
-        setHelp(I18NServer.toLocale("plugins_ui_common_uninstall_help"), HELP_URL);
+        setHelp(CommonI18NServer.toLocale("plugins_ui_common_uninstall_help"), HELP_URL);
         // 初始化弹框内容
         initDialog();
     }
@@ -177,7 +171,7 @@ public abstract class UninstallWrapDialog extends IdeaDialog implements ActionOp
             this.check.setText(CommonI18NServer.toLocale("plugins_common_button_connect"));
             this.check.addMouseListener(new MouseAdapter() {
                 @Override
-                public void mouseClicked(MouseEvent e) {
+                public void mouseClicked(MouseEvent event) {
                     doCheckClickAction(uninstallPanel);
                 }
             });

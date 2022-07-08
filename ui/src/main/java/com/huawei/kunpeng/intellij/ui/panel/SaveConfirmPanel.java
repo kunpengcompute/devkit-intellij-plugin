@@ -16,18 +16,13 @@
 
 package com.huawei.kunpeng.intellij.ui.panel;
 
-import com.huawei.kunpeng.intellij.common.constant.WeakPwdConstant;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
-
 import com.intellij.openapi.wm.ToolWindow;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.util.Map;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 /**
  * 保存配置面板
@@ -51,7 +46,7 @@ public class SaveConfirmPanel extends IDEBasePanel {
      */
     public SaveConfirmPanel(ToolWindow toolWindow, String panelName, String displayName, Map params) {
         setToolWindow(toolWindow);
-        this.panelName =  WeakPwdConstant.CONFIG_SAVE_CONFIRM_TITLE ;
+        this.panelName =   CommonI18NServer.toLocale("common_config_title");
         this.params = params;
         // 初始化面板
         initPanel(mainPanel);
@@ -91,7 +86,7 @@ public class SaveConfirmPanel extends IDEBasePanel {
     protected void initPanel(JPanel panel) {
         setLayout(new BorderLayout());
         add(panel, BorderLayout.CENTER);
-        info.setText(CommonI18NServer.toLocale("common_config_saveConfirm"));
+        info.setText(CommonI18NServer.toLocale("common_config_saveConfirm_again"));
         panel.setPreferredSize(new Dimension(570, 60));
     }
 

@@ -29,11 +29,6 @@ import java.net.HttpURLConnection;
  */
 public class PostRequest implements MethodRequest {
     /**
-     * 缓冲大小
-     */
-    private static final int BUFFER_SIZE = 1024 * 1024;
-
-    /**
      * 设置请求参数
      *
      * @param conn    连接

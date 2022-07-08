@@ -18,7 +18,7 @@ package com.huawei.kunpeng.intellij.ui.dialog;
 
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.SshConfig;
-import com.huawei.kunpeng.intellij.common.constant.WeakPwdConstant;
+import com.huawei.kunpeng.intellij.common.constant.InstallConstant;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
@@ -70,7 +70,7 @@ public class FingerTipDialog extends IdeaDialog {
      */
     public FingerTipDialog(String title, String dialogName, IDEBasePanel panel, Rectangle rectangle,
         Dimension dimension, boolean resizable) {
-        this.title = ValidateUtils.isEmptyString(title) ? WeakPwdConstant.FINGER_CONFIRM_TITLE : title;
+        this.title = ValidateUtils.isEmptyString(title) ? InstallConstant.FINGER_CONFIRM_TITLE : title;
         this.dialogName = ValidateUtils.isEmptyString(dialogName) ? Dialogs.FINGER_TIP.dialogName() : dialogName;
         this.mainPanel = panel;
         // 设置弹框中按钮的名称

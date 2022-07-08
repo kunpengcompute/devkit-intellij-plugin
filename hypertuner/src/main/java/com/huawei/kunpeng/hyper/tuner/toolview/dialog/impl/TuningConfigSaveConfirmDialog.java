@@ -16,18 +16,17 @@
 
 package com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl;
 
-import com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction;
-import com.huawei.kunpeng.hyper.tuner.action.serverconfig.TuningServerConfigAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
-import com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning.LeftTreeUtil;
+import com.huawei.kunpeng.hyper.tuner.common.constant.TuningUserManageConstant;
+import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
+import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningServerConfigWrapDialog;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
+import com.huawei.kunpeng.intellij.js2java.provider.AbstractWebFileProvider;
 import com.huawei.kunpeng.intellij.ui.dialog.ConfigSaveConfirmDialog;
+import com.huawei.kunpeng.intellij.ui.dialog.IDEBaseDialog;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.utils.UIUtils;
-
-import com.intellij.ide.impl.ProjectUtil;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.project.Project;
 
 import java.util.Map;
 
@@ -43,19 +42,17 @@ public class TuningConfigSaveConfirmDialog extends ConfigSaveConfirmDialog {
 
     @Override
     protected void customizeOKAction(Map<String, String> params) {
-        // 关闭打开的历史报告页面
-        Project[] openProjects = ProjectUtil.getOpenProjects();
-        for (Project openProject : openProjects) {
-            LeftTreeAction.instance().closeAllOpenedWebViewPage(openProject);
-        }
         // 左侧树面板加载loading，loadingText为系统默认
         UIUtils.changeToolWindowToLoadingPanel(
                 CommonUtil.getDefaultProject(), null, TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
-        ApplicationManager.getApplication().executeOnPooledThread(() -> {
-            if (!TuningServerConfigAction.instance.save(params)) {
-                // 左侧树面板刷新到配置服务器面板
-                ApplicationManager.getApplication().invokeLater(LeftTreeUtil::refresh2ConfigPanel);
-            }
-        });
+        TuningCommonUtil.refreshServerConfigPanel();
+        mouseClickedDisplayPanel();
+    }
+
+    private void mouseClickedDisplayPanel() {
+        IDEBasePanel panel = new TuningServerConfigPanel(null);
+        IDEBaseDialog dialog = new TuningServerConfigWrapDialog(TuningUserManageConstant.CONFIG_TITLE, panel);
+        AbstractWebFileProvider.closeAllWebViewPage();
+        dialog.displayPanel();
     }
 }

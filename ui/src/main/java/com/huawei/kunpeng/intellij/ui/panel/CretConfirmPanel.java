@@ -16,20 +16,16 @@
 
 package com.huawei.kunpeng.intellij.ui.panel;
 
-import static com.huawei.kunpeng.intellij.common.constant.CSSConstant.ICON_INFO_WARN;
-
-import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
+import com.huawei.kunpeng.intellij.common.constant.UserManageConstant;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
-
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.wm.ToolWindow;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.text.MessageFormat;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import static com.huawei.kunpeng.intellij.common.constant.CSSConstant.ICON_INFO_WARN;
 
 /**
  * 登出面板
@@ -54,7 +50,7 @@ public class CretConfirmPanel extends IDEBasePanel {
      */
     public CretConfirmPanel(ToolWindow toolWindow, String logOutTipText, String ip) {
         setToolWindow(toolWindow);
-        this.panelName = CommonI18NServer.toLocale("common_setting_cert_error_title");
+        this.panelName = UserManageConstant.CERT_ERROR_TITLE;
         this.confirmText = logOutTipText;
         this.ip = ip;
         // 初始化面板
@@ -64,7 +60,7 @@ public class CretConfirmPanel extends IDEBasePanel {
         registerComponentAction();
 
         // 初始化content实例
-        createContent(mainPanel, CommonI18NServer.toLocale("common_setting_cert_error_title"), false);
+        createContent(mainPanel, UserManageConstant.CERT_ERROR_TITLE, false);
     }
 
     @Override

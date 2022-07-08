@@ -21,7 +21,7 @@ import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.bean.RequestDataBean;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.task.impl.UploadFileProcess;
+import com.huawei.kunpeng.intellij.common.task.UploadFileProcess;
 
 import com.intellij.notification.NotificationType;
 
