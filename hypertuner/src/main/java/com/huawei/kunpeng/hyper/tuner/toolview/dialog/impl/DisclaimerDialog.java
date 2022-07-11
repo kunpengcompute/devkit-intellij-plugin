@@ -16,7 +16,8 @@
 
 package com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl;
 
-import com.alibaba.fastjson.JSONObject;
+import static com.huawei.kunpeng.intellij.common.constant.UserManageConstant.TERM_OPERATE_CLOSE;
+
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningUserManageConstant;
 import com.huawei.kunpeng.hyper.tuner.http.TuningHttpsServer;
@@ -34,20 +35,28 @@ import com.huawei.kunpeng.intellij.ui.dialog.IDEComponentManager;
 import com.huawei.kunpeng.intellij.ui.enums.Dialogs;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.utils.IDEMessageDialogUtil;
-import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-import java.awt.*;
+import com.alibaba.fastjson.JSONObject;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
-import static com.huawei.kunpeng.intellij.common.constant.UserManageConstant.TERM_OPERATE_CLOSE;
+import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 /**
  * 登录后的免责声明

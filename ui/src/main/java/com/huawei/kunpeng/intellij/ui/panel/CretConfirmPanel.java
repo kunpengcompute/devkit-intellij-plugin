@@ -16,16 +16,20 @@
 
 package com.huawei.kunpeng.intellij.ui.panel;
 
+import static com.huawei.kunpeng.intellij.common.constant.CSSConstant.ICON_INFO_WARN;
+
 import com.huawei.kunpeng.intellij.common.constant.UserManageConstant;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
+
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.wm.ToolWindow;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
 import java.text.MessageFormat;
 
-import static com.huawei.kunpeng.intellij.common.constant.CSSConstant.ICON_INFO_WARN;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 /**
  * 登出面板

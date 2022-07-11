@@ -23,13 +23,18 @@ import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
 import com.huawei.kunpeng.intellij.ui.enums.Panels;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
+
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /**
  * 左侧树重新连接面板

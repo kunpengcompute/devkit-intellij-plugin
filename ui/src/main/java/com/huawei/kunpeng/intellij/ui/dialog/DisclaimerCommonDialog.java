@@ -17,14 +17,18 @@
 package com.huawei.kunpeng.intellij.ui.dialog;
 
 import com.huawei.kunpeng.intellij.common.util.I18NServer;
+
 import com.intellij.openapi.ui.DialogWrapper;
+
+import java.awt.event.ActionEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
+import javax.swing.Action;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.event.ActionEvent;
 
 /**
  * 功能描述 DisclaimerCommonDialog

@@ -17,9 +17,9 @@
 package com.huawei.kunpeng.intellij.common.constant;
 
 import com.intellij.ui.Gray;
+import java.awt.Color;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
 
 /**
  * 用户管理样式常量定义

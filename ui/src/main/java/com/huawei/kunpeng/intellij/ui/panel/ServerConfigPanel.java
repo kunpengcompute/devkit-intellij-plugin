@@ -16,29 +16,50 @@
 
 package com.huawei.kunpeng.intellij.ui.panel;
 
+import static com.huawei.kunpeng.intellij.common.constant.CSSConstant.ICON_INFO_ICON;
+
 import com.huawei.kunpeng.intellij.common.constant.CSSConstant;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.constant.InstallConstant;
 import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.*;
+import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
+import com.huawei.kunpeng.intellij.common.util.CheckedUtils;
+import com.huawei.kunpeng.intellij.common.util.FileUtil;
+import com.huawei.kunpeng.intellij.common.util.IDENetUtils;
+import com.huawei.kunpeng.intellij.common.util.JsonUtil;
+import com.huawei.kunpeng.intellij.common.util.StringUtil;
+import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
 import com.huawei.kunpeng.intellij.ui.action.ServerConfigAction;
 import com.huawei.kunpeng.intellij.ui.enums.Panels;
+
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.wm.ToolWindow;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
 
-import static com.huawei.kunpeng.intellij.common.constant.CSSConstant.ICON_INFO_ICON;
+import java.util.Random;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 /**
  * 服务器配置面板
@@ -85,7 +106,7 @@ public abstract class ServerConfigPanel extends IDEBasePanel {
 
     private JTextField certFileField;
     private JLabel spaceLabel;
-    private JPanel iconLabe;
+    private JPanel iconLabel;
 
     private JFileChooser jfc = new JFileChooser(new File("."));
 
@@ -213,8 +234,10 @@ public abstract class ServerConfigPanel extends IDEBasePanel {
         initPanel.setPreferredSize(new Dimension(780, 115));
         descriptionPanel.setPreferredSize(new Dimension(780, 30));
         descriptionLabel1.setIcon(ICON_INFO_ICON);
-        descriptionLabel1.setHorizontalTextPosition(SwingConstants.RIGHT); // 水平方向文本在图片右边
-        descriptionLabel1.setVerticalTextPosition(SwingConstants.CENTER); // 垂直方向文本在图片中心
+        // 水平方向文本在图片右边
+        descriptionLabel1.setHorizontalTextPosition(SwingConstants.RIGHT);
+        // 垂直方向文本在图片中心
+        descriptionLabel1.setVerticalTextPosition(SwingConstants.CENTER);
         descriptionLabel1.setText(getToolConfigDescription());
         ipLabel.setText(CommonI18NServer.toLocale("common_config_address"));
         portLabel.setText(CommonI18NServer.toLocale("common_config_port"));

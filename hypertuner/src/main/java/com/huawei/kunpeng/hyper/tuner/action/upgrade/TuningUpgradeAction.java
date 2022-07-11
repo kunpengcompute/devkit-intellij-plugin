@@ -32,16 +32,18 @@ import com.huawei.kunpeng.intellij.ui.action.SshAction;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.InstallUpgradeWrapDialog;
 import com.huawei.kunpeng.intellij.ui.panel.InstallUpgradePanel;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
+
 import com.intellij.notification.NotificationType;
 import com.jcraft.jsch.Session;
 
-import javax.swing.event.HyperlinkEvent;
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Timer;
+
+import javax.swing.event.HyperlinkEvent;
 
 /**
  * 升级事件处理器

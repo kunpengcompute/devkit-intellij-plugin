@@ -16,9 +16,6 @@
 
 package com.huawei.kunpeng.intellij.js2java.webview.pagewebview;
 
-import com.esotericsoftware.minlog.Log;
-import com.google.common.base.Splitter;
-import com.google.gson.Gson;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.bean.ResponseBean;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
@@ -27,16 +24,26 @@ import com.huawei.kunpeng.intellij.common.enums.Language;
 import com.huawei.kunpeng.intellij.common.exception.IDEException;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.*;
+import com.huawei.kunpeng.intellij.common.util.CommonUtil;
+import com.huawei.kunpeng.intellij.common.util.FileUtil;
+import com.huawei.kunpeng.intellij.common.util.I18NServer;
+import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
+import com.huawei.kunpeng.intellij.common.util.JsonUtil;
+import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
 import com.huawei.kunpeng.intellij.js2java.bean.NavigatorPageBean;
 import com.huawei.kunpeng.intellij.js2java.util.JcefDevToolsUtil;
 import com.huawei.kunpeng.intellij.js2java.webview.HandlerAction;
+
+import com.esotericsoftware.minlog.Log;
+import com.google.common.base.Splitter;
+import com.google.gson.Gson;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfoRt;
 import com.intellij.ui.jcef.JBCefApp;
 import com.intellij.ui.jcef.JBCefClient;
+
 import org.cef.OS;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
@@ -45,15 +52,20 @@ import org.cef.callback.CefQueryCallback;
 import org.cef.handler.CefFocusHandlerAdapter;
 import org.cef.handler.CefMessageRouterHandler;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 /**
  * 自定义webview

@@ -18,6 +18,7 @@ package com.huawei.kunpeng.intellij.js2java.util;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.SystemInfoRt;
+
 import org.cef.CefClient;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
@@ -27,12 +28,19 @@ import org.cef.handler.CefContextMenuHandlerAdapter;
 import org.cef.handler.CefKeyboardHandler;
 import org.cef.handler.CefKeyboardHandlerAdapter;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.KeyboardFocusManager;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Optional;
+
+import javax.swing.JDialog;
 
 /**
  * The class JcefDevToolsUtil

@@ -29,7 +29,14 @@ import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.http.HttpsServer;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.*;
+import com.huawei.kunpeng.intellij.common.util.CommonUtil;
+import com.huawei.kunpeng.intellij.common.util.ConfigUtils;
+import com.huawei.kunpeng.intellij.common.util.FileUtil;
+import com.huawei.kunpeng.intellij.common.util.IDENetUtils;
+import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
+import com.huawei.kunpeng.intellij.common.util.JsonUtil;
+import com.huawei.kunpeng.intellij.common.util.StringUtil;
+
 import com.intellij.ide.impl.ProjectUtil;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;

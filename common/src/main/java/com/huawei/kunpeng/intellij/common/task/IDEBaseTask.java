@@ -18,18 +18,24 @@ package com.huawei.kunpeng.intellij.common.task;
 
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-import com.intellij.openapi.progress.*;
+
+import com.intellij.openapi.progress.PerformInBackgroundOption;
+import com.intellij.openapi.progress.ProcessCanceledException;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.DumbModeTask;
 import com.intellij.openapi.project.DumbServiceImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
-import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.JComponent;
 
 /**
  * IDE插件任务进度条基类
@@ -77,8 +83,8 @@ public abstract class IDEBaseTask {
      * 带暂停的后台任务，右下角
      *
      * @param project 所属项目
-     * @param title 进度条名称
-     * @param task 需要执行的具体任务
+     * @param title   进度条名称
+     * @param task    需要执行的具体任务
      */
     public void progressForPauseInBack(Project project, String title, IDEBaseTask task) {
         Project projectDef = (project == null) ? ProjectManager.getInstance().getDefaultProject() : project;
@@ -100,9 +106,9 @@ public abstract class IDEBaseTask {
     /**
      * 悬浮在窗口中央的进度条
      *
-     * @param project 所属项目
-     * @param title 进度条名称
-     * @param task 需要执行的具体任务
+     * @param project       所属项目
+     * @param title         进度条名称
+     * @param task          需要执行的具体任务
      * @param canBeCanceled canBeCanceled
      */
     public void processForONFore(Project project, String title, IDEBaseTask task, boolean canBeCanceled) {
@@ -116,10 +122,10 @@ public abstract class IDEBaseTask {
     /**
      * 依赖在某个组件上的进度条
      *
-     * @param project 所属项目
+     * @param project         所属项目
      * @param parentComponent 依赖的父组件
-     * @param title 进度条名称
-     * @param task 需要执行的具体任务
+     * @param title           进度条名称
+     * @param task            需要执行的具体任务
      */
     public void processForComponent(final Project project, JComponent parentComponent, String title, IDEBaseTask task) {
         Project projectDef = (project == null) ? ProjectManager.getInstance().getDefaultProject() : project;
@@ -145,8 +151,8 @@ public abstract class IDEBaseTask {
      * 常用的执行任务的进度条，默认时在右下角
      *
      * @param project 所属项目
-     * @param title 进度条名称
-     * @param task 需要执行的具体任务
+     * @param title   进度条名称
+     * @param task    需要执行的具体任务
      */
     public void processForCommon(Project project, String title, IDEBaseTask task) {
         Project projectDef = (project == null) ? CommonUtil.getDefaultProject() : project;

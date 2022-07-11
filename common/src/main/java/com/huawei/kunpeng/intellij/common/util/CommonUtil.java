@@ -25,6 +25,7 @@ import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.enums.Language;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
 import com.huawei.kunpeng.intellij.common.log.Logger;
+
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.TaskInfo;
@@ -37,7 +38,8 @@ import com.intellij.openapi.wm.ex.StatusBarEx;
 import com.intellij.openapi.wm.impl.ProjectFrameHelper;
 import com.intellij.openapi.wm.impl.WindowManagerImpl;
 
-import java.awt.*;
+import java.awt.Desktop;
+import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

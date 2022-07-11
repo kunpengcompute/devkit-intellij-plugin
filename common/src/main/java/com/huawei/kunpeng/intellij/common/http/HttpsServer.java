@@ -16,7 +16,6 @@
 
 package com.huawei.kunpeng.intellij.common.http;
 
-import com.alibaba.fastjson.JSONException;
 import com.huawei.kunpeng.intellij.common.BaseCacheDataOpt;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
@@ -29,15 +28,33 @@ import com.huawei.kunpeng.intellij.common.enums.HttpStatus;
 import com.huawei.kunpeng.intellij.common.exception.IDEException;
 import com.huawei.kunpeng.intellij.common.http.method.HttpMethodRequest;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.*;
-import com.intellij.notification.NotificationType;
-import org.jetbrains.annotations.NotNull;
+import com.huawei.kunpeng.intellij.common.util.CommonUtil;
+import com.huawei.kunpeng.intellij.common.util.FileUtil;
+import com.huawei.kunpeng.intellij.common.util.I18NServer;
+import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
+import com.huawei.kunpeng.intellij.common.util.JsonUtil;
+import com.huawei.kunpeng.intellij.common.util.StringUtil;
+import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
 
-import javax.net.ssl.*;
-import java.io.*;
-import java.net.*;
+import com.alibaba.fastjson.JSONException;
+import com.intellij.notification.NotificationType;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SignatureException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -45,6 +62,14 @@ import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * https请求服务
@@ -74,10 +99,9 @@ public abstract class HttpsServer {
                     .map(Object::toString).orElse(null);
             if (ip == null && port == null) {
                 IDENotificationUtil.notificationCommon(
-                        new NotificationBean("",
-                                I18NServer.toLocale("plugins_common_message_configServer"),
+                        new NotificationBean("", I18NServer.toLocale("plugins_common_message_configServer"),
                                 NotificationType.WARNING));
-                throw new IDEException();
+                    throw new IDEException();
             }
             // 组装完整的url
             String url = IDEConstant.URL_PREFIX +

@@ -22,10 +22,12 @@ import com.huawei.kunpeng.hyper.tuner.webview.TuningWebFileEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pagewebview.IDELoginWebView;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pagewebview.WebView;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
+
 import com.intellij.openapi.vfs.VirtualFile;
+
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 
 /**
  * 代理页面Editor

@@ -16,12 +16,19 @@
 
 package com.huawei.kunpeng.intellij.common.util;
 
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
+
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
 
 /**
  * JSON处理工具类

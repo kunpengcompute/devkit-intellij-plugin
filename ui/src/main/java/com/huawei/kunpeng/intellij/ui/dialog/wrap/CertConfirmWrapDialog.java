@@ -24,10 +24,10 @@ import com.huawei.kunpeng.intellij.ui.enums.Dialogs;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 
 /**
- * Intellij 类型弹框
+ * 安装升级弹框
  *
  * @since 2020-09-25
  */

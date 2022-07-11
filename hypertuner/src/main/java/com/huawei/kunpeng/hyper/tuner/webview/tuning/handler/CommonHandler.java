@@ -23,9 +23,14 @@ import com.huawei.kunpeng.intellij.common.constant.FileManageConstant;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.*;
+import com.huawei.kunpeng.intellij.common.util.CommonUtil;
+import com.huawei.kunpeng.intellij.common.util.FileUtil;
+import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
+import com.huawei.kunpeng.intellij.common.util.JsonUtil;
+import com.huawei.kunpeng.intellij.common.util.ShellTerminalUtil;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
 import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
+
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;

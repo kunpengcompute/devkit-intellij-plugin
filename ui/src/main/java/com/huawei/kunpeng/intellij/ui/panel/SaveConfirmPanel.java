@@ -18,11 +18,15 @@ package com.huawei.kunpeng.intellij.ui.panel;
 
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
+
 import com.intellij.openapi.wm.ToolWindow;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.util.Map;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  * 保存配置面板
@@ -46,7 +50,7 @@ public class SaveConfirmPanel extends IDEBasePanel {
      */
     public SaveConfirmPanel(ToolWindow toolWindow, String panelName, String displayName, Map params) {
         setToolWindow(toolWindow);
-        this.panelName =   CommonI18NServer.toLocale("common_config_title");
+        this.panelName = CommonI18NServer.toLocale("common_config_title");
         this.params = params;
         // 初始化面板
         initPanel(mainPanel);

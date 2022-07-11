@@ -16,6 +16,8 @@
 
 package com.huawei.kunpeng.intellij.ui.dialog;
 
+import static com.huawei.kunpeng.intellij.common.constant.CSSConstant.ICON_INFO_ICON;
+
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.bean.SshConfig;
@@ -24,21 +26,29 @@ import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
-import com.intellij.notification.NotificationType;
-import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-import java.awt.*;
+import com.intellij.notification.NotificationType;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Objects;
+import org.jetbrains.annotations.Nullable;
 
-import static com.huawei.kunpeng.intellij.common.constant.CSSConstant.ICON_INFO_ICON;
+import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 /**
  * 安装账户判断提示的弹窗
@@ -201,8 +211,10 @@ public class AccountTipsDialog extends IdeaDialog {
         jPanel.add(icon, BorderLayout.WEST);
         jPanel.add(jEditorPane, BorderLayout.SOUTH);
         icon.setIcon(ICON_INFO_ICON);
-        icon.setHorizontalTextPosition(SwingConstants.RIGHT); // 水平方向文本在图片右边
-        icon.setVerticalTextPosition(SwingConstants.CENTER); // 垂直方向文本在图片中心
+        // 水平方向文本在图片右边
+        icon.setHorizontalTextPosition(SwingConstants.RIGHT);
+        // 垂直方向文本在图片中心
+        icon.setVerticalTextPosition(SwingConstants.CENTER);
         return jPanel;
     }
 }

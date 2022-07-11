@@ -19,17 +19,19 @@ package com.huawei.kunpeng.intellij.ui.action;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 
-import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.JLabel;
+import javax.swing.JPasswordField;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 /**
  * PasswordFieldAction

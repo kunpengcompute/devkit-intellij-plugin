@@ -26,9 +26,11 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.components.JBLoadingPanel;
 import com.intellij.util.ui.UIUtil;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.util.Map;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  * 加载面板

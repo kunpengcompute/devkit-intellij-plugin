@@ -29,25 +29,31 @@ import com.huawei.kunpeng.intellij.ui.dialog.IdeaDialog;
 import com.huawei.kunpeng.intellij.ui.enums.Dialogs;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.panel.InstallUpgradePanel;
+
 import com.intellij.openapi.util.IconLoader;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.MessageFormat;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import java.awt.*;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.MessageFormat;
 
 /**
  * 安装部署前的免责声明
