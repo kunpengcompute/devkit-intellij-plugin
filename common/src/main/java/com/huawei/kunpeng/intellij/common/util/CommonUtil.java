@@ -102,8 +102,7 @@ public class CommonUtil {
             userName = configInfo.getUserName();
             ip = configInfo.getIp();
         }
-        return getPluginInstalledPath() + IDEConstant.PATH_SEPARATOR +
-                ip + "#" + userName;
+        return getPluginInstalledPath() + IDEConstant.PATH_SEPARATOR + ip + "#" + userName;
     }
 
 
@@ -133,11 +132,10 @@ public class CommonUtil {
      * @return string JCEF目录
      */
     public static String getPluginJCEFPath() {
-        return IDEContext.getValueFromGlobalContext(null, BaseCacheVal.SYSTEM_OS.vaLue()) == SystemOS.LINUX
-                ? getPluginInstalledPath() + IDEConstant.PATH_SEPARATOR + IDEConstant.JCEF + IDEConstant.PATH_SEPARATOR
-                + SystemOS.LINUX.code()
-                : getPluginInstalledPath() + IDEConstant.PATH_SEPARATOR + IDEConstant.JCEF + IDEConstant.PATH_SEPARATOR
-                + SystemOS.WINDOWS.code();
+        return IDEContext.getValueFromGlobalContext(null, BaseCacheVal.SYSTEM_OS.vaLue()) == SystemOS.LINUX ?
+                getPluginInstalledPath() + IDEConstant.PATH_SEPARATOR + IDEConstant.JCEF + IDEConstant.PATH_SEPARATOR +
+                        SystemOS.LINUX.code() : getPluginInstalledPath() + IDEConstant.PATH_SEPARATOR +
+                IDEConstant.JCEF + IDEConstant.PATH_SEPARATOR + SystemOS.WINDOWS.code();
     }
 
     /**
@@ -276,8 +274,9 @@ public class CommonUtil {
             project = ((IdeFrame) window).getProject();
         }
         if (project == null) {
-            project = ProjectManager.getInstance().getOpenProjects().length == 0 ? ProjectManager.getInstance()
-                    .getDefaultProject() : ProjectManager.getInstance().getOpenProjects()[0];
+            project = ProjectManager.getInstance().getOpenProjects().length == 0 ?
+                    ProjectManager.getInstance().getDefaultProject() :
+                    ProjectManager.getInstance().getOpenProjects()[0];
         }
 
         return project;
@@ -309,7 +308,7 @@ public class CommonUtil {
         random.nextBytes(bytes);
 
         // 然后再将生成的随机数转换成字符串
-        StringBuilder stringBuilder = new StringBuilder("");
+        StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < bytes.length; i++) {
             // 转成16进制数
             int xff = bytes[i] & 0xFF;
@@ -440,8 +439,7 @@ public class CommonUtil {
      * @param window 发起任务的window
      */
     public static void setBackGroundProcessWindowOpen(boolean isOpen, Window window) {
-        ProjectFrameHelper frame = ProjectFrameHelper
-                .getFrameHelper(window);
+        ProjectFrameHelper frame = ProjectFrameHelper.getFrameHelper(window);
         if (frame != null) {
             StatusBarEx statusBar = frame.getStatusBar();
             if (statusBar != null) {
