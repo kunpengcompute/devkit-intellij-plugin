@@ -20,10 +20,9 @@ import static com.huawei.kunpeng.intellij.common.constant.UserManageConstant.TER
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningUserManageConstant;
-import com.huawei.kunpeng.hyper.tuner.common.utils.TuningLoginUtils;
 import com.huawei.kunpeng.hyper.tuner.http.TuningHttpsServer;
 import com.huawei.kunpeng.intellij.common.bean.RequestDataBean;
-import com.huawei.kunpeng.intellij.common.constant.WeakPwdConstant;
+import com.huawei.kunpeng.intellij.common.constant.InstallConstant;
 import com.huawei.kunpeng.intellij.common.enums.HttpMethod;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
@@ -38,10 +37,6 @@ import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.utils.IDEMessageDialogUtil;
 
 import com.alibaba.fastjson.JSONObject;
-import com.intellij.openapi.application.ApplicationManager;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -54,6 +49,7 @@ import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
@@ -74,34 +70,18 @@ public class DisclaimerDialog extends DisclaimerCommonDialog {
      * @param title      弹窗标题
      * @param dialogName 弹窗名称
      * @param panel      需要展示的面板之一
-     * @param panel      面板
      * @param isDoEvent  是否进行确认（是否为第一次登录，需要签署免责声明）
      */
     public DisclaimerDialog(String title, String dialogName, IDEBasePanel panel, boolean isDoEvent) {
         this.isDoEvent = isDoEvent;
-        this.title = ValidateUtils.isEmptyString(title) ? WeakPwdConstant.BEFORE_INSTALL : title;
+        this.title = ValidateUtils.isEmptyString(title) ? InstallConstant.BEFORE_INSTALL : title;
         this.dialogName =
                 ValidateUtils.isEmptyString(dialogName) ? Dialogs.INSTALL_DISCLAIMER.dialogName() : dialogName;
         this.mainPanel = panel;
 
         // 无位置信息时居中显示
         if (this.isDoEvent) {
-            setDoNotAskOption(
-                    new DoNotAskOption.Adapter() {
-                        @Override
-                        public void rememberChoice(boolean boo, int i) {
-                        }
-
-                        @Override
-                        public boolean shouldSaveOptionsOnCancel() {
-                            return true;
-                        }
-
-                        @Override
-                        public @NotNull String getDoNotShowMessage() {
-                            return WeakPwdConstant.READ_DEPLOY;
-                        }
-                    });
+            Logger.info("Default Processing");
         } else {
             setCancelButtonText(TERM_OPERATE_CLOSE);
         }
@@ -202,18 +182,8 @@ public class DisclaimerDialog extends DisclaimerCommonDialog {
                                 button,
                                 0,
                                 IDEMessageDialogUtil.getWarn()));
-        if (select.equals(IDEMessageDialogUtil.ButtonName.THINK_AGAIN.getKey())
-                || select.equals(IDEMessageDialogUtil.ButtonName.CANCEL.getKey())) {
-            return false;
-        } else {
-            ApplicationManager.getApplication()
-                    .invokeLater(
-                            () -> {
-                                // 登出
-                                TuningLoginUtils.logout();
-                            });
-            return true;
-        }
+        return !select.equals(IDEMessageDialogUtil.ButtonName.THINK_AGAIN.getKey())
+                && !select.equals(IDEMessageDialogUtil.ButtonName.CANCEL.getKey());
     }
 
     /**

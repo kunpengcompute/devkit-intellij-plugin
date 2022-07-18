@@ -21,7 +21,6 @@ import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.TuningInstallServerConfirmDialog;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningInstallUpgradeWrapDialog;
-import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
@@ -34,18 +33,16 @@ import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.panel.InstallServerConfirmPanel;
 import com.huawei.kunpeng.intellij.ui.panel.InstallUpgradePanel;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
-
 import com.intellij.notification.NotificationType;
 import com.jcraft.jsch.Session;
 
 import java.awt.Desktop;
+import javax.swing.event.HyperlinkEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Timer;
-
-import javax.swing.event.HyperlinkEvent;
 
 /**
  * 安装事件处理器
@@ -54,13 +51,9 @@ import javax.swing.event.HyperlinkEvent;
  */
 public class TuningInstallAction extends SshAction {
     /**
-     * 点击取消按钮响应
-     *
-     * @param params        取消配置信息参数
-     * @param actionOperate 自定义操作
+     * 安装Title
      */
-    public void onCancelAction(Map params, ActionOperate actionOperate) {
-    }
+    private static final String TITLE = InstallManageConstant.INSTALL_TITLE;
 
     @Override
     public void upload(Session session, String dir) {
@@ -77,18 +70,8 @@ public class TuningInstallAction extends SshAction {
     public void openTerminal(Map<String, String> param, String dir) {
         // 打开终端执行脚本
         Map url = CommonUtil.getUrl();
-        DeployUtil.openTerminal(
-                param,
-                " bash "
-                        + dir
-                        + "install_tuning.sh"
-                        + " -a "
-                        + url.get("arm")
-                        + " -b "
-                        + url.get("x86")
-                        + " -c \""
-                        + url.get("key")
-                        + "\"");
+        DeployUtil.openTerminal(param, " bash " + dir + "install_tuning.sh"
+                + " -a " + url.get("arm") + " -b " + url.get("x86") + " -c \"" + url.get("key") + "\"");
     }
 
     @Override
@@ -98,41 +81,29 @@ public class TuningInstallAction extends SshAction {
 
     @Override
     protected void failedHandle() {
-        String failedContent =
-                TuningI18NServer.toLocale("plugins_hyper_tuner_install_failedPrefix")
-                        + TuningI18NServer.toLocale("plugins_hyper_tuner_install_failedLink")
-                        + TuningI18NServer.toLocale("plugins_hyper_tuner_install_failedSuffix");
-        IDENotificationUtil.notificationForHyperlink(
-                new NotificationBean(
-                        TuningI18NServer.toLocale("plugins_hyper_tuner_install_title"),
-                        failedContent,
-                        NotificationType.ERROR),
-                new ActionOperate() {
-                    @Override
-                    public void actionOperate(Object data) {
-                        HyperlinkEvent linkEvent = null;
-                        if (data instanceof HyperlinkEvent) {
-                            linkEvent = (HyperlinkEvent) data;
-                        }
-                        if (linkEvent != null
-                                && linkEvent.getURL() != null
-                                && linkEvent.getURL().toString().startsWith(TuningIDEConstant.URL_PREFIX)) {
-                            try {
-                                Desktop.getDesktop().browse(new URI(linkEvent.getURL().toString()));
-                            } catch (IOException | URISyntaxException e) {
-                                Logger.error("An exception occurred when executing ActionOperateHandler.");
-                            }
-                        } else {
-                            TuningInstallAction installAction = new TuningInstallAction();
-                            InstallUpgradePanel up =
-                                    new InstallUpgradePanel(
-                                            null, InstallManageConstant.INSTALL_TITLE, false, installAction);
-                            InstallUpgradeWrapDialog dialog =
-                                    new TuningInstallUpgradeWrapDialog(InstallManageConstant.INSTALL_TITLE, up);
-                            dialog.displayPanel();
-                        }
+        String failedContent = TuningI18NServer.toLocale("plugins_hyper_tuner_install_failedPrefix")
+                + TuningI18NServer.toLocale("plugins_hyper_tuner_install_failedLink")
+                + TuningI18NServer.toLocale("plugins_hyper_tuner_install_failedSuffix");
+        IDENotificationUtil.notificationForHyperlink(new NotificationBean(TITLE,
+            failedContent, NotificationType.ERROR), data -> {
+                HyperlinkEvent linkEvent = null;
+                if (data instanceof HyperlinkEvent) {
+                    linkEvent = (HyperlinkEvent) data;
+                }
+                if (linkEvent != null && linkEvent.getURL() != null
+                    && linkEvent.getURL().toString().startsWith(TuningIDEConstant.URL_PREFIX)) {
+                    try {
+                        Desktop.getDesktop().browse(new URI(linkEvent.getURL().toString()));
+                    } catch (IOException | URISyntaxException e) {
+                        Logger.error("An exception occurred when executing ActionOperateHandler.");
                     }
-                });
+                } else {
+                    TuningInstallAction installAction = new TuningInstallAction();
+                    InstallUpgradePanel up = new InstallUpgradePanel(null, TITLE, false, installAction);
+                    InstallUpgradeWrapDialog dialog = new TuningInstallUpgradeWrapDialog(TITLE, up);
+                    dialog.displayPanel();
+                }
+            });
     }
 
     @Override

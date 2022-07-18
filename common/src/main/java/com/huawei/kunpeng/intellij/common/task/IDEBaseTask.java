@@ -29,11 +29,11 @@ import com.intellij.openapi.project.DumbServiceImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.JComponent;
 
@@ -51,7 +51,7 @@ public abstract class IDEBaseTask {
     /**
      * 当前正在进行中的任务
      */
-    private static HashMap<String, ArrayList<String>> taskInfo = new HashMap<>();
+    private static final HashMap<String, ArrayList<String>> TASK_INFO = new HashMap<>();
 
     /**
      * 任务是否成功，退出登录或其他处登录导致未登录，在运行的任务isTaskSuccess=false
@@ -83,8 +83,8 @@ public abstract class IDEBaseTask {
      * 带暂停的后台任务，右下角
      *
      * @param project 所属项目
-     * @param title 进度条名称
-     * @param task 需要执行的具体任务
+     * @param title   进度条名称
+     * @param task    需要执行的具体任务
      */
     public void progressForPauseInBack(Project project, String title, IDEBaseTask task) {
         Project projectDef = (project == null) ? ProjectManager.getInstance().getDefaultProject() : project;
@@ -94,11 +94,10 @@ public abstract class IDEBaseTask {
                 try {
                     // 执任务
                     task.runTask(indicator);
-                    Logger.info("running");
+                    Logger.info("task is running");
                 } catch (ProcessCanceledException exception) {
                     // 任务非正常退出
                     task.cancel(indicator);
-                    return;
                 }
             }
         });
@@ -107,9 +106,9 @@ public abstract class IDEBaseTask {
     /**
      * 悬浮在窗口中央的进度条
      *
-     * @param project 所属项目
-     * @param title 进度条名称
-     * @param task 需要执行的具体任务
+     * @param project       所属项目
+     * @param title         进度条名称
+     * @param task          需要执行的具体任务
      * @param canBeCanceled canBeCanceled
      */
     public void processForONFore(Project project, String title, IDEBaseTask task, boolean canBeCanceled) {
@@ -123,10 +122,10 @@ public abstract class IDEBaseTask {
     /**
      * 依赖在某个组件上的进度条
      *
-     * @param project 所属项目
+     * @param project         所属项目
      * @param parentComponent 依赖的父组件
-     * @param title 进度条名称
-     * @param task 需要执行的具体任务
+     * @param title           进度条名称
+     * @param task            需要执行的具体任务
      */
     public void processForComponent(final Project project, JComponent parentComponent, String title, IDEBaseTask task) {
         Project projectDef = (project == null) ? ProjectManager.getInstance().getDefaultProject() : project;
@@ -152,8 +151,8 @@ public abstract class IDEBaseTask {
      * 常用的执行任务的进度条，默认时在右下角
      *
      * @param project 所属项目
-     * @param title 进度条名称
-     * @param task 需要执行的具体任务
+     * @param title   进度条名称
+     * @param task    需要执行的具体任务
      */
     public void processForCommon(Project project, String title, IDEBaseTask task) {
         Project projectDef = (project == null) ? CommonUtil.getDefaultProject() : project;
@@ -167,7 +166,7 @@ public abstract class IDEBaseTask {
                 try {
                     // 执任务
                     task.runTask(progressIndicator);
-                    Logger.info("running");
+                    Logger.info("task is running");
                 } catch (ProcessCanceledException exception) {
                     // 任务非正常退出
                     CommonUtil.setBackGroundProcessWindowOpen(false, window);
@@ -208,8 +207,8 @@ public abstract class IDEBaseTask {
      *
      * @return key userName, value 任务信息
      */
-    public static HashMap<String, ArrayList<String>> getTaskInfo() {
-        return taskInfo;
+    public static Map<String, ArrayList<String>> getTaskInfo() {
+        return TASK_INFO;
     }
 
     /**

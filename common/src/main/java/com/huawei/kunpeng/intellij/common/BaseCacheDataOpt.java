@@ -49,14 +49,16 @@ public class BaseCacheDataOpt {
      * @param module 模块
      * @param ip     ip地址
      * @param port   端口
+     * @param localPort   本地nginx代理端口
      */
-    public static void updateGlobalIPAndPort(String module, String ip, String port) {
+    public static void updateGlobalIPAndPort(String module, String ip, String port,String localPort) {
         Logger.info("update Global IP And Port");
         if (!StringUtil.stringIsEmpty(module) && ip != null && port != null) {
             IDEContext.setValueForGlobalContext(module, BaseCacheVal.IP.vaLue(), ip);
             IDEContext.setValueForGlobalContext(module, BaseCacheVal.PORT.vaLue(), port);
+            IDEContext.setValueForGlobalContext(module, BaseCacheVal.LOCAL_PORT.vaLue(), localPort);
         }
-        Logger.info("update Global IP And Port successful");
+        Logger.info("update Global IP , Port And LocalPort successful");
     }
 
     /**

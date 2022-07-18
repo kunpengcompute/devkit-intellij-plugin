@@ -17,16 +17,11 @@
 package com.huawei.kunpeng.hyper.tuner.common;
 
 import com.huawei.kunpeng.intellij.common.UserInfoContext;
-import com.huawei.kunpeng.intellij.common.bean.ResponseBean;
 import com.huawei.kunpeng.intellij.common.bean.WebSessionBean;
 import com.huawei.kunpeng.intellij.common.util.I18NServer;
-import com.huawei.kunpeng.intellij.common.util.JsonUtil;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.Map;
 
 /**
  * 用户信息
@@ -43,19 +38,6 @@ public class TuningUserInfoContext extends UserInfoContext {
      */
     public static TuningUserInfoContext getInstance() {
         return new TuningUserInfoContext();
-    }
-
-    /**
-     * 设置用户信息
-     *
-     * @param rsp 用户信息
-     */
-    public static void putUserInfo(ResponseBean rsp) {
-        Map<String, String> map = JsonUtil.getJsonObjFromJsonStr(rsp.getData());
-        // 设置 是否签署免责声明
-        instance.setRole(map.get("role"));
-        instance.setLoginId(String.valueOf(map.get("id")));
-        instance.setUserName(map.get("username"));
     }
 
     /**

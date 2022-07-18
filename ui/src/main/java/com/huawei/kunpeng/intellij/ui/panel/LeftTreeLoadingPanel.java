@@ -16,12 +16,11 @@
 
 package com.huawei.kunpeng.intellij.ui.panel;
 
+import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-import com.huawei.kunpeng.intellij.common.util.I18NServer;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
 import com.huawei.kunpeng.intellij.ui.enums.Panels;
-
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.components.JBLoadingPanel;
@@ -30,7 +29,6 @@ import com.intellij.util.ui.UIUtil;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.util.Map;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -115,7 +113,7 @@ public class LeftTreeLoadingPanel extends IDEBasePanel {
 
     private void initPanel() {
         currentLoadPanel = this.loadingPanel;
-        loadingPanel.setLoadingText(I18NServer.toLocale("plugins_porting_loading"));
+        loadingPanel.setLoadingText(CommonI18NServer.toLocale("plugins_ui_common_loading"));
         loadingPanel.setFont(new Font("huawei sans", Font.PLAIN, 14));
         // UI线程运行加载态
         UIUtil.invokeLaterIfNeeded(() -> {

@@ -82,7 +82,7 @@ public class HttpAPIServiceTrust {
         Map<String, String> headerMap) throws IOException {
         try {
             HttpResponse response = null;
-            CloseableHttpClient httpClient = HTTPSSLClient.getHttpClinet();
+            CloseableHttpClient httpClient = HTTPSSLClient.getHttpClient();
             switch (method) {
                 case "PATCH":
                     response = patchRspHandle(httpClient, url, jsonParam, token);
@@ -116,15 +116,13 @@ public class HttpAPIServiceTrust {
         Map<String, String> headerMap) throws IOException {
         // 文件上传
         HttpPost httpPost = new HttpPost(url);
-        HttpEntity entity;
         headerMap.forEach(httpPost::addHeader);
         Object fileObj = jsonParam.get("file");
         Object inputStreamObj = jsonParam.get("inputStream");
-        if (jsonParam.size() == 1 && fileObj != null && fileObj instanceof File) {
+        if (jsonParam.size() == 1 && fileObj instanceof File) {
             File file = (File) fileObj;
             httpPost.setEntity(uploadFile(file));
-        } else if (jsonParam.size() == 5 && inputStreamObj != null &&
-                inputStreamObj instanceof ByteBufferInputStreamAc) {
+        } else if (jsonParam.size() == 5 && inputStreamObj instanceof ByteBufferInputStreamAc) {
             ByteBufferInputStreamAc byteBufferInputStreamAc = (ByteBufferInputStreamAc) inputStreamObj;
             httpPost.setEntity(uploadFile(byteBufferInputStreamAc, jsonParam));
         } else {
@@ -151,14 +149,15 @@ public class HttpAPIServiceTrust {
     }
 
     private static HttpEntity uploadFile(ByteBufferInputStreamAc ByteBufferInputStreamAc, JSONObject jsonObject) {
+        String mimeType = "text/plain";
         StringBody id = new StringBody(jsonObject.get("id").toString(),
-                ContentType.create("text/plain", StandardCharsets.UTF_8));
+                ContentType.create(mimeType, StandardCharsets.UTF_8));
         StringBody fileName = new StringBody(jsonObject.get("fileName").toString(),
-                ContentType.create("text/plain", StandardCharsets.UTF_8));
+                ContentType.create(mimeType, StandardCharsets.UTF_8));
         StringBody chunk = new StringBody(jsonObject.get("chunk").toString(),
-                ContentType.create("text/plain", StandardCharsets.UTF_8));
+                ContentType.create(mimeType, StandardCharsets.UTF_8));
         StringBody fileSize = new StringBody(jsonObject.get("fileSize").toString(),
-                ContentType.create("text/plain", StandardCharsets.UTF_8));
+                ContentType.create(mimeType, StandardCharsets.UTF_8));
         InputStreamBody fileInputStream = new InputStreamBody(ByteBufferInputStreamAc,
                 ContentType.DEFAULT_BINARY, jsonObject.get("fileName").toString());
         Map<String, ContentBody> contentBodyMap = new HashMap<>(8);

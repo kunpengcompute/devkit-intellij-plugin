@@ -20,10 +20,8 @@ import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningInstallUpgradeWrapDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.InstallUpgradeWrapDialog;
 import com.huawei.kunpeng.intellij.ui.panel.InstallUpgradePanel;
-
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -33,6 +31,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public class TuningIDEInstallAction extends AnAction {
     /**
+     * 安装Title
+     */
+    private static final String TITLE = InstallManageConstant.INSTALL_TITLE;
+    /**
      * 点击事件
      *
      * @param anActionEvent 事件
@@ -40,9 +42,8 @@ public class TuningIDEInstallAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
         TuningInstallAction installAction = new TuningInstallAction();
-        InstallUpgradePanel up =
-                new InstallUpgradePanel(null, InstallManageConstant.INSTALL_TITLE, false, installAction);
-        InstallUpgradeWrapDialog dialog = new TuningInstallUpgradeWrapDialog(InstallManageConstant.INSTALL_TITLE, up);
+        InstallUpgradePanel up = new InstallUpgradePanel(null, TITLE, false, installAction);
+        InstallUpgradeWrapDialog dialog = new TuningInstallUpgradeWrapDialog(TITLE, up);
         up.setDialog(dialog);
         dialog.displayPanel();
     }

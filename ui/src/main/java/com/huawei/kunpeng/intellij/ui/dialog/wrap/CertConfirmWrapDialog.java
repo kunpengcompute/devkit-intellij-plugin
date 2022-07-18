@@ -16,18 +16,18 @@
 
 package com.huawei.kunpeng.intellij.ui.dialog.wrap;
 
+import com.huawei.kunpeng.intellij.common.constant.UserManageConstant;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.dialog.IdeaDialog;
 import com.huawei.kunpeng.intellij.ui.enums.Dialogs;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
-
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JComponent;
 
 /**
- * Intellij 类型弹框
+ * 安装升级弹框
  *
  * @since 2020-09-25
  */
@@ -42,7 +42,7 @@ public class CertConfirmWrapDialog extends IdeaDialog {
      */
     public CertConfirmWrapDialog(String title, String dialogName, IDEBasePanel panel, boolean resizable) {
         this.title =
-                StringUtil.stringIsEmpty(title) ? CommonI18NServer.toLocale("common_setting_cert_error_title") : title;
+                StringUtil.stringIsEmpty(title) ? UserManageConstant.CERT_ERROR_TITLE : title;
         this.dialogName = StringUtil.stringIsEmpty(dialogName) ? Dialogs.SERVER_CONFIG.dialogName() : dialogName;
         mainPanel = panel;
 

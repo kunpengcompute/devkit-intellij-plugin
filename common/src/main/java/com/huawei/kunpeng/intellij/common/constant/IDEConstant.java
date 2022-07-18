@@ -89,16 +89,6 @@ public class IDEConstant {
     public static final String PORTING_WEB_VIEW_INDEX_HTML = "index.html";
 
     /**
-     * porting插件临时工作空间
-     */
-    public static final String PORTING_WORKSPACE_TEMP = "workspace";
-
-    /**
-     * porting插件webview页面文件类型
-     */
-    public static final String PORTING_KPS = "kppa";
-
-    /**
      * hyper tuner插件webview页面文件类型
      */
     public static final String TUNING_KPHT = "kpht";

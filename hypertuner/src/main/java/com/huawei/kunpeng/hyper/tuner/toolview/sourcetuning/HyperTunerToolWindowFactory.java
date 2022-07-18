@@ -16,33 +16,25 @@
 
 package com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning;
 
-import com.huawei.kunpeng.hyper.tuner.action.LeftTreeAction;
-import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
-import com.huawei.kunpeng.hyper.tuner.common.utils.TuningLoginUtils;
-import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.sourceporting.LeftTreeConfigPanel;
-import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.sourceporting.LeftTreeLoginPanel;
-import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.LeftTreeConfigPanel;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.I18NServer;
-import com.huawei.kunpeng.intellij.common.util.StringUtil;
+import com.huawei.kunpeng.intellij.js2java.provider.AbstractWebFileProvider;
 import com.huawei.kunpeng.intellij.ui.action.FeedBackAction;
 import com.huawei.kunpeng.intellij.ui.action.HelpAction;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
-
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.openapi.wm.ex.ToolWindowEx;
-
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The class PortingToolWindowFactory
+ * 左侧窗口ToolWindowFactory
  *
- * @since v1.0
+ * @since 2022-06-28
  */
 public class HyperTunerToolWindowFactory implements ToolWindowFactory {
     private Project project;
@@ -61,7 +53,7 @@ public class HyperTunerToolWindowFactory implements ToolWindowFactory {
     /**
      * 创建 toolWindow 面板
      *
-     * @param project    project
+     * @param project project
      * @param toolWin toolWin
      */
     @Override
@@ -70,8 +62,6 @@ public class HyperTunerToolWindowFactory implements ToolWindowFactory {
         if (toolWin instanceof ToolWindowEx) {
             // 设置按钮增添
             setupToolWindow((ToolWindowEx) toolWin);
-            // 加载窗口前先关闭所有打开的webview页面
-            LeftTreeAction.instance().closeAllOpenedWebViewPage(project);
             showCorrectPanel(toolWin);
             if (mainPanel == null) {
                 Logger.error("createToolWindowContent mainPanel is null.");
@@ -89,21 +79,9 @@ public class HyperTunerToolWindowFactory implements ToolWindowFactory {
      * @param toolWindow toolWindow
      */
     private void showCorrectPanel(@NotNull ToolWindow toolWindow) {
-        // 自动登录
-        TuningLoginUtils.autoLogin();
-        // 获取
-        int curStatus = TuningIDEContext.getTuningIDEPluginStatus().value();
-        if (StringUtil.stringIsEmpty(CommonUtil.readCurIpFromConfig())) {
-            // 未配置服务器
-            mainPanel = new LeftTreeConfigPanel(toolWindow, project);
-        } else if (curStatus >= IDEPluginStatus.IDE_STATUS_LOGIN.value()) {
-            // 如果此时处于用户登录的状态，加载左侧树面板
-            LeftTreeUtil.refreshLeftTreePanel();
-        } else {
-            // 此时处于服务器配置完成状态
-            mainPanel = new LeftTreeLoginPanel(toolWindow, project);
-            TuningIDEContext.setTuningIDEPluginStatus(IDEPluginStatus.IDE_STATUS_SERVER_CONFIG);
-        }
+        // 启动插件之后先关闭所有WebView页面
+        AbstractWebFileProvider.closeAllWebViewPage();
+        mainPanel = new LeftTreeConfigPanel(toolWindow, project);
     }
 
     /**
@@ -115,10 +93,6 @@ public class HyperTunerToolWindowFactory implements ToolWindowFactory {
         final DefaultActionGroup group = new DefaultActionGroup();
         // 配置服务器
         group.add(new ConfigRemoteServerAction());
-        group.add(new UserLoginAction());
-        group.add(new UserActionGroup());
-        // 设置
-        group.add(new SettingsActionGroup());
         // 工具维护
         group.add(new ToolMaintenanceActionGroup());
         group.addSeparator();

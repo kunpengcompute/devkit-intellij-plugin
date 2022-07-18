@@ -2,7 +2,7 @@ buildscript {
     repositories {
         maven {
             // 内网maven库地址，下载依赖的第三方库
-            url 'http://cmc.centralrepo.rnd.huawei.com/maven/'
+            url 'https://mirrors.huaweicloud.com/repository/maven/'
             allowInsecureProtocol true
         }
     }
@@ -21,7 +21,7 @@ allprojects {
     repositories {
         mavenLocal()
         maven {
-            url 'http://cmc.centralrepo.rnd.huawei.com/maven/'
+            url 'https://mirrors.huaweicloud.com/repository/maven/'
             allowInsecureProtocol true
         }
     }

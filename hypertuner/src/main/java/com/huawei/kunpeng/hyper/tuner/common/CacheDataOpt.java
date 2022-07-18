@@ -27,7 +27,6 @@ import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
-
 import com.intellij.util.ui.UIUtil;
 
 import java.io.File;
@@ -55,15 +54,16 @@ public class CacheDataOpt extends BaseCacheDataOpt {
 
         TuningCommonUtil.setToolName(TuningIDEConstant.TOOL_NAME_TUNING);
 
-        // 加载当前系统显示语言
-        TuningI18NServer.updateTuningCurrentLocale();
-        // 设置webviewIndex入口路径
-        CommonUtil.setWebViewIndex(TuningIDEContext.getSysWebViewIndex());
+        // 设置WebViewIndex入口路径
+        CommonUtil.setWebViewIndex(TuningIDEContext.getWebViewIndex());
         // 缓存当前Intellij主题
         boolean isUnderIntelliJLaF = UIUtil.isUnderIntelliJLaF();
 
         TuningIDEContext.setValueForGlobalContext(
                 TuningIDEConstant.TOOL_NAME_TUNING, BaseCacheVal.LIGHT_THEME.vaLue(), isUnderIntelliJLaF);
+
+        // 加载当前系统显示语言
+        TuningI18NServer.updateTuningCurrentLocale();
 
         // 获取系统信息及动态库的环境path
         loadingSystemOS();
@@ -87,35 +87,25 @@ public class CacheDataOpt extends BaseCacheDataOpt {
         }
         Logger.info("=====start loading webview=====");
         Optional<File> optionalFile = FileUtil.getFile(
-                CommonUtil.getPluginInstalledPath() + TuningIDEConstant.TUNING_PLUGIN_NAME, true);
-        optionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.TUNING_PLUGIN_NAME,
+                CommonUtil.getPluginInstalledPath() + TuningIDEConstant.WEB_VIEW_INDEX_HTML, true);
+        optionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.WEB_VIEW_INDEX_HTML,
                 true));
 
-        FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.TUNING_PLUGIN_NAME,
-                CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_WEB_VIEW_PATH));
+        Logger.info("=====start loading nginx");
+        Optional<File> optionalFile2 = FileUtil.getFile(
+                CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_PLUGIN_NAME, true);
+        optionalFile2.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.NGINX_PLUGIN_NAME,
+                true));
+
+        Logger.info("=====start unzip nginx");
+        FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_PLUGIN_NAME,
+                CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
 
         // 加载index页面到缓存，并替换base路径
         Logger.info("=====start loading index=====");
-        String indexHtml = FileUtil.readFileContent(TuningIDEContext.getSysWebViewIndex());
+        String indexHtml = FileUtil.readFileContent(TuningIDEContext.getWebViewIndex());
         indexHtml = indexHtml.replaceFirst("base href=\"\\./\"", "base href=\"\"");
         IDEContext.setValueForGlobalContext(null, TuningIDEConstant.TUNING_WEB_VIEW_INDEX_HTML, indexHtml);
         Logger.info("=====loading GlobalCache successful=====");
-
-        // 加载index页面到缓存，并替换base路径
-        Logger.info("=====start loading index=====");
-        String javaIndexHtml = FileUtil.readFileContent(TuningIDEContext.getJavaWebViewIndex());
-        javaIndexHtml = javaIndexHtml.replaceFirst("base href=\"\\./\"", "base href=\"\"");
-        IDEContext.setValueForGlobalContext(null, TuningIDEConstant.JAVA_WEB_VIEW_INDEX_HTML, javaIndexHtml);
-        Logger.info("=====loading GlobalCache successful=====");
-    }
-
-    /**
-     * 重置用户相关插件缓存信息
-     */
-    public static void clearUserFiles() {
-        Logger.info("=====start clear UserFiles=====");
-        // 清空历史报告页面文件
-        FileUtil.deleteDir(null, CommonUtil.getPluginWebViewFilePath(TuningIDEConstant.PORTING_KPS));
-        Logger.info("=====clear UserFiles successful=====");
     }
 }

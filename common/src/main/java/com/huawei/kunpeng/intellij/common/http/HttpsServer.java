@@ -27,7 +27,6 @@ import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.enums.HttpStatus;
 import com.huawei.kunpeng.intellij.common.exception.IDEException;
 import com.huawei.kunpeng.intellij.common.http.method.HttpMethodRequest;
-import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
@@ -39,8 +38,6 @@ import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
 
 import com.alibaba.fastjson.JSONException;
 import com.intellij.notification.NotificationType;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -65,6 +62,7 @@ import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -83,14 +81,6 @@ public abstract class HttpsServer {
      * 是否认证服务器证书成功
      */
     public static boolean isCertConfirm = true;
-
-    private static void invalidCertTip() {
-        FileUtil.removeCertConfig();
-        NotificationBean notification = new NotificationBean(
-                CommonI18NServer.toLocale("common_setting_cert_error_title"),
-                CommonI18NServer.toLocale("common_setting_cert_error_content"), NotificationType.ERROR);
-        IDENotificationUtil.notificationCommon(notification);
-    }
 
     /**
      * http对外服务接口
@@ -271,10 +261,6 @@ public abstract class HttpsServer {
                 case HTTP_409_CONFLICT:
                     dealUnAuthorized409(conn);
                     break;
-                case HTTP_423_LOCKED: {
-                    handleIPLocked();
-                    break;
-                }
                 case HTTP_406_NOT_ACCEPTABLE: {
                     br = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8));
                     return handleErr(br);
@@ -406,11 +392,6 @@ public abstract class HttpsServer {
      * @param responseBean 响应数据
      */
     public abstract void handleResponseStatus(ResponseBean responseBean);
-
-    /**
-     * IP锁定处理
-     */
-    public abstract void handleIPLocked();
 
     /**
      * ssl校验设置

@@ -16,21 +16,72 @@
 
 package com.huawei.kunpeng.hyper.tuner.common.constant;
 
+import com.huawei.kunpeng.intellij.common.constant.InstallConstant;
 import com.huawei.kunpeng.intellij.common.util.I18NServer;
 
 /**
- * 用户管理相关常量定义
+ * 安装部署/卸载 相关常量定义
  *
  * @since 2020-10-6
  */
-public class InstallManageConstant {
+public class InstallManageConstant  extends InstallConstant {
     /**
      * 安装面板title
      */
-    public static final String INSTALL_TITLE = I18NServer.toLocale("plugins_hyper_tuner_install_title");
+    public static final String INSTALL_TITLE = I18NServer.toLocale(
+            "plugins_hyper_tuner_install_title");
 
     /**
      * 升级面板title
      */
-    public static final String UPGRADE_TITLE = I18NServer.toLocale("plugins_hyper_tuner_upgrade_title");
+    public static final String UPGRADE_TITLE = I18NServer.toLocale(
+            "plugins_hyper_tuner_upgrade_title");
+
+    /**
+     * 国际化: 部署声明内容
+     */
+    public static final String DEPLOY_CONTENT =I18NServer.toLocale(
+            "plugins_hyper_tuner_message_beforeInstallDsc");
+
+    /**
+     * 国际化: 部署必读标题
+     */
+    public static final String FIRST_CONFIG_TITLE =I18NServer.toLocale(
+            "plugins_hyper_tuner_message_beforeInstallTitle");
+
+    /**
+     * 国际化: 确认保存配置标题
+     */
+    public static final String CONFIG_SAVE_CONFIRM_TITLE =I18NServer.toLocale(
+            "plugins_hyper_tuner_config_saveConfirm_title");
+
+
+    /**
+     * 国际化：卸载标题
+     */
+    public static final String UNINSTALL_TITLE = I18NServer.toLocale(
+            "plugins_hyper_tuner_uninstall_title");
+
+    /**
+     * 国际化：卸载成功
+     */
+    public static final String UNINSTALL_SUCCESS = I18NServer.toLocale(
+            "plugins_hyper_tuner_uninstall_success");
+
+    /**
+     * 国际化：导入证书
+     */
+    public static final String IMPORT_CA_TITLE = I18NServer.toLocale(
+            "plugins_hyper_tuner_javaperf_import_caCret");
+    /**
+     * 国际化：导入证书成功
+     */
+    public static final String IMPORT_CA_SUCCESS = I18NServer.toLocale(
+            "plugins_hyper_tuner_javaperf_import_caCret_success");
+    /**
+     * 国际化：导入证书失败
+     */
+    public static final String IMPORT_CA_FAIL = I18NServer.toLocale(
+            "plugins_hyper_tuner_javaperf_import_caCret_fail");
+
 }

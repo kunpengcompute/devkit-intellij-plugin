@@ -207,7 +207,7 @@ public class InstallUpgradePanel extends IDEBasePanel {
     public InstallUpgradePanel(ToolWindow toolWindow, String panelName, @NotNull String displayName,
         Boolean isUpgrade, IDEPanelBaseAction action) {
         setToolWindow(toolWindow);
-        this.panelName = ValidateUtils.isEmptyString(panelName) ? Panels.LOGIN.panelName() : panelName;
+        this.panelName = ValidateUtils.isEmptyString(panelName) ? Panels.INSTALL_SERVER_CONFIRM.panelName() : panelName;
         this.isUpgrade = isUpgrade;
         // 初始化面板
         initPanel(mainPanel);

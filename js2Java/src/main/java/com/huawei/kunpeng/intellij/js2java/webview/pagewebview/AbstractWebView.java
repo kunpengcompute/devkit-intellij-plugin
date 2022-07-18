@@ -154,21 +154,21 @@ public abstract class AbstractWebView {
         router.addHandler(new CefMessageRouterHandler() {
             @Override
             public boolean onQuery(CefBrowser browser, CefFrame cefFrame, long requestNo, String queryName,
-                boolean persistent, CefQueryCallback cefQueryCallback) {
+                                   boolean persistent, CefQueryCallback cefQueryCallback) {
                 handlerAction.handlerAction(queryName);
                 return true;
             }
 
             @Override
-            public void onQueryCanceled(CefBrowser cefBrowser, CefFrame cefFrame, long l) {
+            public void onQueryCanceled(CefBrowser cefBrowser, CefFrame cefFrame, long longVar) {
             }
 
             @Override
-            public void setNativeRef(String s, long l) {
+            public void setNativeRef(String str, long longVar) {
             }
 
             @Override
-            public long getNativeRef(String s) {
+            public long getNativeRef(String str) {
                 return 0;
             }
         }, true);
@@ -261,7 +261,7 @@ public abstract class AbstractWebView {
                 message = "light";
             }
             // 给页面发送消息
-            cefBrowser.executeJavaScript("window.switchTheme('" + message + "')", null, 0);
+            cefBrowser.executeJavaScript("switchTheme('" + message + "')", null, 0);
         };
         // 给webview的component注册监听
         cefBrowser.getUIComponent().addPropertyChangeListener("background", propertyChangeListener);

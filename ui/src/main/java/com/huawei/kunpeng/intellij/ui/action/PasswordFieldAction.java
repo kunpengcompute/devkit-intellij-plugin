@@ -57,7 +57,7 @@ public class PasswordFieldAction {
         jPasswordField.setEchoChar('*');
         eyePwdLab.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent event) {
                 if (viewIcon) {
                     jPasswordField.setEchoChar('*');
                     eyePwdLab.setIcon(BaseIntellijIcons.load(IDEConstant.EYE_HIDE));
@@ -81,7 +81,7 @@ public class PasswordFieldAction {
         jPasswordField.setEchoChar('*');
         eyePwdLab.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent event) {
                 if (viewStartIcon) {
                     jPasswordField.setEchoChar('*');
                     eyePwdLab.setIcon(BaseIntellijIcons.load(IDEConstant.EYE_HIDE));
@@ -105,7 +105,7 @@ public class PasswordFieldAction {
         jPasswordField.setEchoChar('*');
         eyePwdLab.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent event) {
                 if (viewConformIcon) {
                     jPasswordField.setEchoChar('*');
                     eyePwdLab.setIcon(BaseIntellijIcons.load(IDEConstant.EYE_HIDE));

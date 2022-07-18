@@ -16,6 +16,7 @@
 
 package com.huawei.kunpeng.intellij.common.constant;
 
+import com.intellij.ui.Gray;
 import java.awt.Color;
 
 import javax.swing.ImageIcon;
@@ -74,10 +75,10 @@ public class CSSConstant {
     /**
      * 提示信息字体颜色
      */
-    public static final Color TEXT_TIP_INFO_COLOR = new Color(110, 110, 110);
+    public static final Color TEXT_TIP_INFO_COLOR = Gray._110;
 
     /**
      * 输入框低暗字体颜色
      */
-    public static final Color TEXT_BOX_TIP_INFO_COLOR = new Color(88, 88, 88);
+    public static final Color TEXT_BOX_TIP_INFO_COLOR = Gray._88;
 }

@@ -24,7 +24,6 @@ import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
-import com.huawei.kunpeng.intellij.common.util.I18NServer;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.huawei.kunpeng.intellij.common.util.JsonUtil;
 import com.huawei.kunpeng.intellij.common.util.Procedure;
@@ -37,7 +36,6 @@ import com.huawei.kunpeng.intellij.ui.dialog.InstallServerConfirmDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.InstallUpgradeWrapDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.UninstallWrapDialog;
 import com.huawei.kunpeng.intellij.ui.panel.FingerPanel;
-
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.jcraft.jsch.Channel;
@@ -48,7 +46,6 @@ import com.jcraft.jsch.KeyPair;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.UserInfo;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -297,13 +294,13 @@ public class DeployUtil extends ShellTerminalUtil {
     }
 
     private static void showErrorMessage(SshConfig config) {
-        String message = I18NServer.toLocale("plugins_porting_testConn_keyFail");
+        String message = CommonI18NServer.toLocale("plugins_porting_testConn_keyFail");
         if (ValidateUtils.isNotEmptyString(config.getPassword())) {
-            message = I18NServer.toLocale("plugins_porting_testConn_psdFail");
+            message = CommonI18NServer.toLocale("plugins_porting_testConn_psdFail");
         }
         IDENotificationUtil.notificationCommon(
                 new NotificationBean(
-                        I18NServer.toLocale("plugins_porting_testConn_title"), message, NotificationType.ERROR));
+                        CommonI18NServer.toLocale("plugins_porting_testConn_title"), message, NotificationType.ERROR));
     }
 
     /**
@@ -352,8 +349,8 @@ public class DeployUtil extends ShellTerminalUtil {
                             if (connect(config)) {
                                 IDENotificationUtil.notificationCommon(
                                         new NotificationBean(
-                                                I18NServer.toLocale("plugins_porting_testConn_title"),
-                                                I18NServer.toLocale("plugins_porting_testConn_ok"),
+                                                CommonI18NServer.toLocale("plugins_porting_testConn_title"),
+                                                CommonI18NServer.toLocale("plugins_porting_testConn_ok"),
                                                 NotificationType.INFORMATION));
                                 // 解开okAction禁用
                                 actionOperate.actionOperate(true);
