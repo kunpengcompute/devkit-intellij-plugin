@@ -177,5 +177,5 @@ public class IDEConstant {
     /**
      * 插件支持的兼容性列表
      */
-    public static final String[] COMPATIBLE_VERSION_LIST = new String[]{"2.3.0","2.5.RC1"};
+    public static final String[] COMPATIBLE_VERSION_LIST = new String[]{"2.5.RC1"};
 }
