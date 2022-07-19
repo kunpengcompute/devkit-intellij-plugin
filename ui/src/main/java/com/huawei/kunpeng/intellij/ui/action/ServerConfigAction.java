@@ -229,6 +229,13 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
     protected abstract ResponseBean getServiceConfigResponse();
 
     /**
+     * 通过调用接口获取服务端版本，判断是否当前版本插件是否支持
+     *
+     * @return ResponseBean 响应实体
+     */
+    protected abstract boolean checkServiceVersionCompatible();
+
+    /**
      * 保存服务器配置信息前
      */
     protected void preSaveConfig() {
