@@ -73,9 +73,15 @@
         border-radius: 50%;
     }
     .maskBox .text { margin-top: 20px;font-size: 15px;color: #999;letter-spacing: 2px;}
+    #maskBox{
+        width:100%;
+        height:100%;
+        background:rgb(43,43,43);
+    }
     </style>
     <script>
     top.navigatorPage;
+
     top.webviewSession = top.webviewSession || {
         setItem: function (key, value) {
             top.webviewSession[key] = value;
@@ -157,7 +163,17 @@
             }
         }
     })
+
      window.onload= function (){
+             console.log("    top.navigatorPage == ",     top.navigatorPage);
+        let currentTheme = top.navigatorPage.data.pageParams.currentTheme;
+        var mask = document.getElementById("maskBox");
+        if(currentTheme === 'dark'){
+            mask.style.background = 'rgb(43,43,43)';
+        }else{
+            mask.style.background = '#FFF';
+        }
+
         var currLang = top.navigatorPage.data.webSession.language
         var loadingEl = document.querySelector(".text")
         if (currLang === "en-us") {
@@ -178,10 +194,10 @@
     </script>
 </head>
 <body id="intellijBody">
-<div class="maskBox" style="width:100%;height:100%;background:rgb(43,43,43)" id="maskBox">
+<div class="maskBox"  id="maskBox">
     <div class="containerBox">
         <div class="circleBox" style="width: 100px; height: 100px">
-                <div class="circleItem" style="
+            <div class="circleItem" style="
                     width: 25px;
                     height: 25px;
                     position: absolute;
@@ -189,12 +205,12 @@
                     left: 37.5px;
                     transform: rotate(0deg) translate(37.5px)
                 ">
-                    <div class="circle" style="
+                <div class="circle" style="
                     -webkit-animation: ball-spin-fade-loader 1s -1s infinite linear;
                     animation: ball-spin-fade-loader 1s -1s infinite linear
                 "></div>
-                </div>
-            
+            </div>
+
             <div class="circleItem" style="
                     width: 25px;
                     height: 25px;
