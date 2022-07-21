@@ -231,7 +231,7 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
     /**
      * 通过调用接口获取服务端版本，判断是否当前版本插件是否支持
      *
-     * @return ResponseBean 响应实体
+     * @return boolean true：兼容当前服务端版本，false：不兼容当前服务端版本，并在右下角提示弹窗
      */
     protected abstract boolean checkServiceVersionCompatible();
 
