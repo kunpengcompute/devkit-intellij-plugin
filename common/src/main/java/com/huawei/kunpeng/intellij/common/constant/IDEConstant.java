@@ -173,4 +173,9 @@ public class IDEConstant {
      * 最大上传包大小（单位为M）
      */
     public static final int MAX_FILE_SIZE = 1024;
+
+    /**
+     * 插件支持的兼容性列表
+     */
+    public static final String[] COMPATIBLE_VERSION_LIST = new String[]{"2.5.RC1"};
 }

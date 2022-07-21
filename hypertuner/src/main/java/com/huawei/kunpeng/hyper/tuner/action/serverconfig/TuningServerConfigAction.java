@@ -30,6 +30,7 @@ import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.bean.RequestDataBean;
 import com.huawei.kunpeng.intellij.common.bean.ResponseBean;
+import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.constant.UserManageConstant;
 import com.huawei.kunpeng.intellij.common.enums.HttpMethod;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
@@ -43,12 +44,17 @@ import com.huawei.kunpeng.intellij.ui.panel.CretConfirmPanel;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.panel.SaveConfirmPanel;
 import com.huawei.kunpeng.intellij.ui.utils.UIUtils;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 
+import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -61,6 +67,7 @@ public class TuningServerConfigAction extends ServerConfigAction {
      * 查询服务器是否可用url
      */
     public static final String SERVER_STATUS_URL = "user-management/api/v2.2/users/install-info/";
+    public static final String SERVER_VERSION_URL = "/user-management/api/v2.2/users/version/";
 
     /**
      * 常量实例
@@ -98,6 +105,7 @@ public class TuningServerConfigAction extends ServerConfigAction {
      * @param params        配置服务器信息参数
      * @param actionOperate 自定义操作
      */
+    @Override
     public void onOKAction(Map params, ActionOperate actionOperate) {
         Map<String, String> param = JsonUtil.getValueIgnoreCaseFromMap(params, "param", Map.class);
         // 保存配置服务器，加载loading...
@@ -111,6 +119,9 @@ public class TuningServerConfigAction extends ServerConfigAction {
                         TuningI18NServer.toLocale("plugins_common_message_responseError_messagePrefix"),
                         NotificationType.ERROR));
             } else {
+                // 配置服务器成功
+                // 判断服务器兼容性
+                checkServiceVersionCompatible();
                 ApplicationManager.getApplication().invokeLater(() -> {
                     NginxUtil.updateNginxConfig(param.get("ip"), param.get("port"), param.get("localPort"));
                     // 打开web首页
@@ -118,7 +129,7 @@ public class TuningServerConfigAction extends ServerConfigAction {
                 });
             }
         });
-        }
+    }
 
     /**
      * 展示登录页面时再次判断服务器状态，防止这期间服务器的工具被卸载
@@ -164,6 +175,30 @@ public class TuningServerConfigAction extends ServerConfigAction {
         RequestDataBean message = new RequestDataBean(TuningIDEConstant.TOOL_NAME_TUNING, SERVER_STATUS_URL,
                 HttpMethod.GET.vaLue(), false);
         return TuningHttpsServer.INSTANCE.requestData(message);
+    }
+
+    /**
+     * 通过调用接口获取服务端版本，判断是否当前版本插件是否支持
+     *
+     * @return boolean true：兼容当前服务端版本，false：不兼容当前服务端版本，并在右下角提示弹窗
+     */
+    @Override
+    protected boolean checkServiceVersionCompatible() {
+        RequestDataBean message = new RequestDataBean(TuningIDEConstant.TOOL_NAME_TUNING, SERVER_VERSION_URL,
+                HttpMethod.GET.vaLue(), false);
+        ResponseBean responseBean = TuningHttpsServer.INSTANCE.requestData(message);
+        String responseBeanDataJsStr = responseBean.getData();
+        JSONObject jsonObject = JSON.parseObject(responseBeanDataJsStr);
+        String serverVersionStr = jsonObject.getString("version");
+        boolean isContains = Arrays.asList(IDEConstant.COMPATIBLE_VERSION_LIST).contains(serverVersionStr);
+        if (!isContains) {
+            String serverOldTip = MessageFormat.format(
+                    TuningI18NServer.toLocale("plugins_hyper_tuner_version_server_old"),
+                    IDEConstant.COMPATIBLE_VERSION_LIST[0], serverVersionStr);
+            IDENotificationUtil.notificationCommon(new NotificationBean(
+                    UserManageConstant.CONFIG_TITLE, serverOldTip, NotificationType.WARNING));
+        }
+        return isContains;
     }
 
     @Override
