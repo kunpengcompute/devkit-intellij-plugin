@@ -163,6 +163,8 @@ public abstract class ServerConfigPanel extends IDEBasePanel {
         setLabel();
         initRadioButtonShow();
         certButtonChange();
+        certPanel.setVisible(false);
+        noneCertRadioButton.setSelected(true);
     }
 
     private void initRadioButtonShow() {
