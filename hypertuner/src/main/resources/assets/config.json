@@ -17,6 +17,9 @@
   "portVersion": [
     "2.3.T10"
   ],
+  "configVersion": [
+    "2.5.RC1"
+  ],
   "autoLoginConfig": [
     {
       "userName": "",
