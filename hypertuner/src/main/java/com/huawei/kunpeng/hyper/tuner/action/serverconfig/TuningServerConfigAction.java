@@ -32,9 +32,12 @@ import com.huawei.kunpeng.intellij.common.bean.RequestDataBean;
 import com.huawei.kunpeng.intellij.common.bean.ResponseBean;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.constant.UserManageConstant;
+import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.enums.HttpMethod;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
+import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
+import com.huawei.kunpeng.intellij.common.util.FileUtil;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.huawei.kunpeng.intellij.common.util.JsonUtil;
 import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
@@ -54,7 +57,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -178,7 +181,7 @@ public class TuningServerConfigAction extends ServerConfigAction {
     }
 
     /**
-     * 通过调用接口获取服务端版本，判断是否当前版本插件是否支持
+     * 通过调用接口获取服务端版本，读取本地配置文件中的兼容性配置字段，判断是否当前版本插件是否支持
      *
      * @return boolean true：兼容当前服务端版本，false：不兼容当前服务端版本，并在右下角提示弹窗
      */
@@ -190,11 +193,25 @@ public class TuningServerConfigAction extends ServerConfigAction {
         String responseBeanDataJsStr = responseBean.getData();
         JSONObject jsonObject = JSON.parseObject(responseBeanDataJsStr);
         String serverVersionStr = jsonObject.getString("version");
-        boolean isContains = Arrays.asList(IDEConstant.COMPATIBLE_VERSION_LIST).contains(serverVersionStr);
+
+        boolean isContains = true; // 默认插件兼容所有版本插件
+        Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
+        Object configVersionObj = config.get(ConfigProperty.CONFIG_VERSION.vaLue());
+        String minimumVersion = "";
+        if (configVersionObj instanceof List) {
+            List configList = (List) configVersionObj;
+            if (!configList.isEmpty()) {
+                // 配置文件中兼容性版本不为空，则说明对兼容性有要求
+                isContains = configList.contains(serverVersionStr);
+                minimumVersion = configList.get(0) + "";
+            } else {
+                Logger.warn("Plugin compatibility is not configured, all background version are compatible by default");
+            }
+        }
         if (!isContains) {
             String serverOldTip = MessageFormat.format(
                     TuningI18NServer.toLocale("plugins_hyper_tuner_version_server_old"),
-                    IDEConstant.COMPATIBLE_VERSION_LIST[0], serverVersionStr);
+                    minimumVersion, serverVersionStr);
             IDENotificationUtil.notificationCommon(new NotificationBean(
                     UserManageConstant.CONFIG_TITLE, serverOldTip, NotificationType.WARNING));
         }

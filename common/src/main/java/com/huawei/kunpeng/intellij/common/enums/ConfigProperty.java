@@ -24,6 +24,7 @@ package com.huawei.kunpeng.intellij.common.enums;
 public enum ConfigProperty {
     PORT_CONFIG("portConfig"),
     PORT_VERSION("portVersion"),
+    CONFIG_VERSION("configVersion"),
     AUTO_LOGIN_CONFIG("autoLoginConfig"),
     PKG_URL("pkg_url"),
     UPG_PKG_URL("upg_pkg_url"),
