@@ -210,11 +210,7 @@
 
         var currLang = top.navigatorPage.data.webSession.language
         var loadingEl = document.querySelector(".text")
-        if (currLang === "en-us") {
-             loadingEl.innerText = 'Page loading...'
-        } else {
-            loadingEl.innerText = '页面加载中...'
-        }
+        loadingEl.innerText = 'Loading...'
         let myFrame = document.getElementById("myFrame");
         var url ="http://127.0.0.1:"+ top.navigatorPage.data.pageParams.localPort+"/";
         myFrame.src =url;
