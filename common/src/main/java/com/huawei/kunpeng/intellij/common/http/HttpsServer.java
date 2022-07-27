@@ -93,15 +93,12 @@ public abstract class HttpsServer {
         Object ctxObj = IDEContext.getValueFromGlobalContext(null, message.getModule());
         if (ctxObj instanceof Map) {
             Map<String, Object> context = (Map<String, Object>) ctxObj;
-            String ip = Optional.ofNullable(context.get(BaseCacheVal.IP.vaLue()))
-                    .map(Object::toString).orElse(null);
-            String port = Optional.ofNullable(context.get(BaseCacheVal.PORT.vaLue()))
-                    .map(Object::toString).orElse(null);
+            String ip = Optional.ofNullable(context.get(BaseCacheVal.IP.vaLue())).map(Object::toString).orElse(null);
+            String port = Optional.ofNullable(context.get(BaseCacheVal.PORT.vaLue())).map(Object::toString).orElse(null);
             if (ip == null && port == null) {
-                IDENotificationUtil.notificationCommon(
-                        new NotificationBean("", I18NServer.toLocale("plugins_common_message_configServer"),
-                                NotificationType.WARNING));
-                    throw new IDEException();
+                IDENotificationUtil.notificationCommon(new NotificationBean
+                        ("", I18NServer.toLocale("plugins_common_message_configServer"), NotificationType.WARNING));
+                throw new IDEException();
             }
             // 组装完整的url
             String url = IDEConstant.URL_PREFIX +
@@ -134,9 +131,8 @@ public abstract class HttpsServer {
         try {
             // 预留异常标记
             String rep = sendSSLRequest(request).get();
-            response = JsonUtil.jsonToDataModel(
-                    StringUtil.getStrFromDiffCharset(rep, IDEConstant.CHARSET_UTF8, IDEConstant.CHARSET_UTF8),
-                    ResponseBean.class);
+            response = JsonUtil.jsonToDataModel(StringUtil.getStrFromDiffCharset(rep, IDEConstant.CHARSET_UTF8,
+                    IDEConstant.CHARSET_UTF8), ResponseBean.class);
             if (response == null) {
                 return Optional.empty();
             }
@@ -167,8 +163,8 @@ public abstract class HttpsServer {
             // 创建https连接
             SSLContext sc = SSLContext.getInstance("TLSv1.2");
             sc.init(null, trustManagers, new java.security.SecureRandom());
-            URL console = new URL(CommonUtil.encodeForURL(StringUtil.getStrCharsetByOSToServer(
-                    StringUtil.getUrlIncludeParams(request.getUrl(), request.getUrlParams()))));
+            URL console = new URL(CommonUtil.encodeForURL(StringUtil.getStrCharsetByOSToServer(StringUtil
+                    .getUrlIncludeParams(request.getUrl(), request.getUrlParams()))));
             URLConnection urlConnection = console.openConnection();
             if (urlConnection instanceof HttpsURLConnection) {
                 conn = (HttpsURLConnection) urlConnection;
@@ -189,8 +185,7 @@ public abstract class HttpsServer {
             Logger.error("invoke HttpUtils.sendSSLRequest ConnectException | SocketTimeoutException!!!");
             return displayServerAbnormalPanel();
         } catch (IOException | KeyManagementException | NoSuchAlgorithmException e) {
-            Logger.error("invoke HttpUtils.sendSSLRequest IOException|KeyManagementException" +
-                    "|NoSuchAlgorithmException!!");
+            Logger.error("invoke HttpUtils.sendSSLRequest IOException|KeyManagementException" + "|NoSuchAlgorithmException!!");
         } finally {
             HttpsURLConnection finalConn = conn;
             FileUtil.closeStreams(null, () -> {
@@ -272,8 +267,7 @@ public abstract class HttpsServer {
             if (rspCode != HttpURLConnection.HTTP_OK && rspCode != HttpURLConnection.HTTP_UNAUTHORIZED
                     && rspCode != HttpURLConnection.HTTP_BAD_REQUEST
                     && rspCode != HttpStatus.HTTP_423_LOCKED.value()) {
-                Logger.error("Detail message is {} and response message is {}", message,
-                        "Request Error.");
+                Logger.error("Detail message is {} and response message is {}", message, "Request Error.");
             }
         } catch (IOException e) {
             Logger.error("Failed call the api.IOException");
@@ -291,9 +285,8 @@ public abstract class HttpsServer {
      * @return Optional<String>
      */
     protected Optional<String> generateResponse(String responseStr, HttpURLConnection conn) {
-        ResponseBean response = JsonUtil.jsonToDataModel(
-                StringUtil.getStrFromDiffCharset(responseStr, IDEConstant.CHARSET_UTF8, IDEConstant.CHARSET_UTF8),
-                ResponseBean.class);
+        ResponseBean response = JsonUtil.jsonToDataModel(StringUtil.getStrFromDiffCharset(responseStr,
+                IDEConstant.CHARSET_UTF8, IDEConstant.CHARSET_UTF8), ResponseBean.class);
         if (response == null) {
             return Optional.empty();
         }
@@ -341,8 +334,8 @@ public abstract class HttpsServer {
     protected void handleFinally(HttpURLConnection conn, BufferedReader br) throws IOException {
         FileUtil.closeStreams(br, null);
         // 406,423为非标自定义返回码，InputStream不会有任何内容，报IOException异常
-        if (HttpStatus.getHttpStatusByValue(conn.getResponseCode()) != HttpStatus.HTTP_406_NOT_ACCEPTABLE &&
-                HttpStatus.getHttpStatusByValue(conn.getResponseCode()) != HttpStatus.HTTP_423_LOCKED) {
+        if (HttpStatus.getHttpStatusByValue(conn.getResponseCode()) != HttpStatus.HTTP_406_NOT_ACCEPTABLE
+                && HttpStatus.getHttpStatusByValue(conn.getResponseCode()) != HttpStatus.HTTP_423_LOCKED) {
             FileUtil.closeStreams(conn.getInputStream(), null);
         }
         FileUtil.closeStreams(conn.getErrorStream(), null);
@@ -495,8 +488,7 @@ public abstract class HttpsServer {
          * @throws CertificateException certificateException
          */
         @Override
-        public void checkServerTrusted(X509Certificate[] x509Certificates, String authType)
-                throws CertificateException {
+        public void checkServerTrusted(X509Certificate[] x509Certificates, String authType) throws CertificateException {
             try {
                 for (X509Certificate cert : x509Certificates) {
                     cert.checkValidity();

@@ -97,13 +97,13 @@ public class NoNetworkForFeedbackDialog extends IdeaDialog {
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
-        JLabel installTitle = new JLabel(CommonI18NServer.toLocale("plugins_porting_message_voc_tips"));
+        JLabel installTitle = new JLabel(CommonI18NServer.toLocale("plugins_common_message_voc_tips"));
         installTitle.setIcon(ICON_INFO_ICON);
         // 主面板
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setPreferredSize(new Dimension(600, 278));
         centerPanel.add(installTitle, BorderLayout.NORTH);
-        centerPanel.add(panelWithHtmlListener(CommonI18NServer.toLocale("plugins_porting_message_voc"),
+        centerPanel.add(panelWithHtmlListener(CommonI18NServer.toLocale("plugins_common_message_voc"),
                 installTitle), BorderLayout.CENTER);
         JLabel vocIoc = new JLabel();
         vocIoc.setIcon(VOC_QR_ICON);

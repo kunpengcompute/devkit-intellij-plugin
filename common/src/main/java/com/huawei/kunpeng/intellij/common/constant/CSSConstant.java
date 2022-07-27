@@ -17,6 +17,7 @@
 package com.huawei.kunpeng.intellij.common.constant;
 
 import com.intellij.ui.Gray;
+
 import java.awt.Color;
 
 import javax.swing.ImageIcon;

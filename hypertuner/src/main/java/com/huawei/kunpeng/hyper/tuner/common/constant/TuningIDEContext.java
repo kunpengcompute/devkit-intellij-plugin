@@ -16,6 +16,8 @@
 
 package com.huawei.kunpeng.hyper.tuner.common.constant;
 
+import static com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus.IDE_STATUS_SERVER_CONFIG;
+
 import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningServerConfigWrapDialog;
 import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
@@ -26,13 +28,12 @@ import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
+
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.ui.DialogWrapper;
 
 import java.util.HashMap;
 import java.util.Optional;
-
-import static com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus.IDE_STATUS_SERVER_CONFIG;
 
 /**
  * IDE plugin全局上下文
@@ -48,8 +49,6 @@ public class TuningIDEContext<T> extends IDEContext {
     /**
      * get global PortingIDEPluginStatus
      *
-
-
      * @return IDEPluginStatus 获取PortingIDE状态值
      */
     public static IDEPluginStatus getTuningIDEPluginStatus() {
