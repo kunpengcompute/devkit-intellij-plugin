@@ -215,7 +215,7 @@ public class CommonHandler extends FunctionHandler {
         }
         String path = virtualFile.getPath();
         try {
-            FileUtil.writeFile(fileContent, path + fileName);
+            FileUtil.writeFile(fileContent, path + File.separator + fileName);
         } catch (IOException exception) {
             Logger.error("IOException when writeFile error!!");
             downloadNotify(false, null);
