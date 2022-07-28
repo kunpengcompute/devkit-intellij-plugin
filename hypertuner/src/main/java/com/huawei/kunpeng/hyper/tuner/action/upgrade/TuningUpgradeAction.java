@@ -97,7 +97,7 @@ public class TuningUpgradeAction extends SshAction {
                         + TuningI18NServer.toLocale("plugins_hyper_tuner_upgrade_failedSuffix");
         IDENotificationUtil.notificationForHyperlink(
                 new NotificationBean(
-                        CommonI18NServer.toLocale("plugins_tuning_upgrade_title"), failedContent, NotificationType.ERROR),
+                        TuningI18NServer.toLocale("plugins_tuning_upgrade_title"), failedContent, NotificationType.ERROR),
                 data -> {
                     HyperlinkEvent linkEvent = null;
                     if (data instanceof HyperlinkEvent) {
