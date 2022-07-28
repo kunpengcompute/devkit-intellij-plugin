@@ -72,5 +72,13 @@ public class CSSConstant {
      */
     public static final ImageIcon VOC_QR_ICON = new ImageIcon(CSSConstant.class.getResource(QR_INFO));
 
+    /**
+     * 提示信息字体颜色
+     */
+    public static final Color TEXT_TIP_INFO_COLOR = Gray._110;
 
+    /**
+     * 输入框低暗字体颜色
+     */
+    public static final Color TEXT_BOX_TIP_INFO_COLOR = Gray._88;
 }
