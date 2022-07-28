@@ -212,7 +212,8 @@ public class TuningHttpsServer extends HttpsServer {
     @Override
     public Optional<String> dealServerUnResponse(RequestDataBean request) {
         isTimer = request.getUrl().contains("auto-flag") || request.getUrl().contains("java-perf/api/guardians") ||
-                request.getUrl().contains("java-perf/api/records") || request.getUrl().contains("java-perf/guardians");
+                request.getUrl().contains("java-perf/api/records") || request.getUrl().contains("java-perf/guardians")||
+                request.getUrl().contains("/version");
         if (request.isNeedUploadFile()) {
             return handlerUploadFailed(request);
         }

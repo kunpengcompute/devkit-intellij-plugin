@@ -16,12 +16,17 @@
 
 package com.huawei.kunpeng.intellij.common;
 
+import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
+import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
+import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
+
+import com.intellij.notification.NotificationType;
 
 import org.cef.OS;
 
@@ -46,12 +51,12 @@ public class BaseCacheDataOpt {
     /**
      * 更新全局ip和端口
      *
-     * @param module 模块
-     * @param ip     ip地址
-     * @param port   端口
-     * @param localPort   本地nginx代理端口
+     * @param module    模块
+     * @param ip        ip地址
+     * @param port      端口
+     * @param localPort 本地nginx代理端口
      */
-    public static void updateGlobalIPAndPort(String module, String ip, String port,String localPort) {
+    public static void updateGlobalIPAndPort(String module, String ip, String port, String localPort) {
         Logger.info("update Global IP And Port");
         if (!StringUtil.stringIsEmpty(module) && ip != null && port != null) {
             IDEContext.setValueForGlobalContext(module, BaseCacheVal.IP.vaLue(), ip);
@@ -69,24 +74,33 @@ public class BaseCacheDataOpt {
         if (OS.isLinux()) {
             Logger.info("SystemOS is linux");
             IDEContext.setValueForGlobalContext(
-                null, BaseCacheVal.CURRENT_CHARSET.vaLue(), IDEConstant.CHARSET_UTF8);
+                    null, BaseCacheVal.CURRENT_CHARSET.vaLue(), IDEConstant.CHARSET_UTF8);
             IDEContext.setValueForGlobalContext(null, BaseCacheVal.SYSTEM_OS.vaLue(), SystemOS.LINUX);
             IDEContext.setValueForGlobalContext(null, BaseCacheVal.JCEF_DLL_EVN_PATH.vaLue(),
-                CommonUtil.getPluginJCEFPath());
+                    CommonUtil.getPluginJCEFPath());
+            osNotSupportTip();
         } else if (OS.isWindows()) {
             Logger.info("SystemOS is windows");
             IDEContext.setValueForGlobalContext(null,
-                BaseCacheVal.CURRENT_CHARSET.vaLue(), IDEConstant.CHARSET_ISO_8859_1);
+                    BaseCacheVal.CURRENT_CHARSET.vaLue(), IDEConstant.CHARSET_ISO_8859_1);
             IDEContext.setValueForGlobalContext(null, BaseCacheVal.SYSTEM_OS.vaLue(), SystemOS.WINDOWS);
             IDEContext.setValueForGlobalContext(null, BaseCacheVal.JCEF_DLL_EVN_PATH.vaLue(),
-                CommonUtil.getPluginJCEFPath());
+                    CommonUtil.getPluginJCEFPath());
         } else {
+            osNotSupportTip();
             Logger.info("SystemOS is others");
             IDEContext.setValueForGlobalContext(null,
-                BaseCacheVal.CURRENT_CHARSET.vaLue(), IDEConstant.CHARSET_ISO_8859_1);
+                    BaseCacheVal.CURRENT_CHARSET.vaLue(), IDEConstant.CHARSET_ISO_8859_1);
             IDEContext.setValueForGlobalContext(null, BaseCacheVal.SYSTEM_OS.vaLue(), SystemOS.OTHER);
             IDEContext.setValueForGlobalContext(null, BaseCacheVal.JCEF_DLL_EVN_PATH.vaLue(), null);
         }
         Logger.info("loading SystemOS successful");
+    }
+
+    public static void osNotSupportTip() {
+        Logger.warn("The plugin version not supports current Operate system");
+        String osTypeNotSupportTip = CommonI18NServer.toLocale("plugins_common_os_type_not_support");
+        IDENotificationUtil.notificationCommon(new NotificationBean("",
+                osTypeNotSupportTip, NotificationType.WARNING));
     }
 }

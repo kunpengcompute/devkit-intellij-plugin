@@ -16,8 +16,11 @@
 
 package com.huawei.kunpeng.hyper.tuner.webview.tuning.pagewebview;
 
+import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
+import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
+import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
 import com.huawei.kunpeng.intellij.common.util.JsonUtil;
 import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
@@ -59,6 +62,13 @@ public class IDELoginWebView extends WebView {
         pageParams.put("ip", ip);
         pageParams.put("port", port);
         pageParams.put("localPort", localPort);
+        boolean isLightThemeInContext = IDEContext.getValueFromGlobalContext(CommonUtil.getProjectName(),
+                BaseCacheVal.LIGHT_THEME.vaLue());
+        String currentTheme = "dark";
+        if (isLightThemeInContext) {
+            currentTheme = "light";
+        }
+        pageParams.put("currentTheme", currentTheme);
         NavigatorPageBean navigatorPage = MessageRouterHandler.generateNavigatorPage("/navigate",
                 "/", pageParams, sessionBean);
         super.createWebView(navigatorPage, null, "IDELoginWebView");

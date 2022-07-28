@@ -17,9 +17,12 @@
 package com.huawei.kunpeng.hyper.tuner.webview.tuning.handler;
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
+
+import com.huawei.kunpeng.hyper.tuner.model.JavaPerfOperateLogBean;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.constant.FileManageConstant;
+import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
 import com.huawei.kunpeng.intellij.common.log.Logger;
@@ -31,6 +34,7 @@ import com.huawei.kunpeng.intellij.common.util.ShellTerminalUtil;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
 import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 
+import com.alibaba.fastjson.JSONArray;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
@@ -39,8 +43,18 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
 /**
  * 公共的function处理器
@@ -93,7 +107,7 @@ public class CommonHandler extends FunctionHandler {
         }
         String path = virtualFile.getPath();
         try {
-            FileUtil.writeFile(fileContent, path + fileName);
+            FileUtil.writeFile(fileContent, path + File.separator + fileName);
         } catch (IOException exception) {
             Logger.error("IOException when writeFile error!!");
             downloadNotify(false, null);
@@ -131,7 +145,7 @@ public class CommonHandler extends FunctionHandler {
         if (saveFlag) {
             NotificationBean notificationBean = new NotificationBean(
                     FileManageConstant.DOWNLOAD_SUCCESS,
-                    FileManageConstant.DOWNLOAD_FAIL_TIP + "<html> <a href=\"#\">" + path + "</a></html>",
+                    FileManageConstant.DOWNLOAD_SUCCESS_TIP + "<html> <a href=\"#\">" + path + "</a></html>",
                     NotificationType.INFORMATION);
             IDENotificationUtil.notificationForHyperlink(
                     notificationBean,
@@ -139,11 +153,197 @@ public class CommonHandler extends FunctionHandler {
             );
         } else {
             IDENotificationUtil.notificationCommon(new NotificationBean(
-                    FileManageConstant.DOWNLOAD_SUCCESS,
-                    FileManageConstant.DOWNLOAD_SUCCESS_TIP,
+                    FileManageConstant.DOWNLOAD_FAIL,
+                    FileManageConstant.DOWNLOAD_FAIL_TIP,
                     NotificationType.ERROR
             ));
         }
+    }
+
+    /**
+     * 下载Base64格式图片文件
+     *
+     * @param baseStr baseStr
+     * @param imagePath  imagePath
+     */
+    public boolean base64ChangeImage(String baseStr, String imagePath) {
+        if (baseStr == null) {
+            return false;
+        }
+        baseStr = baseStr.substring(baseStr.indexOf(",") + 1);
+        Base64.Decoder decoder = Base64.getDecoder();
+        try (OutputStream out = new FileOutputStream(imagePath)) {
+            // 解密
+            byte[] bytes = decoder.decode(baseStr);
+            // 处理数据
+            for (int i = 0; i < bytes.length; i++) {
+                if (bytes[i] < 0) {
+                    bytes[i] += 256;
+                }
+            }
+            out.write(bytes);
+            out.flush();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    /**
+     * 下载Bolb格式文件
+     *
+     * @param message message
+     * @param module  module
+     */
+    public void downloadFileByBlob(MessageBean message, String module) {
+        // 获取message传来的参数，进行校验
+        Map<String, String> messageData = JsonUtil.getJsonObjFromJsonStr(message.getData());
+
+        String fileName = messageData.get("fileName");
+        String fileContent = messageData.get("fileContent");
+        // 下载内容
+        if (fileContent == null) {
+            IDENotificationUtil.notificationCommon(new NotificationBean(
+                    FileManageConstant.DOWNLOAD_FAIL, FileManageConstant.DOWNLOAD_EMPTY, NotificationType.ERROR));
+            return;
+        }
+        final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
+        Project project = CommonUtil.getDefaultProject();
+        final VirtualFile virtualFile = FileChooser.chooseFile(descriptor, project, null);
+        if (virtualFile == null) {
+            return;
+        }
+        String path = virtualFile.getPath();
+        try {
+            FileUtil.writeFile(fileContent, path + File.separator + fileName);
+        } catch (IOException exception) {
+            Logger.error("IOException when writeFile error!!");
+            downloadNotify(false, null);
+        }
+        downloadNotify(true, path);
+    }
+
+    /**
+     * 下载JSON格式文件
+     *
+     * @param message message
+     * @param module  module
+     */
+    public void downloadFileByJson(MessageBean message, String module) {
+        // 获取message传来的参数，进行校验
+        Map<String, String> messageData = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        String fileName = messageData.get("fileName");
+        String fileContent = messageData.get("fileContent");
+        if (fileName.contains("/")) {
+            fileName = fileName.replace("/", "_");
+        }
+        // 下载内容
+        if (fileContent == null) {
+            IDENotificationUtil.notificationCommon(new NotificationBean(
+                    FileManageConstant.DOWNLOAD_FAIL, FileManageConstant.DOWNLOAD_EMPTY, NotificationType.ERROR));
+            return;
+        }
+        final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
+        Project project = CommonUtil.getDefaultProject();
+        final VirtualFile virtualFile = FileChooser.chooseFile(descriptor, project, null);
+        if (virtualFile == null) {
+            return;
+        }
+        String path = virtualFile.getPath();
+        try {
+            FileUtil.createJsonFile(fileContent, path, fileName);
+        } catch (IOException exception) {
+            Logger.error("IOException when writeFile error!!");
+            downloadNotify(false, null);
+        }
+        downloadNotify(true, path);
+    }
+
+    /**
+     * 下载JAVA操作日志
+     *
+     * @param message message
+     * @param module  module
+     */
+    public void downloadJavaOperLog(MessageBean message, String module) throws IOException {
+        // 获取message传来的参数，进行校验
+        Map<String, Object> messageData = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        String fileName = (String) messageData.get("fileName");
+        Object membersObj = messageData.get("fileContent");
+        List<JavaPerfOperateLogBean> sysPerfOperateLogBeans = new ArrayList<>();
+        if (membersObj instanceof JSONArray) {
+            JSONArray logArr = (JSONArray) membersObj;
+            JavaPerfOperateLogBean sysPerfOperateLogBean;
+            for (int mun = 0; mun < logArr.size(); mun++) {
+                sysPerfOperateLogBean = logArr.getObject(mun, JavaPerfOperateLogBean.class);
+                sysPerfOperateLogBeans.add(sysPerfOperateLogBean);
+            }
+        }
+        final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
+        Project project = CommonUtil.getDefaultProject();
+        final VirtualFile virtualFile = FileChooser.chooseFile(descriptor, project, null);
+        if (virtualFile == null) {
+            return;
+        }
+        String path = virtualFile.getPath();
+        CSVPrinter csvPrinter = buildCSVPrinter(sysPerfOperateLogBeans, path, fileName);
+        csvPrinter.close();
+        downloadNotify(true, path);
+    }
+
+    /**
+     * 构建CSV
+     *
+     * @param list list
+     * @param pathLog pathLog
+     * @param fileName fileName
+     * @return CSVPrinter
+     * @throws IOException IOException
+     */
+    private static CSVPrinter buildCSVPrinter(List<JavaPerfOperateLogBean> list, String pathLog, String fileName) throws IOException {
+        FileOutputStream fos = new FileOutputStream(pathLog + IDEConstant.PATH_SEPARATOR + fileName);
+        CSVFormat csvFormat = CSVFormat.DEFAULT.withRecordSeparator(System.lineSeparator());
+        OutputStreamWriter osw = new OutputStreamWriter(fos, "GBK");
+        CSVPrinter csvPrinter = new CSVPrinter(osw, csvFormat);
+
+        csvPrinter.printRecord(Stream.of("username", "operation", "resource", "clientIp", "succeed", "createTime")
+                .collect(Collectors.toList()));
+
+
+        if (!list.isEmpty()) {
+            for (JavaPerfOperateLogBean operateLogBean : list) {
+                csvPrinter.printRecord(operateLogBean.getUsername(), operateLogBean.getOperation(),
+                        operateLogBean.getResource(), operateLogBean.getClientIp() + "\t",
+                        operateLogBean.getSucceed(), operateLogBean.getCreateTime());
+            }
+        }
+        return csvPrinter;
+    }
+
+    /**
+     * 下载base64编码图片
+     */
+    public void downloadBase64Png(MessageBean message, String module) {
+        // 获取message传来的参数，进行校验
+        Map<String, String> messageData = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        String fileName = messageData.get("fileName");
+        String fileContent = messageData.get("fileContent");
+
+        // 下载内容
+        if (fileContent == null) {
+            IDENotificationUtil.notificationCommon(new NotificationBean(
+                    FileManageConstant.DOWNLOAD_FAIL, FileManageConstant.DOWNLOAD_EMPTY, NotificationType.ERROR));
+            return;
+        }
+        final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
+        Project project = CommonUtil.getDefaultProject();
+        final VirtualFile virtualFile = FileChooser.chooseFile(descriptor, project, null);
+        if (virtualFile == null) {
+            return;
+        }
+        String path = virtualFile.getPath();
+        boolean isSaveFlag = base64ChangeImage(fileContent, path + File.separator + fileName);
+        downloadNotify(isSaveFlag, path);
     }
 }
 

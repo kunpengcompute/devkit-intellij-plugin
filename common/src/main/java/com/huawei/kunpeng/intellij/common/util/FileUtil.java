@@ -22,7 +22,9 @@ import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
 import com.huawei.kunpeng.intellij.common.log.Logger;
+
 import com.intellij.notification.NotificationType;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -426,6 +428,73 @@ public class FileUtil {
                 new OutputStreamWriter(new FileOutputStream(fileDef), StandardCharsets.UTF_8));
         writer.write(content);
         writer.flush();
+    }
+
+    /**
+     * 将json数据保存到指定的目录下的指定文件中
+     *
+     * @param jsonString json字符串
+     * @param filePath   文件路径
+     * @param fileName   文件名称
+     * @return 是否保存成功
+     * @throws IOException IOException
+     */
+    public static boolean createJsonFile(String jsonString, String filePath, String fileName) throws IOException {
+        String strFormat = jsonString;
+        if (fileName.endsWith(".json")) {
+            // 生成json格式文件
+            if (strFormat.contains("'")) {
+                // 将单引号转义一下，因为JSON串中的字符串类型可以单引号引起来的
+                strFormat = strFormat.replaceAll("'", "\\'");
+            }
+            if (strFormat.contains("\"")) {
+                // 将双引号转义一下，因为JSON串中的字符串类型可以单引号引起来的
+                strFormat = strFormat.replaceAll("\"", "\\\"");
+            }
+            if (strFormat.contains("\r\n")) {
+                // 将回车换行转换一下，因为JSON串中字符串不能出现显式的回车换行
+                strFormat = strFormat.replaceAll("\r\n", "\\u000d\\u000a");
+            }
+            if (strFormat.contains("\n")) {
+                // 将换行转换一下，因为JSON串中字符串不能出现显式的换行
+                strFormat = strFormat.replaceAll("\n", "\\u000a");
+            }
+        }
+        // 拼接文件完整路径
+        String fullPath = filePath + File.separator + fileName;
+        if (!validateFilePath(fullPath)) {
+            Logger.error("File path invalid.");
+            return false;
+        }
+        // 保证创建一个新文件
+        File file = new File(fullPath);
+        if (!file.getParentFile().exists()) {
+            // 如果父目录不存在，创建父目录
+            file.getParentFile().mkdirs();
+        }
+        if (file.exists()) {
+            // 如果已存在,删除旧文件
+            file.delete();
+        }
+        // 标记文件生成是否成功
+        boolean flag = true;
+        boolean isFile = file.createNewFile();
+        if (!isFile) {
+            Logger.error("Its create new File fail when export Profiling sampling!");
+            flag = false;
+        }
+        // 将格式化后的字符串写入文件
+        try (
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                Writer write = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
+        ) {
+            write.write(strFormat);
+            write.flush();
+        } catch (IOException ex) {
+            throw new IOException("Its IOException when export Profiling sampling!");
+        }
+        // 返回是否成功的标记
+        return flag;
     }
 
     /**

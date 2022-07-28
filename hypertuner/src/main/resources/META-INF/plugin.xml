@@ -1,5 +1,5 @@
 <idea-plugin require-restart="true">
-    <version>2.3.3</version>
+    <version>2.3.5</version>
     <!--插件id-->
     <id>com.huawei.kunpeng.hyper.tuner</id>
     <!--插件name-->
@@ -26,18 +26,22 @@
       This plug-in needs to run with the background service, which must be installed on Kunpeng-powered servers. The version mapping is as follows:
       <br/>
       <table cellpadding="0" cellspacing="0" style="border:1px solid gray; border-bottom: none; border-right: none;">
-         <tr>
+        <tr>
             <th style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">Plug-in Version</th>
             <th style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">Background Version</th>
-         </tr>
-          <tr>
+        </tr>
+        <tr>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.5</td>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.5.RC2</td>
+        </tr>
+        <tr>
             <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.3</td>
             <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.T10</td>
-         </tr>
-         <tr>
+        </tr>
+        <tr>
             <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.2</td>
             <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.T10</td>
-         </tr>
+        </tr>
       </table>
       <br>
       <p> You can use either of the following method to obtain the background version:</p>
@@ -127,6 +131,10 @@
       <br>
     ]]></description>
     <change-notes><![CDATA[
+    <h2><b>2.3.5（2022-07-30）</b></h2>
+     <ul type="circle">
+        <li>After the Hyper Tuner version 2.5.RC2 later, the basic functions of the plugin set Hyper Tuner web side remain the same.</li>
+    </ul>
     <h2><b>2.3.3（2021-12-30）</b></h2>
      <ul type="circle">
         <li>Added the entrance for helping developers new to Kunpeng.</li>
