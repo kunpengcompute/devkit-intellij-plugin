@@ -32,22 +32,11 @@ public class NginxUtil {
      * 配置文件所在目录
      */
     private static final String START_NGINX_BAT = "\\nginx\\nginx-1.18.0\\start_nginx.bat";
-    private static final String START_NGINX_VBS = "\\nginx\\nginx-1.18.0\\start_nginx.vbs";
 
     /**
      * 停止nginx服务bat脚本
      */
     public static final String STOP_NGINX_BAT = "\\nginx\\nginx-1.18.0\\stop_nginx.bat";
-
-    /**
-     * 停止nginx服务Vbs脚本
-     */
-    public static final String STOP_NGINX_VBS = "\\nginx\\nginx-1.18.0\\stop_nginx.vbs";
-
-    /**
-     * 换行符
-     */
-    public static final String NEW_LINE = "\n";
 
     /**
      * 更新 nginx 配置文件
@@ -64,12 +53,10 @@ public class NginxUtil {
 
         // 写入启动nginx配置bat脚本
         writeNginxStartBat();
-        writeNginxStartVbs();
         writeNginxStopBat();
-        writeNginxStopVbs();
         try {
             // 启动 nginx bat脚本
-            startVbs();
+            startBat();
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -89,10 +76,6 @@ public class NginxUtil {
                 fileWriter = new FileWriter(pluginPath + START_NGINX_BAT);
             } else if (content.contains("title kill nginx service")) {
                 fileWriter = new FileWriter(pluginPath + STOP_NGINX_BAT);
-            } else if (content.contains(START_NGINX_BAT)) {
-                fileWriter = new FileWriter(pluginPath + START_NGINX_VBS);
-            } else if (content.contains(STOP_NGINX_BAT)) {
-                fileWriter = new FileWriter(pluginPath + STOP_NGINX_VBS);
             } else {
                 fileWriter = new FileWriter(pluginPath + CONF_PATH);
             }
@@ -132,45 +115,24 @@ public class NginxUtil {
     }
 
     /**
-     * 写入启动nginx关闭服务vbs脚本
-     */
-    public static void writeNginxStopVbs() {
-        String pluginPath = CommonUtil.getPluginInstalledPath();
-        String content = "set ws = WScript.CreateObject(\"WScript.Shell\")" + NEW_LINE +
-                "ws.Run\t\"" + pluginPath + START_NGINX_BAT + "\", 0";
-        saveAsFileWriter(content);
-    }
-
-    /**
-     * 写入启动nginx关闭服务vbs脚本
-     */
-    public static void writeNginxStartVbs() {
-        String pluginPath = CommonUtil.getPluginInstalledPath();
-        String content = "set ws = WScript.CreateObject(\"WScript.Shell\")" + NEW_LINE +
-                "ws.Run\t\"" + pluginPath + STOP_NGINX_BAT + "\", 0";
-        saveAsFileWriter(content);
-    }
-
-
-    /**
      * 启动bat脚本
      */
-    public static void startVbs() {
+    public static void startBat() {
         String pluginPath = CommonUtil.getPluginInstalledPath();
         try {
-            Runtime.getRuntime().exec("wscript.exe " + pluginPath + START_NGINX_VBS);
+            Runtime.getRuntime().exec("cmd /c " + pluginPath + START_NGINX_BAT);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
     /**
-     * 启动停止nginx服务bat脚本
+     * 启动关闭Nginx服务bat脚本
      */
-    public static void startStopVbs() {
+    public static void startStopBat() {
         String pluginPath = CommonUtil.getPluginInstalledPath();
         try {
-            Runtime.getRuntime().exec("wscript.exe " + pluginPath + STOP_NGINX_VBS);
+            Runtime.getRuntime().exec("cmd /c " + pluginPath + STOP_NGINX_BAT);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

@@ -190,6 +190,9 @@ public class TuningServerConfigAction extends ServerConfigAction {
         RequestDataBean message = new RequestDataBean(TuningIDEConstant.TOOL_NAME_TUNING, SERVER_VERSION_URL,
                 HttpMethod.GET.vaLue(), false);
         ResponseBean responseBean = TuningHttpsServer.INSTANCE.requestData(message);
+        if (responseBean == null) {
+            return false;
+        }
         String responseBeanDataJsStr = responseBean.getData();
         JSONObject jsonObject = JSON.parseObject(responseBeanDataJsStr);
         String serverVersionStr = jsonObject.getString("version");

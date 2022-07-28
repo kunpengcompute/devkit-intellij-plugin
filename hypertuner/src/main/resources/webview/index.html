@@ -81,7 +81,6 @@
     </style>
     <script>
     top.navigatorPage;
-
     top.webviewSession = top.webviewSession || {
         setItem: function (key, value) {
             top.webviewSession[key] = value;
@@ -160,12 +159,47 @@
                 }, null)
             } else if (e.data.messageType === 'receivedSuccess') {
                 clearInterval(time)
+            } else if (e.data.messageType === 'downloadBase64Png') {
+                postMessage({
+                    cmd:"downloadBase64Png",
+                    data:{
+                        fileName: e.data.fileName,
+                        fileContent: e.data.fileContent
+                    }
+                }, null)
+            }  else if (e.data.messageType === 'downloadFileByBlob') {
+               const reader = new FileReader();
+               reader.readAsDataURL(e.data.fileContent);
+               reader.onload = function(data) {
+                window.parent.postMessage({
+                    cmd:"downloadFileByBlob",
+                    data:{
+                        fileName: e.data.fileName,
+                        fileContent: data.target.result
+                    }
+                }, null)
+               }
+            } else if (e.data.messageType === 'downloadFileByJson') {
+                postMessage({
+                    cmd:"downloadFileByJson",
+                    data:{
+                        fileName: e.data.fileName,
+                        fileConent: e.data.fileConent
+                    }
+                }, null)
+            } else if (e.data.messageType === 'downloadJavaOperLog') {
+                postMessage({
+                    cmd:"downloadJavaOperLog",
+                    data:{
+                        fileName: e.data.fileName,
+                        fileConent: e.data.fileConent
+                    }
+                }, null)
             }
         }
     })
 
      window.onload= function (){
-             console.log("    top.navigatorPage == ",     top.navigatorPage);
         let currentTheme = top.navigatorPage.data.pageParams.currentTheme;
         var mask = document.getElementById("maskBox");
         if(currentTheme === 'dark'){
@@ -176,11 +210,7 @@
 
         var currLang = top.navigatorPage.data.webSession.language
         var loadingEl = document.querySelector(".text")
-        if (currLang === "en-us") {
-             loadingEl.innerText = 'Page loading...'
-        } else {
-            loadingEl.innerText = '页面加载中...'
-        }
+        loadingEl.innerText = 'Loading...'
         let myFrame = document.getElementById("myFrame");
         var url ="http://127.0.0.1:"+ top.navigatorPage.data.pageParams.localPort+"/";
         myFrame.src =url;
@@ -210,7 +240,6 @@
                     animation: ball-spin-fade-loader 1s -1s infinite linear
                 "></div>
             </div>
-
             <div class="circleItem" style="
                     width: 25px;
                     height: 25px;
@@ -318,14 +347,14 @@
    let time = '';
    var receiveUrl = "http://127.0.0.1:"+ top.navigatorPage.data.pageParams.localPort;
    let myFrame1 = document.getElementById("myFrame");
-    var hostMessage={
+    var hostMessage = {
         serverAddr : top.navigatorPage.data.pageParams.ip,
         serverPort : top.navigatorPage.data.pageParams.port,
         ideAddress: receiveUrl,
         ideType: 'isIntellij'
     }
     time = setInterval(() => {
-     myFrame1.contentWindow.postMessage(JSON.stringify(hostMessage), receiveUrl);
+     myFrame1.contentWindow.postMessage(JSON.stringify(hostMessage), '*');
     }, 500);
 </script>
 </html>

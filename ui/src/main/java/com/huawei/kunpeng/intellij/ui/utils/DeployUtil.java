@@ -128,7 +128,7 @@ public class DeployUtil extends ShellTerminalUtil {
                 IDENotificationUtil.notificationCommon(
                         new NotificationBean(
                                 CommonI18NServer.toLocale("plugins_common_button_connect"),
-                                CommonI18NServer.toLocale("plugins_porting_ssh_key_error"),
+                                CommonI18NServer.toLocale("plugins_common_ssh_key_error"),
                                 NotificationType.ERROR));
             }
         }
@@ -294,13 +294,13 @@ public class DeployUtil extends ShellTerminalUtil {
     }
 
     private static void showErrorMessage(SshConfig config) {
-        String message = CommonI18NServer.toLocale("plugins_porting_testConn_keyFail");
+        String message = CommonI18NServer.toLocale("plugins_common_testConn_keyFail");
         if (ValidateUtils.isNotEmptyString(config.getPassword())) {
-            message = CommonI18NServer.toLocale("plugins_porting_testConn_psdFail");
+            message = CommonI18NServer.toLocale("plugins_common_testConn_psdFail");
         }
         IDENotificationUtil.notificationCommon(
                 new NotificationBean(
-                        CommonI18NServer.toLocale("plugins_porting_testConn_title"), message, NotificationType.ERROR));
+                        CommonI18NServer.toLocale("plugins_common_testConn_title"), message, NotificationType.ERROR));
     }
 
     /**
@@ -349,8 +349,8 @@ public class DeployUtil extends ShellTerminalUtil {
                             if (connect(config)) {
                                 IDENotificationUtil.notificationCommon(
                                         new NotificationBean(
-                                                CommonI18NServer.toLocale("plugins_porting_testConn_title"),
-                                                CommonI18NServer.toLocale("plugins_porting_testConn_ok"),
+                                                CommonI18NServer.toLocale("plugins_common_testConn_title"),
+                                                CommonI18NServer.toLocale("plugins_common_testConn_ok"),
                                                 NotificationType.INFORMATION));
                                 // 解开okAction禁用
                                 actionOperate.actionOperate(true);

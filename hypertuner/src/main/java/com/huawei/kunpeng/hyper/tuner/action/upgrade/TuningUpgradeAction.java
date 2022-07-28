@@ -24,9 +24,9 @@ import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningInstallUpgradeWrapDialog;
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
+import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-import com.huawei.kunpeng.intellij.common.util.I18NServer;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.huawei.kunpeng.intellij.ui.action.SshAction;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.InstallUpgradeWrapDialog;
@@ -97,7 +97,7 @@ public class TuningUpgradeAction extends SshAction {
                         + TuningI18NServer.toLocale("plugins_hyper_tuner_upgrade_failedSuffix");
         IDENotificationUtil.notificationForHyperlink(
                 new NotificationBean(
-                        I18NServer.toLocale("plugins_porting_upgrade_title"), failedContent, NotificationType.ERROR),
+                        CommonI18NServer.toLocale("plugins_tuning_upgrade_title"), failedContent, NotificationType.ERROR),
                 data -> {
                     HyperlinkEvent linkEvent = null;
                     if (data instanceof HyperlinkEvent) {
