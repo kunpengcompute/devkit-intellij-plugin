@@ -68,7 +68,7 @@ public class NginxUtil {
      *
      * @param content content
      */
-    private static void saveAsFileWriter(String content) {
+    public static void saveAsFileWriter(String content) {
         FileWriter fileWriter = null;
         try {
             String pluginPath = CommonUtil.getPluginInstalledPath();
@@ -90,12 +90,12 @@ public class NginxUtil {
                 ex.printStackTrace();
             }
         }
-    }
+    }   
 
     /**
      * 写入启动nginx配置bat脚本
      */
-    private static void writeNginxStartBat() {
+    public static void writeNginxStartBat() {
         String pluginPath = CommonUtil.getPluginInstalledPath();
         String pluginPathStr = pluginPath.substring(0, 2);
         String content = MessageFormat.format(TuningI18NServer.toLocale(
