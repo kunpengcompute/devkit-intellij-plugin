@@ -22,6 +22,7 @@ import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
 import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
 import com.huawei.kunpeng.hyper.tuner.http.TuningHttpsServer;
+import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.CompatibilityDialog;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.TuningCertConfirmWrapDialog;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.TuningConfigSaveConfirmDialog;
 import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.ReconnectPanel;
@@ -113,25 +114,26 @@ public class TuningServerConfigAction extends ServerConfigAction {
         Map<String, String> param = JsonUtil.getValueIgnoreCaseFromMap(params, "param", Map.class);
         // 保存配置服务器，加载loading...
         preSaveConfig();
-        ApplicationManager.getApplication().executeOnPooledThread(() -> {
-            if (!save(param)) {
-                // 配置服务器失败处理
-                saveConfigFailedOperate();
-                IDENotificationUtil.notificationCommon(new NotificationBean(
-                        UserManageConstant.CONFIG_TITLE,
-                        TuningI18NServer.toLocale("plugins_common_message_responseError_messagePrefix"),
-                        NotificationType.ERROR));
-            } else {
-                // 配置服务器成功
-                // 判断服务器兼容性
-                checkServiceVersionCompatible();
+        if (!save(param)) {
+            // 配置服务器失败处理
+            saveConfigFailedOperate();
+            IDENotificationUtil.notificationCommon(new NotificationBean(
+                    UserManageConstant.CONFIG_TITLE,
+                    TuningI18NServer.toLocale("plugins_common_message_responseError_messagePrefix"),
+                    NotificationType.ERROR));
+        } else {
+            // 配置服务器成功
+            // 判断服务器兼容性
+            boolean isCompatible = checkServiceVersionCompatible();
+            if (isCompatible) {
+                // 仅在版本适配的情况下打开 web view 页面，允许用户使用
                 ApplicationManager.getApplication().invokeLater(() -> {
                     NginxUtil.updateNginxConfig(param.get("ip"), param.get("port"), param.get("localPort"));
                     // 打开web首页
                     IDELoginEditor.openPage(param.get("localPort"));
                 });
             }
-        });
+        }
     }
 
     /**
@@ -191,6 +193,7 @@ public class TuningServerConfigAction extends ServerConfigAction {
                 HttpMethod.GET.vaLue(), false);
         ResponseBean responseBean = TuningHttpsServer.INSTANCE.requestData(message);
         if (responseBean == null) {
+            Logger.warn("An error occurred while getting the server version, the response is null");
             return false;
         }
         String responseBeanDataJsStr = responseBean.getData();
@@ -211,12 +214,14 @@ public class TuningServerConfigAction extends ServerConfigAction {
                 Logger.warn("Plugin compatibility is not configured, all background version are compatible by default");
             }
         }
+        Logger.info("The current plugin version compatibility is " + isContains);
         if (!isContains) {
             String serverOldTip = MessageFormat.format(
                     TuningI18NServer.toLocale("plugins_hyper_tuner_version_server_old"),
                     minimumVersion, serverVersionStr);
-            IDENotificationUtil.notificationCommon(new NotificationBean(
-                    UserManageConstant.CONFIG_TITLE, serverOldTip, NotificationType.WARNING));
+            String title = TuningI18NServer.toLocale("plugins_hyper_tuner_version_tip");
+            CompatibilityDialog dialog = new CompatibilityDialog(title, serverOldTip);
+            dialog.displayPanel();
         }
         return isContains;
     }
