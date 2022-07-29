@@ -79,13 +79,9 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
         // 将plugin设置为配置服务器状态
         IDEContext.setIDEPluginStatus(toolName, IDEPluginStatus.IDE_STATUS_SERVER_DEPLOY);
         // check connection is ok
-        boolean canConnServer = false;
-        try {
-            canConnServer = IDENetUtils.isPortUsing(host, Integer.parseInt(port), 3000);
-        } catch (UnknownHostException e) {
-            Logger.error("check connection error, message is " + e.getMessage());
-        }
-        if (canConnServer) {
+        ResponseBean response = getServiceConfigResponse();
+        if (response != null &&
+                (successCode().equals(response.getCode()) || successCode().equals(response.getStatus()))) {
             if (!HttpsServer.isCertConfirm && Boolean.parseBoolean(params.get("useCertFlag"))) {
                 serverCertConfirmFailed(toolName, host);
                 return false;
