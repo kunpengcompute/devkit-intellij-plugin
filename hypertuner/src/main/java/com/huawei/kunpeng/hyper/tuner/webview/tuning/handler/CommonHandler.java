@@ -323,7 +323,7 @@ public class CommonHandler extends FunctionHandler {
     /**
      * 下载base64编码图片
      */
-    public void downloadBase64Png(MessageBean message, String module) {
+    public void downloadBase64Code(MessageBean message, String module) {
         // 获取message传来的参数，进行校验
         Map<String, String> messageData = JsonUtil.getJsonObjFromJsonStr(message.getData());
         String fileName = messageData.get("fileName");

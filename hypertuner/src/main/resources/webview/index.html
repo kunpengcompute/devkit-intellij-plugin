@@ -159,9 +159,9 @@
                 }, null)
             } else if (e.data.messageType === 'receivedSuccess') {
                 clearInterval(time)
-            } else if (e.data.messageType === 'downloadBase64Png') {
+            } else if (e.data.messageType === 'downloadBase64Code') {
                 postMessage({
-                    cmd:"downloadBase64Png",
+                    cmd:"downloadBase64Code",
                     data:{
                         fileName: e.data.fileName,
                         fileContent: e.data.fileContent
@@ -172,7 +172,7 @@
                reader.readAsDataURL(e.data.fileContent);
                reader.onload = function(data) {
                 window.parent.postMessage({
-                    cmd:"downloadFileByBlob",
+                    cmd:"downloadBase64Code",
                     data:{
                         fileName: e.data.fileName,
                         fileContent: data.target.result
