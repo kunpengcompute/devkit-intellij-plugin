@@ -29,7 +29,7 @@ public enum CMDFunction {
     NULL("null", null),
     GET_DATA("getData", FunctionManager.getFunctionHandler(CommonHandler.class)),
     OPEN_HYPERLINKS("openHyperlinks", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    DOWNLOAD_BASE64_PNG("downloadBase64Code", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    DOWNLOAD_BASE64_PNG("downloadBase64Png", FunctionManager.getFunctionHandler(CommonHandler.class)),
     DOWNLOAD_FILE_BY_BLOB("downloadFileByBlob", FunctionManager.getFunctionHandler(CommonHandler.class)),
     DOWNLOAD_FILE_BY_JSON("downloadFileByJson", FunctionManager.getFunctionHandler(CommonHandler.class)),
     DOWNLOAD_JAVA_OPER_LOG("downloadJavaOperLog", FunctionManager.getFunctionHandler(CommonHandler.class)),
