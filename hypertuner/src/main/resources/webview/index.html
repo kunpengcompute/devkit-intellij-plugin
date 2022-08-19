@@ -130,15 +130,8 @@
         var darkMessage = {
             intellijDark: "intellij-dark"
         }
-         var lightMessage = {
+        var lightMessage = {
             intellijLight : "intellij-light"
-        }
-         var receiveUrl = "http://127.0.0.1:"+ top.navigatorPage.data.pageParams.localPort;
-        let myFrame = document.getElementById("myFrame");
-        if (msg === 'dark') {
-            myFrame.contentWindow.postMessage(JSON.stringify(darkMessage), receiveUrl)
-        } else if (msg === 'light') {
-            myFrame.contentWindow.postMessage(JSON.stringify(lightMessage), receiveUrl)
         }
     }
     window.addEventListener('message', (e)=>{
@@ -195,6 +188,15 @@
                         fileContent: e.data.fileContent
                     }
                 }, null)
+            } else if (e.data.messageType === 'login') {
+                let myFrame = document.getElementById("myFrame");
+                   var hostMessage = {
+                        serverAddr : top.navigatorPage.data.pageParams.ip,
+                        serverPort : top.navigatorPage.data.pageParams.port,
+                        ideAddress: receiveUrl,
+                        ideType: 'isIntellij'
+                   }
+                   myFrame1.contentWindow.postMessage(JSON.stringify(hostMessage), '*');
             }
         }
     })
