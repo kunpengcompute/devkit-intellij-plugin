@@ -52,6 +52,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -73,6 +74,9 @@ public class FileUtil {
     private static final Pattern UNZIP_NOT_SUPPORT_FILE_NAME = Pattern.compile("[\\\\/:*?\"<>|]");
 
     private static final Pattern FILE_PATH_PATTERN = Pattern.compile(".*\\.\\..*");
+
+    private static final Pattern FILE_NAME_CHECK_CN = Pattern.compile("[\u4E00-\u9FA5" +
+            "|\\！|\\，|\\。|\\（|\\）|\\《|\\》|\\“|\\”|\\？|\\：|\\；|\\【|\\】]");
 
     /**
      * 解析配置文件工具
@@ -702,4 +706,23 @@ public class FileUtil {
         config.remove("certPath");
         FileUtil.ConfigParser.saveJsonConfigToFile(config.toString(), IDEConstant.CONFIG_PATH);
     }
+
+    /**
+     * 检查字符串是否包含中文
+     *
+     * @param str 待校验字符串
+     * @return true 包含中文字符， 反之则然
+     */
+    public static boolean isContainChinese(String str) {
+        if (!StringUtil.stringIsEmpty(str)) {
+            String tempStr = Normalizer.normalize(str, Normalizer.Form.NFKC);
+            Matcher check = FILE_NAME_CHECK_CN.matcher(tempStr);
+            if (check.find()) {
+                Logger.info("The string is contain chinese.");
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
