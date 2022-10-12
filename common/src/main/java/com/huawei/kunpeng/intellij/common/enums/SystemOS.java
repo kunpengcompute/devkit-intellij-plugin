@@ -24,6 +24,7 @@ package com.huawei.kunpeng.intellij.common.enums;
 public enum SystemOS {
     WINDOWS(0,  "window"),
     LINUX(1,  "linux"),
+    MAC(3, "mac"),
     OTHER(2,  "linux");
 
     private final int value;
