@@ -15,10 +15,10 @@
   ],
   "portEnvDoNotPrompt": [],
   "portVersion": [
-    "2.5.RC2"
+    "2.5.RC1.1"
   ],
   "configVersion": [
-    "2.5.RC2"
+    "2.5.RC1.1"
   ],
   "autoLoginConfig": [
     {
@@ -29,7 +29,7 @@
   ],
   "pkg_url": [
     {
-      "arm": "https://mirror.iscas.ac.cn/kunpeng/archive/Tuning_kit/Packages/Hyper-Tuner-2.5.RC2.tar.gz",
+      "arm": "https://mirror.iscas.ac.cn/kunpeng/archive/Tuning_kit/Packages/Hyper-Tuner-2.5.RC1.1.tar.gz",
       "key": "https://download.huawei.com/edownload/e/download.do?actionFlag=download%26mid=SUPE_SERTOOL_VERSION%26nid=TV1100000147%26partNo=2005"
     }
   ]

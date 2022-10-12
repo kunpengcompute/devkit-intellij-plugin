@@ -32,7 +32,7 @@
         </tr>
         <tr>
             <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.5</td>
-            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.5.RC2</td>
+            <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.5.RC1.1</td>
         </tr>
         <tr>
             <td style="height:32px; border: 1px solid gray; border-top: none; border-left: none;padding: 8px;">2.3.3</td>
@@ -133,7 +133,7 @@
     <change-notes><![CDATA[
     <h2><b>2.3.5（2022-07-30）</b></h2>
      <ul type="circle">
-        <li>After the Hyper Tuner version 2.5.RC2 later, the basic functions of the plugin set Hyper Tuner web side remain the same.</li>
+        <li>After the Hyper Tuner version 2.5.RC1.1 later, the basic functions of the plugin set Hyper Tuner web side remain the same.</li>
     </ul>
     <h2><b>2.3.3（2021-12-30）</b></h2>
      <ul type="circle">

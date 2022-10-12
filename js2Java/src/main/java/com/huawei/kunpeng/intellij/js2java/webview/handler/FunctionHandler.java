@@ -120,7 +120,7 @@ public class FunctionHandler {
         Map<String, String> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
         URI uri = null;
         try {
-            uri = new URI(data.get("hyperlinks"));
+            uri = new URI(data.get("hyperlinks").replaceAll("/n", ""));
             Desktop.getDesktop().browse(uri);
         } catch (URISyntaxException e) {
             Logger.error("openHyperlinks URISyntaxException.");
