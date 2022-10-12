@@ -133,7 +133,10 @@
     <change-notes><![CDATA[
     <h2><b>2.3.5（2022-07-30）</b></h2>
      <ul type="circle">
-        <li>After the Hyper Tuner version 2.5.RC1.1 later, the basic functions of the plugin set Hyper Tuner web side remain the same.</li>
+        <li>Fixed the issue that the memory diagnosis function is incompatible with openEuler22.03.</li>
+        <li>Fixed the issue that the CPU usage of the HPC scenario analysis function is inconsistent with the actual CPU
+         usage in some scenarios.</li>
+        <li>Fixed the MPI timeline frame freezing problem</li>
     </ul>
     <h2><b>2.3.3（2021-12-30）</b></h2>
      <ul type="circle">
