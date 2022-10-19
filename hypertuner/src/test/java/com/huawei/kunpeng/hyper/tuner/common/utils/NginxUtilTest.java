@@ -21,9 +21,9 @@ public class NginxUtilTest {
         // 设置插件名称
         TuningCommonUtil.setPluginName(TuningIDEConstant.PLUGIN_NAME);
         // 拷贝nginx代理文件
-        Optional<File> optionalFile2 = FileUtil.getFile(
+        Optional<File> optionalFile = FileUtil.getFile(
                 CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_PLUGIN_NAME, true);
-        optionalFile2.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.NGINX_PLUGIN_NAME,
+        optionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.NGINX_PLUGIN_NAME,
                 true));
 
         Logger.info("=====start unzip nginx  test=====");
@@ -32,7 +32,7 @@ public class NginxUtilTest {
                 CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
 
 //        // 拷贝nginx-mac代理文件
-        Optional<File> optionalFile = FileUtil.getFile(
+        optionalFile = FileUtil.getFile(
                 CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME, true);
         optionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
                 true));
@@ -42,6 +42,11 @@ public class NginxUtilTest {
         FileUtil.unTarGzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
                 CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
         Logger.info("=====nginx loading successful!!!");
+
+        // 拷贝install_nginx.sh文件
+        optionalFile = FileUtil.getFile(
+                CommonUtil.getPluginInstalledPath() + NginxUtil.INSTALL_NGINX_BASH, true);
+        optionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, NginxUtil.INSTALL_NGINX_BASH, true));
     }
 
     @After

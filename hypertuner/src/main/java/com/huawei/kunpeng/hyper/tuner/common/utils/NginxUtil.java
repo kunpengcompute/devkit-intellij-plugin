@@ -26,10 +26,7 @@ import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.io.*;
 import java.text.MessageFormat;
 
 
@@ -42,13 +39,13 @@ public class NginxUtil {
     /**
      * mac下安装nginx脚本
      */
-    private static final String INSTALL_NGINX_BASH = "/nginx/install_nginx.sh";
+    public static final String INSTALL_NGINX_BASH = "/nginx/install_nginx.sh";
 
     /**
      * 启动nginx服务脚本
      */
     private static final String START_NGINX_BAT = "\\nginx\\nginx-1.18.0\\start_nginx.bat";
-    private static final String START_NGINX_BASH = "/nginx/nginx-1.23.1/install_nginx.sh";
+    private static final String START_NGINX_BASH = "/nginx/nginx-1.23.1/start_nginx.sh";
 
     /**
      * 停止nginx服务脚本
@@ -264,24 +261,33 @@ public class NginxUtil {
      */
     public static void installNginx() {
         String pluginPath = CommonUtil.getPluginInstalledPath();
-//        String content = MessageFormat.format(TuningI18NServer.toLocale(
-//                "plugins_hyper_tuner_install_nginx_bash"), pluginPath);
-//        writeToFile(content);
+        String content = MessageFormat.format(TuningI18NServer.toLocale(
+                "plugins_hyper_tuner_install_nginx_bash"), pluginPath);
+        writeToFile(content);
+        System.out.println(pluginPath);
         // 执行安装脚本
         StringBuilder sb = new StringBuilder();
         try {
             Runtime.getRuntime().exec("chmod 777 " + pluginPath + INSTALL_NGINX_BASH);
-            Process process = Runtime.getRuntime().exec("bash" + pluginPath + INSTALL_NGINX_BASH);
+            Process process = Runtime.getRuntime().exec("bash " + pluginPath + INSTALL_NGINX_BASH);
             InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
             LineNumberReader input = new LineNumberReader(inputStreamReader);
+            BufferedReader bf = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             String line;
             process.waitFor();
             while ((line = input.readLine()) != null) {
-                sb.append(line);
+//                sb.append(line);
+                System.out.println(line);
             }
-            showInstallNotification(sb.toString());
+
+            System.out.println("ERROR OUTPUT");
+            while ((line = bf.readLine()) != null) {
+                System.out.println(line);
+            }
+//            showInstallNotification(sb.toString());
         } catch (Exception e) {
-            showInstallNotification(e.getMessage());
+            e.printStackTrace();
+//            showInstallNotification();
             throw new RuntimeException(e);
         }
     }
@@ -291,11 +297,9 @@ public class NginxUtil {
      * TODO
      */
     private static void showInstallNotification(String info) {
-        Project project = CommonUtil.getDefaultProject();
         String title = "nginx installation";
         // content是执行nginx安装脚本的返回值
         NotificationBean notificationBean = new NotificationBean(title, info, NotificationType.WARNING);
-        notificationBean.setProject(project);
         IDENotificationUtil.notificationCommon(notificationBean);
     }
 }
