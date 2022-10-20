@@ -17,6 +17,7 @@
 package com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning;
 
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
+import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAware;
@@ -29,13 +30,14 @@ import org.jetbrains.annotations.NotNull;
  */
 
 public class ApplyTrialAction extends AnAction implements DumbAware {
-    private static final String DEPlOY_SERVER = TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_apply_trial");
+    private static final String APPLY_TRIAL = TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_apply_trial");
+    private static final String APPLY_TRIAL_ICON_PATH = "/assets/img/lefttree/login.svg";
 
     /**
      * 左侧树服务器配置菜单动作
      */
     public ApplyTrialAction() {
-        super(DEPlOY_SERVER, "", null);
+        super(APPLY_TRIAL, "", BaseIntellijIcons.load(APPLY_TRIAL_ICON_PATH));
     }
 
     /**
