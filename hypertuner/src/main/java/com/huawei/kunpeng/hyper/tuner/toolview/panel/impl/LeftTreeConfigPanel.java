@@ -26,13 +26,9 @@ import com.huawei.kunpeng.intellij.ui.enums.Panels;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
-import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 /**
  * 左侧树配置面板
@@ -44,12 +40,17 @@ public class LeftTreeConfigPanel extends IDEBasePanel {
 
     private JLabel decLabel;
 
-    private JLabel hyperLinkLabel;
+    private JLabel freeTrialLabel;
 
     private JPanel mainPanel;
 
     // 滚动条面板
     private JScrollPane scrollPanel;
+
+    private JButton hyperLinkButton;
+
+    private JButton freeTrialButton;
+
 
     private Project project;
 
@@ -80,12 +81,19 @@ public class LeftTreeConfigPanel extends IDEBasePanel {
     }
 
     private void initPanel() {
+
+//        ToolWindowManager instance = ToolWindowManager.getInstance(this.project);
+//        ToolWindowEx tw = (ToolWindowEx) instance.getToolWindow("Project");
+//        int width = tw.getComponent().getWidth();
+
         // 去除滚动条面板的边框
         scrollPanel.setBorder(null);
         decLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_not_connected"));
-        hyperLinkLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_config_now"));
-        hyperLinkLabel.setForeground(new Color(47, 101, 202));
-        hyperLinkLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        freeTrialLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_text"));
+//        hyperLinkLabel.setForeground(new Color(47, 101, 202));
+//        hyperLinkLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        hyperLinkButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_config_now"));
+        freeTrialButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_button"));
     }
 
     @Override
@@ -99,7 +107,7 @@ public class LeftTreeConfigPanel extends IDEBasePanel {
                 dialog.displayPanel();
             }
         };
-        hyperLinkLabel.addMouseListener(configMouseAdapter);
+        hyperLinkButton.addMouseListener(configMouseAdapter);
     }
 
     @Override
