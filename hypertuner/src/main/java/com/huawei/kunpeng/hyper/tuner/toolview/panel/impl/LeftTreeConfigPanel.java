@@ -26,6 +26,10 @@ import com.huawei.kunpeng.intellij.ui.enums.Panels;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.openapi.wm.ex.ToolWindowEx;
+
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
@@ -50,6 +54,8 @@ public class LeftTreeConfigPanel extends IDEBasePanel {
     private JButton hyperLinkButton;
 
     private JButton freeTrialButton;
+
+    private JPanel secondPanel;
 
 
     private Project project;
@@ -82,13 +88,14 @@ public class LeftTreeConfigPanel extends IDEBasePanel {
 
     private void initPanel() {
 
-//        ToolWindowManager instance = ToolWindowManager.getInstance(this.project);
-//        ToolWindowEx tw = (ToolWindowEx) instance.getToolWindow("Project");
-//        int width = tw.getComponent().getWidth();
+        ToolWindowManager instance = ToolWindowManager.getInstance(this.project);
+        ToolWindowEx tw = (ToolWindowEx) instance.getToolWindow("Project");
+        int width = tw.getComponent().getWidth();
 
         // 去除滚动条面板的边框
         scrollPanel.setBorder(null);
         decLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_not_connected"));
+        secondPanel.setMinimumSize(new Dimension(width, -1));
         freeTrialLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_text"));
 //        hyperLinkLabel.setForeground(new Color(47, 101, 202));
 //        hyperLinkLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));

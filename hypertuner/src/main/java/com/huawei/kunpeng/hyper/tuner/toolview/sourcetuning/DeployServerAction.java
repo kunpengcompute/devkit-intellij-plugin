@@ -17,12 +17,15 @@
 package com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning;
 
 import com.huawei.kunpeng.hyper.tuner.action.serverconfig.TuningIDEServerConfigAction;
+import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
+import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.InstallDisclaimerDialog;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
+import com.huawei.kunpeng.intellij.ui.dialog.IDEBaseDialog;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAware;
@@ -52,7 +55,8 @@ public class DeployServerAction extends AnAction implements DumbAware {
      */
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-
+        IDEBaseDialog dialog = new InstallDisclaimerDialog(InstallManageConstant.BEFORE_INSTALL, null);
+        dialog.displayPanel();
     }
 
     /**
