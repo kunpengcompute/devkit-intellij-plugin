@@ -18,6 +18,7 @@ package com.huawei.kunpeng.intellij.ui.action;
 
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
+import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
 import com.huawei.kunpeng.intellij.ui.dialog.NoNetworkForFeedbackDialog;
@@ -40,6 +41,7 @@ import java.net.URLConnection;
  */
 public class FeedBackAction extends AnAction implements DumbAware {
     private static final String FEEDBACK = CommonI18NServer.toLocale("common_feedback");
+    private static final String FEEDBACK_ICON_PATH = "/assets/img/lefttree/login.svg";
     private static final int TIME_OUT = 1000 * 3;
 
     private String feedBackUrl;
@@ -48,7 +50,7 @@ public class FeedBackAction extends AnAction implements DumbAware {
      * 左侧树反馈菜单动作
      */
     public FeedBackAction(String feedBackUrl) {
-        super(FEEDBACK, "", null);
+        super(FEEDBACK, "", BaseIntellijIcons.load(FEEDBACK_ICON_PATH));
         this.feedBackUrl = feedBackUrl;
     }
 

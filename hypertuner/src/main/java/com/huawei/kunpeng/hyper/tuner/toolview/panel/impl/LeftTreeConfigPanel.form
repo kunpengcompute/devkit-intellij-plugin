@@ -15,32 +15,105 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="8d443" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="8d443" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints/>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="52a41" class="javax.swing.JLabel" binding="hyperLinkLabel">
+              <grid id="a77ef" binding="secondPanel" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="10">
+                <margin top="0" left="0" bottom="0" right="10"/>
                 <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
-                <properties>
-                  <text value="Configure Server"/>
-                </properties>
-              </component>
-              <component id="2fa53" class="javax.swing.JLabel" binding="decLabel">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="2" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="-1" height="40"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <grid id="c7577" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="5" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="52a41" class="javax.swing.JLabel" binding="freeTrialLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="1" use-parent-layout="false">
+                            <preferred-size width="0" height="0"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <background color="-12691583"/>
+                          <horizontalAlignment value="10"/>
+                          <horizontalTextPosition value="11"/>
+                          <text value="plugins_hyper_tuner_lefttree_free_trial_text"/>
+                          <verticalAlignment value="0"/>
+                          <verticalTextPosition value="0"/>
+                        </properties>
+                      </component>
+                      <component id="f487c" class="org.jdesktop.swingx.JXButton" binding="freeTrialButton">
+                        <constraints>
+                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="1" use-parent-layout="false">
+                            <minimum-size width="-1" height="35"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <background color="-12828863"/>
+                          <text value="plugins_hyper_tuner_lefttree_free_trial_button"/>
+                        </properties>
+                      </component>
+                    </children>
                   </grid>
+                  <grid id="4d994" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="20" left="0" bottom="0" right="0"/>
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="2fa53" class="javax.swing.JLabel" binding="decLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="1" fill="1" indent="1" use-parent-layout="false">
+                            <preferred-size width="0" height="0"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <font/>
+                          <horizontalAlignment value="10"/>
+                          <horizontalTextPosition value="11"/>
+                          <text value="plugins_hyper_tuner_lefttree_server_not_connected"/>
+                        </properties>
+                      </component>
+                      <component id="88859" class="javax.swing.JButton" binding="hyperLinkButton">
+                        <constraints>
+                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="1" use-parent-layout="false">
+                            <minimum-size width="-1" height="35"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <background color="-12828863"/>
+                          <enabled value="true"/>
+                          <opaque value="true"/>
+                          <text value="plugins_hyper_tuner_lefttree_server_config_now"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                </children>
+              </grid>
+              <grid id="999ec" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <horizontalAlignment value="11"/>
-                  <horizontalTextPosition value="11"/>
-                  <text value="You have not connected to the remote server."/>
+                  <enabled value="false"/>
                 </properties>
-              </component>
+                <border type="none"/>
+                <children/>
+              </grid>
             </children>
           </grid>
         </children>

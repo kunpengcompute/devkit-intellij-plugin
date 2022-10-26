@@ -91,18 +91,21 @@ public class HyperTunerToolWindowFactory implements ToolWindowFactory {
      */
     private void setupToolWindow(@NotNull ToolWindowEx window) {
         final DefaultActionGroup group = new DefaultActionGroup();
+
+        // 部署服务器
+        group.add(new DeployServerAction());
         // 配置服务器
         group.add(new ConfigRemoteServerAction());
-        // 工具维护
-        group.add(new ToolMaintenanceActionGroup());
+        // 申请试用远程实验室
+        group.add(new ApplyTrialAction());
         group.addSeparator();
-        if (("zh").equals(I18NServer.getCurrentLocale().getLanguage())) {
-            group.add(new FeedBackAction(TuningI18NServer.toLocale("plugins_hyper_tuner_feedback")));
+        // 升级服务端/卸载服务端
+        for (ToolMaintenanceAction.Action action : ToolMaintenanceAction.Action.values()) {
+            group.add(new ToolMaintenanceAction(action));
         }
-        group.add(new HelpAction(TuningI18NServer.toLocale("plugins_hyper_tuner_help")));
-        group.add(new DisclaimerAction()); // 免责声明
-        // 关于插件介绍
-        group.add(new TuningAboutAction());
+        group.addSeparator();
+        // 建议反馈
+        group.add(new FeedBackAction(TuningI18NServer.toLocale("plugins_hyper_tuner_feedback")));
         group.addSeparator();
         window.setAdditionalGearActions(group);
     }

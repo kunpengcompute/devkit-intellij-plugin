@@ -54,8 +54,8 @@ public final class ToolMaintenanceAction extends DumbAwareAction {
      * @since v1.0
      */
     public enum Action {
-        UNINSTALL,
-        UPGRADE;
+        UPGRADE,
+        UNINSTALL;
 
         @Override
         public String toString() {
