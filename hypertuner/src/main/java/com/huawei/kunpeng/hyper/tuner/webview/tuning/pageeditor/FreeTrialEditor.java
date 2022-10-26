@@ -23,7 +23,7 @@ public class FreeTrialEditor extends TuningWebFileEditor {
      */
     public FreeTrialEditor(VirtualFile file) {
         currentFile = file;
-        freeTrialWebView = new FreeTrialWebView(localPort + "");
+        freeTrialWebView = new FreeTrialWebView();
     }
 
     @Override
@@ -46,13 +46,13 @@ public class FreeTrialEditor extends TuningWebFileEditor {
     /**
      * 打开性能分析工具端登录页
      */
-    public static void openPage(String localPortStr) {
-        localPort = Integer.parseInt(localPortStr);
+    public static void openPage() {
+//        localPort = Integer.parseInt(localPortStr);
         String fileName = TuningIDEConstant.TUNING_KPHT +
                 IDEConstant.PATH_SEPARATOR +
                 PageType.PROXY_INDEX.value() +
                 IDEConstant.PATH_SEPARATOR +
-                "HyperTuner" +
+                "HyperTuner_FreeTrial" +
                 "." +
                 TuningIDEConstant.TUNING_KPHT;
 
