@@ -34,6 +34,8 @@ public class TuningIDEConstant<T> extends IDEConstant {
      */
     public static final String TOOL_NAME_TUNING = "tuning";
 
+    public static final String FREE_TRIAL = "freetrial";
+
     /**
      * 请求成功返回
      */
@@ -60,6 +62,11 @@ public class TuningIDEConstant<T> extends IDEConstant {
     public static final String TUNING_WEB_VIEW_INDEX_HTML = "index.html";
 
     /**
+     * tuning插件free_trial页面地址
+     */
+    public static final String FREE_TRIAL_WEB_VIEW_INDEX_HTML = "index.html";
+
+    /**
      * 代理html文件地址
      */
     public static final String WEB_VIEW_INDEX_HTML = "/webview/index.html";
@@ -79,4 +86,10 @@ public class TuningIDEConstant<T> extends IDEConstant {
      * 插件名称
      */
     public static final String TUNING_NAME = "Kunpeng-DevKit-IDE-hyper-tuner-plugin";
+
+
+    /**
+     * tuning页面包地址
+     */
+    public static final String TUNING_PLUGIN_NAME="/webview/tuning.zip";
 }

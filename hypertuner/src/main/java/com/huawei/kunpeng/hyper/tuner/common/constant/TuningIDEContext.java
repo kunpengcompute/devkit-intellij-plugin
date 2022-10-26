@@ -131,4 +131,25 @@ public class TuningIDEContext<T> extends IDEContext {
                 BaseCacheVal.TUNING_WEB_VIEW_INDEX.vaLue());
     }
 
+    /**
+     * 获取tuning插件free_trial页面index入口
+     * @return
+     */
+    public static String getFreeTrialWebViewIndex() {
+        if (getValueFromGlobalContext(TuningIDEConstant.TOOL_NAME_TUNING,
+                BaseCacheVal.TUNING_WEB_VIEW_INDEX.vaLue()) == null) {
+            setValueForGlobalContext(TuningIDEConstant.TOOL_NAME_TUNING, BaseCacheVal.FREE_TRIAL_WEB_VIEW_INDEX.vaLue(),
+                    PathManager.getPluginsPath() + IDEConstant.PATH_SEPARATOR +
+                            TuningIDEConstant.TUNING_NAME +
+                            TuningIDEConstant.PATH_SEPARATOR +
+                            TuningIDEConstant.TUNING_WEB_VIEW_PATH +
+                            TuningIDEConstant.PATH_SEPARATOR +
+                            TuningIDEConstant.TOOL_NAME_TUNING + IDEConstant.PATH_SEPARATOR +
+                            TuningIDEConstant.FREE_TRIAL + IDEConstant.PATH_SEPARATOR +
+                            TuningIDEConstant.FREE_TRIAL_WEB_VIEW_INDEX_HTML);
+        }
+        return getValueFromGlobalContext(TuningIDEConstant.TOOL_NAME_TUNING,
+                BaseCacheVal.TUNING_WEB_VIEW_INDEX.vaLue());
+    }
+
 }

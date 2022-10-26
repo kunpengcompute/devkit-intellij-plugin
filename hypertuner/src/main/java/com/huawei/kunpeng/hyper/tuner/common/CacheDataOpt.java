@@ -99,6 +99,15 @@ public class CacheDataOpt extends BaseCacheDataOpt {
         optionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.WEB_VIEW_INDEX_HTML,
                 true));
 
+        Logger.info("=====start loading tuning.zip=====");
+        Optional<File> newOptionalFile = FileUtil.getFile(
+                CommonUtil.getPluginInstalledPath() + TuningIDEConstant.TUNING_PLUGIN_NAME, true);
+        newOptionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.TUNING_PLUGIN_NAME,
+                true));
+
+        FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.TUNING_PLUGIN_NAME,
+                CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_WEB_VIEW_PATH));
+
         Logger.info("=====start loading nginx=====");
         // 解压缩nginx安装包，需根据OS类型执行不同方法
         // TODO
@@ -144,6 +153,15 @@ public class CacheDataOpt extends BaseCacheDataOpt {
         String indexHtml = FileUtil.readFileContent(TuningIDEContext.getWebViewIndex());
         indexHtml = indexHtml.replaceFirst("base href=\"\\./\"", "base href=\"\"");
         IDEContext.setValueForGlobalContext(null, TuningIDEConstant.TUNING_WEB_VIEW_INDEX_HTML, indexHtml);
+
+        // 加载免费试用界面到缓存，并替换base路径
+        Logger.info("=====start loading free trial=====");
+        String freeTrailHtml = FileUtil.readFileContent(TuningIDEContext.getFreeTrialWebViewIndex());
+        freeTrailHtml = freeTrailHtml.replaceFirst("base href=\"\\./\"", "base href=\"\"");
+        IDEContext.setValueForGlobalContext(null, TuningIDEConstant.FREE_TRIAL_WEB_VIEW_INDEX_HTML, freeTrailHtml);
+
         Logger.info("=====loading GlobalCache successful=====");
+
+
     }
 }
