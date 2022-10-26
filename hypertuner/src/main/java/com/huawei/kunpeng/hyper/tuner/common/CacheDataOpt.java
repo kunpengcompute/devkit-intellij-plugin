@@ -94,10 +94,23 @@ public class CacheDataOpt extends BaseCacheDataOpt {
             }
         }
         Logger.info("=====start loading webview=====");
+//        Optional<File> optionalFile = FileUtil.getFile(
+//                CommonUtil.getPluginInstalledPath() + TuningIDEConstant.WEB_VIEW_INDEX_HTML, true);
+//        optionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.WEB_VIEW_INDEX_HTML,
+//                true));
         Optional<File> optionalFile = FileUtil.getFile(
-                CommonUtil.getPluginInstalledPath() + TuningIDEConstant.WEB_VIEW_INDEX_HTML, true);
-        optionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.WEB_VIEW_INDEX_HTML,
+                CommonUtil.getPluginInstalledPath() + TuningIDEConstant.TUNING_PLUGIN_NAME, true);
+        optionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.TUNING_PLUGIN_NAME,
                 true));
+
+        FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.TUNING_PLUGIN_NAME,
+                CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_WEB_VIEW_PATH));
+
+        // 加载index页面到缓存，并替换base路径
+        Logger.info("=====start loading index=====");
+        String indexHtml = FileUtil.readFileContent(TuningIDEContext.getWebViewIndex());
+        indexHtml = indexHtml.replaceFirst("base href=\"\\./\"", "base href=\"\"");
+        IDEContext.setValueForGlobalContext(null, TuningIDEConstant.TUNING_WEB_VIEW_INDEX_HTML, indexHtml);
 
         Logger.info("=====start loading nginx=====");
         // 解压缩nginx安装包，需根据OS类型执行不同方法
@@ -139,11 +152,5 @@ public class CacheDataOpt extends BaseCacheDataOpt {
 //        FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_PLUGIN_NAME,
 //                CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
 
-        // 加载index页面到缓存，并替换base路径
-        Logger.info("=====start loading index=====");
-        String indexHtml = FileUtil.readFileContent(TuningIDEContext.getWebViewIndex());
-        indexHtml = indexHtml.replaceFirst("base href=\"\\./\"", "base href=\"\"");
-        IDEContext.setValueForGlobalContext(null, TuningIDEConstant.TUNING_WEB_VIEW_INDEX_HTML, indexHtml);
-        Logger.info("=====loading GlobalCache successful=====");
     }
 }

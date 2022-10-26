@@ -16,6 +16,7 @@
 
 package com.huawei.kunpeng.hyper.tuner.common.constant.enums;
 
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.IDELoginEditor;
 import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
 
@@ -45,6 +46,16 @@ public enum PageType {
         @Override
         public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
             return Optional.of(new IDELoginEditor(file));
+        }
+    },
+
+    /**
+     * 配置服务器页面
+     */
+     CONFIGURE_SERVER("configure_server") {
+        @Override
+        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
+            return Optional.of(new ConfigureServerEditor(file));
         }
     };
 

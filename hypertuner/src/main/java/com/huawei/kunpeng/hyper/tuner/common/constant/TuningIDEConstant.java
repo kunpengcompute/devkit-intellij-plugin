@@ -55,6 +55,16 @@ public class TuningIDEConstant<T> extends IDEConstant {
     public static final String TUNING_NGINX_PATH = "nginx";
 
     /**
+     * 工具名称
+     */
+    public static final String SYS = "sys";
+
+    /**
+     * 工具名称
+     */
+    public static final String JAVA = "java";
+
+    /**
      * tuning插件webview页面地址
      */
     public static final String TUNING_WEB_VIEW_INDEX_HTML = "index.html";
@@ -79,4 +89,9 @@ public class TuningIDEConstant<T> extends IDEConstant {
      * 插件名称
      */
     public static final String TUNING_NAME = "Kunpeng-DevKit-IDE-hyper-tuner-plugin";
+
+    /**
+     * tuning页面包地址
+     */
+    public static final String TUNING_PLUGIN_NAME = "/webview/tuning.zip";
 }
