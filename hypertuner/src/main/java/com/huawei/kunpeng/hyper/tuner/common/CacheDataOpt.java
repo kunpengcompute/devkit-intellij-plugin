@@ -119,10 +119,11 @@ public class CacheDataOpt extends BaseCacheDataOpt {
                     true);
             optionalFile2.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file,
                     TuningIDEConstant.NGINX_MAC_PLUGIN_NAME, true));
-
+            // TODO untar步骤其实可以放入脚本中运行
             Logger.info("=====start unzip nginx=====");
             FileUtil.unTarGzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
                     CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
+            // install
             NginxUtil.installNginx();
         }
 //        Logger.info("=====start loading nginx");

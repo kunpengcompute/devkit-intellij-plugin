@@ -18,14 +18,17 @@ package com.huawei.kunpeng.hyper.tuner.common.utils;
 
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.intellij.common.IDEContext;
+import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-import com.jetbrains.qodana.sarif.model.Run;
+import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
+import com.intellij.notification.NotificationType;
+import com.intellij.openapi.project.Project;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.text.MessageFormat;
+
 
 public class NginxUtil {
     /**
@@ -36,19 +39,19 @@ public class NginxUtil {
     /**
      * mac下安装nginx脚本
      */
-    private static final String INSTALL_NGINX_BASH = "/nginx/install_nginx.sh";
+    public static final String INSTALL_NGINX_BASH = "/nginx/install_nginx.sh";
 
     /**
      * 启动nginx服务脚本
      */
     private static final String START_NGINX_BAT = "\\nginx\\nginx-1.18.0\\start_nginx.bat";
-    private static final String START_NGINX_BASH = "/nginx/nginx-1.23.1/install_nginx.sh";
+    private static final String START_NGINX_BASH = "/nginx/nginx-1.23.1/start_nginx.sh";
 
     /**
      * 停止nginx服务脚本
      */
-    private static final String STOP_NGINX_BAT = "\\nginx\\nginx-1.18.0\\stop_nginx.bat";
-    private static final String STOP_NGINX_BASH = "/nginx/nginx-1.23.1/stop_nginx.sh";
+    public static final String STOP_NGINX_BAT = "\\nginx\\nginx-1.18.0\\stop_nginx.bat";
+    public static final String STOP_NGINX_BASH = "/nginx/nginx-1.23.1/stop_nginx.sh";
 
     /**
      * 更新 nginx 配置文件
@@ -115,7 +118,7 @@ public class NginxUtil {
             try {
                 fileWriter.flush();
                 fileWriter.close();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
@@ -149,7 +152,7 @@ public class NginxUtil {
             try {
                 fileWriter.flush();
                 fileWriter.close();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
@@ -261,12 +264,43 @@ public class NginxUtil {
         String content = MessageFormat.format(TuningI18NServer.toLocale(
                 "plugins_hyper_tuner_install_nginx_bash"), pluginPath);
         writeToFile(content);
+        System.out.println(pluginPath);
         // 执行安装脚本
+        StringBuilder sb = new StringBuilder();
         try {
             Runtime.getRuntime().exec("chmod 777 " + pluginPath + INSTALL_NGINX_BASH);
-            Runtime.getRuntime().exec("bash" + pluginPath + INSTALL_NGINX_BASH);
-        } catch (IOException e) {
+            Process process = Runtime.getRuntime().exec("bash " + pluginPath + INSTALL_NGINX_BASH);
+            InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
+            LineNumberReader input = new LineNumberReader(inputStreamReader);
+            BufferedReader bf = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String line;
+            process.waitFor();
+            while ((line = input.readLine()) != null) {
+//                sb.append(line);
+                System.out.println(line);
+            }
+
+            System.out.println("ERROR OUTPUT");
+            while ((line = bf.readLine()) != null) {
+                System.out.println(line);
+            }
+//            showInstallNotification(sb.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+//            showInstallNotification();
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 显示安装过程中的错误信息弹窗
+     * TODO
+     */
+    private static void showInstallNotification(String info) {
+        String title = "nginx installation";
+        // content是执行nginx安装脚本的返回值
+        NotificationBean notificationBean = new NotificationBean(title, info, NotificationType.WARNING);
+        IDENotificationUtil.notificationCommon(notificationBean);
+    }
 }
+
