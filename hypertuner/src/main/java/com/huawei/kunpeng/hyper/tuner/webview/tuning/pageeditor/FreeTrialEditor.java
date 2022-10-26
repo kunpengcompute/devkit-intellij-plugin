@@ -4,7 +4,6 @@ import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.enums.PageType;
 import com.huawei.kunpeng.hyper.tuner.webview.TuningWebFileEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pagewebview.FreeTrialWebView;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pagewebview.IDELoginWebView;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pagewebview.WebView;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -50,7 +49,7 @@ public class FreeTrialEditor extends TuningWebFileEditor {
 //        localPort = Integer.parseInt(localPortStr);
         String fileName = TuningIDEConstant.TUNING_KPHT +
                 IDEConstant.PATH_SEPARATOR +
-                PageType.PROXY_INDEX.value() +
+                PageType.FREE_TRIAL.value() +
                 IDEConstant.PATH_SEPARATOR +
                 "HyperTuner_FreeTrial" +
                 "." +
