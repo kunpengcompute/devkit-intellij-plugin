@@ -127,6 +127,7 @@ public class TuningServerConfigAction extends ServerConfigAction {
             boolean isCompatible = checkServiceVersionCompatible();
             if (isCompatible) {
                 // 仅在版本适配的情况下打开 web view 页面，允许用户使用
+                System.out.println("is compatible!!");
                 ApplicationManager.getApplication().invokeLater(() -> {
                     NginxUtil.updateNginxConfig(param.get("ip"), param.get("port"), param.get("localPort"));
                     // 打开web首页
