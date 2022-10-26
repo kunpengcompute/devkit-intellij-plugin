@@ -2,6 +2,7 @@ package com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor;
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.enums.PageType;
+import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.webview.TuningWebFileEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pagewebview.FreeTrialWebView;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pagewebview.WebView;
@@ -51,7 +52,7 @@ public class FreeTrialEditor extends TuningWebFileEditor {
                 IDEConstant.PATH_SEPARATOR +
                 PageType.FREE_TRIAL.value() +
                 IDEConstant.PATH_SEPARATOR +
-                "HyperTuner_FreeTrial" +
+                TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_apply_trial") +
                 "." +
                 TuningIDEConstant.TUNING_KPHT;
 

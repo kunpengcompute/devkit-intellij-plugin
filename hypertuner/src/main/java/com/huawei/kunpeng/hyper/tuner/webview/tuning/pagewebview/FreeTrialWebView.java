@@ -53,6 +53,7 @@ public class FreeTrialWebView extends WebView{
             currentTheme = "light";
         }
         pageParams.put("currentTheme", currentTheme);
+        pageParams.put("intelliJFlagDef",true);
         NavigatorPageBean navigatorPage = MessageRouterHandler.generateNavigatorPage("/navigate",
                 "/freeTrialProcessEnvironment", pageParams, sessionBean);
         super.createWebView(navigatorPage, null, "FreeTrialWebView");

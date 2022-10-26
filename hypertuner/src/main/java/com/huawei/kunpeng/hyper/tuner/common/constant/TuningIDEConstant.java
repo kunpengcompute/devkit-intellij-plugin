@@ -34,7 +34,10 @@ public class TuningIDEConstant<T> extends IDEConstant {
      */
     public static final String TOOL_NAME_TUNING = "tuning";
 
-    public static final String FREE_TRIAL = "freetrial";
+    /**
+     * 工具名称
+     */
+    public static final String SYS = "sys";
 
     /**
      * 请求成功返回

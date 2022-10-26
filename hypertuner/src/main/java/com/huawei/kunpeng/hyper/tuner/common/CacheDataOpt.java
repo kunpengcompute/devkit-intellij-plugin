@@ -154,14 +154,5 @@ public class CacheDataOpt extends BaseCacheDataOpt {
         indexHtml = indexHtml.replaceFirst("base href=\"\\./\"", "base href=\"\"");
         IDEContext.setValueForGlobalContext(null, TuningIDEConstant.TUNING_WEB_VIEW_INDEX_HTML, indexHtml);
 
-        // 加载免费试用界面到缓存，并替换base路径
-        Logger.info("=====start loading free trial=====");
-        String freeTrailHtml = FileUtil.readFileContent(TuningIDEContext.getFreeTrialWebViewIndex());
-        freeTrailHtml = freeTrailHtml.replaceFirst("base href=\"\\./\"", "base href=\"\"");
-        IDEContext.setValueForGlobalContext(null, TuningIDEConstant.FREE_TRIAL_WEB_VIEW_INDEX_HTML, freeTrailHtml);
-
-        Logger.info("=====loading GlobalCache successful=====");
-
-
     }
 }
