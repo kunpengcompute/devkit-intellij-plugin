@@ -46,7 +46,7 @@ public class IDEFileEditorManagerListener implements FileEditorManagerListener.B
             String pluginPath = CommonUtil.getPluginInstalledPath() + NginxUtil.STOP_NGINX_BAT;
             File stopNginxBatFile = new File(pluginPath);
             if (stopNginxBatFile.exists()) {
-                NginxUtil.startStopBat();
+                NginxUtil.stopNginx();
             } else {
                 Logger.info("file does not exist");
             }
