@@ -20,6 +20,7 @@ import com.huawei.kunpeng.hyper.tuner.action.uninstall.TuningIDEUninstallAction;
 import com.huawei.kunpeng.hyper.tuner.action.upgrade.TuningIDEUpgradeAction;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.UpgradeServerEditor;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAwareAction;
 
@@ -79,7 +80,8 @@ public final class ToolMaintenanceAction extends DumbAwareAction {
                     new TuningIDEUninstallAction().actionPerformed(event);
                     break;
                 case UPGRADE:
-                    new TuningIDEUpgradeAction().actionPerformed(event);
+//                    new TuningIDEUpgradeAction().actionPerformed(event);
+                    UpgradeServerEditor.openPage();
                     break;
             }
         }

@@ -17,6 +17,7 @@
 package com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning;
 
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.FreeTrialEditor;
 import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -47,7 +48,7 @@ public class ApplyTrialAction extends AnAction implements DumbAware {
      */
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-
+        FreeTrialEditor.openPage();
     }
 
     /**
@@ -57,10 +58,6 @@ public class ApplyTrialAction extends AnAction implements DumbAware {
      */
     @Override
     public void update(@NotNull AnActionEvent event) {
-
-    }
-
-    private void setConfigRemoteServerStatus(@NotNull AnActionEvent event, int value) {
 
     }
 }
