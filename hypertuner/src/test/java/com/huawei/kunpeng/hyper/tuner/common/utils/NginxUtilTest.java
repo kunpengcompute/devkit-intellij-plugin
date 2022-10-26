@@ -78,10 +78,10 @@ public class NginxUtilTest {
     }
 
     @Test
-    public void writeNginxStartBash() { NginxUtil.writeNginxStartBash(); }
+    public void writeNginxStartBash() { NginxUtil.writeNginxStartBash(""); }
 
     @Test
-    public void writeNginxStopBash() { NginxUtil.writeNginxStopBash(); }
+    public void writeNginxStopBash() { NginxUtil.writeNginxStopBash(""); }
 
     @Test
     public void updateNginxConfig() {

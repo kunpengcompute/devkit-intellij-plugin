@@ -113,18 +113,21 @@ public class CacheDataOpt extends BaseCacheDataOpt {
             FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_PLUGIN_NAME,
                     CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
         } else if (systemOS.equals(SystemOS.MAC)) {
-            Logger.info("start loading nginx in mac system");
-            Optional<File> optionalFile2 = FileUtil.getFile(
-                    CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
-                    true);
-            optionalFile2.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file,
-                    TuningIDEConstant.NGINX_MAC_PLUGIN_NAME, true));
-            // TODO untar步骤其实可以放入脚本中运行
-            Logger.info("=====start unzip nginx=====");
-            FileUtil.unTarGzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
-                    CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
+//            Logger.info("start loading nginx in mac system");
+//            Optional<File> optionalFile2 = FileUtil.getFile(
+//                    CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
+//                    true);
+//            optionalFile2.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file,
+//                    TuningIDEConstant.NGINX_MAC_PLUGIN_NAME, true));
+//            // untar步骤其实可以放入脚本中运行
+//            Logger.info("=====start unzip nginx=====");
+//            FileUtil.unTarGzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
+//                    CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
             // install
+            Logger.info("this is mac os system");
+            Logger.info("=========installing nginx============");
             NginxUtil.installNginx();
+            Logger.info("Nginx installed!!!");
         }
 //        Logger.info("=====start loading nginx");
 //        Optional<File> optionalFile2 = FileUtil.getFile(
