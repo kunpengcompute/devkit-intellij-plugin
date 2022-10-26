@@ -86,6 +86,15 @@ public class BaseCacheDataOpt {
             IDEContext.setValueForGlobalContext(null, BaseCacheVal.SYSTEM_OS.vaLue(), SystemOS.WINDOWS);
             IDEContext.setValueForGlobalContext(null, BaseCacheVal.JCEF_DLL_EVN_PATH.vaLue(),
                     CommonUtil.getPluginJCEFPath());
+        } else if (OS.isMacintosh()) {
+            // MAC系统，应该与linux和others区分开？
+//            osNotSupportTip();
+            Logger.info("SystemOS is mac");
+            IDEContext.setValueForGlobalContext(null,
+                    BaseCacheVal.CURRENT_CHARSET.vaLue(), IDEConstant.CHARSET_ISO_8859_1);
+            IDEContext.setValueForGlobalContext(null, BaseCacheVal.SYSTEM_OS.vaLue(), SystemOS.MAC);
+            IDEContext.setValueForGlobalContext(null, BaseCacheVal.JCEF_DLL_EVN_PATH.vaLue(),
+                    CommonUtil.getPluginJCEFPath());
         } else {
             osNotSupportTip();
             Logger.info("SystemOS is others");

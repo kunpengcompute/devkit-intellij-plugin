@@ -24,6 +24,10 @@ import com.huawei.kunpeng.intellij.common.enums.SystemOS;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 
 import com.intellij.notification.NotificationType;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -43,6 +47,8 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.text.Normalizer;
 import java.util.Enumeration;
@@ -279,6 +285,49 @@ public class FileUtil {
             }
         } catch (IOException exception) {
             Logger.error("unzipFile error, IOException!!!");
+        }
+    }
+
+    /**
+     * tar.gz文件解压（Mac系统）
+     * TODO
+     */
+    public static void unTarGzipFile(String inputTarFile, String destDirPath) {
+        if (!FileUtil.validateFilePath(inputTarFile) || !FileUtil.validateFilePath(destDirPath)) {
+            return;
+        }
+        File srcFile = new File(inputTarFile);
+        if (!srcFile.exists()) {
+            Logger.error("unTarGzip file, the file does not exist.");
+        }
+        try {
+            doUnTarGzipFile(inputTarFile, destDirPath);
+        } catch (IOException e) {
+            Logger.error("unTarGzip file error, IOException!!!");
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void doUnTarGzipFile(String inputTarFile, String destDirPath) throws IOException {
+//        InputStream fin = Files.newInputStream(srcFile.toPath());
+//        BufferedInputStream in = new BufferedInputStream(fin);
+//        OutputStream out = Files.newOutputStream()
+        InputStream fin = Files.newInputStream(Paths.get(inputTarFile));
+        BufferedInputStream in = new BufferedInputStream(fin);
+        GzipCompressorInputStream gzIn = new GzipCompressorInputStream(in);
+        TarArchiveInputStream tarIn = new TarArchiveInputStream(gzIn);
+//        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new GzipCompressorInputStream(in));
+        TarArchiveEntry entry;
+        while ((entry = tarIn.getNextTarEntry()) != null) {
+            if (entry.isDirectory()){
+                continue;
+            }
+            File targetFile = new File(destDirPath, entry.getName());
+            File parent = targetFile.getParentFile();
+            if (!parent.exists()) {
+                parent.mkdirs();
+            }
+            IOUtils.copy(tarIn, Files.newOutputStream(targetFile.toPath()));
         }
     }
 
