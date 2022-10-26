@@ -95,4 +95,9 @@ public class TuningIDEConstant<T> extends IDEConstant {
      * tuning页面包地址
      */
     public static final String TUNING_PLUGIN_NAME="/webview/tuning.zip";
+
+    /**
+     * url文件urlConfig.json路径
+     */
+    public static final String URL_CONFIG_PATH = "/assets/urlConfig.json";
 }
