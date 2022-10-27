@@ -14,7 +14,6 @@ import javax.swing.*;
 
 public class FreeTrialEditor extends TuningWebFileEditor {
     private final FreeTrialWebView freeTrialWebView;
-    private static Integer localPort;
 
     /**
      * 默认构造函数
@@ -44,10 +43,9 @@ public class FreeTrialEditor extends TuningWebFileEditor {
     }
 
     /**
-     * 打开性能分析工具端登录页
+     * 打开免费试用页
      */
     public static void openPage() {
-//        localPort = Integer.parseInt(localPortStr);
         String fileName = TuningIDEConstant.TUNING_KPHT +
                 IDEConstant.PATH_SEPARATOR +
                 PageType.FREE_TRIAL.value() +

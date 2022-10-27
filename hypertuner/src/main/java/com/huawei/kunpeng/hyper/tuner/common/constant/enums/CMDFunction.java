@@ -28,7 +28,7 @@ import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionManager;
 public enum CMDFunction {
     NULL("null", null),
     GET_DATA("getData", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    OPEN_HYPERLINKS("openHyperlinks", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    OPEN_NEW_PAGE("openNewPage", FunctionManager.getFunctionHandler(CommonHandler.class)),
     DOWNLOAD_BASE64_PNG("downloadBase64Png", FunctionManager.getFunctionHandler(CommonHandler.class)),
     DOWNLOAD_FILE_BY_BLOB("downloadFileByBlob", FunctionManager.getFunctionHandler(CommonHandler.class)),
     DOWNLOAD_FILE_BY_JSON("downloadFileByJson", FunctionManager.getFunctionHandler(CommonHandler.class)),

@@ -20,6 +20,7 @@ import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.model.JavaPerfOperateLogBean;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.UpgradeServerEditor;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.constant.FileManageConstant;
@@ -356,6 +357,16 @@ public class CommonHandler extends FunctionHandler {
     public void readURLConfig(MessageBean message, String module) {
         Map urlConfig = FileUtil.ConfigParser.parseJsonConfigFromFile(TuningIDEConstant.URL_CONFIG_PATH);
         invokeCallback(message.getCmd(), message.getCbid(), JsonUtil.getJsonStrFromJsonObj(urlConfig));
+    }
+
+    /**
+     * 打开网页
+     *
+     * @param message 数据
+     * @param module  模块
+     */
+    public void openNewPage(MessageBean message, String module) {
+
     }
 }
 
