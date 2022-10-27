@@ -2,6 +2,7 @@ package com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor;
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.enums.PageType;
+import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.webview.TuningWebFileEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pagewebview.ConfigureServerWebView;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
@@ -42,7 +43,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
                 IDEConstant.PATH_SEPARATOR +
                 PageType.CONFIGURE_SERVER.value() +
                 IDEConstant.PATH_SEPARATOR +
-                "HyperTuner-ConfigureServer" +
+                TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_config_now") +
                 "." +
                 TuningIDEConstant.TUNING_KPHT;
 

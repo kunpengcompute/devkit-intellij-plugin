@@ -20,6 +20,7 @@ import com.huawei.kunpeng.hyper.tuner.common.constant.TuningUserManageConstant;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningServerConfigWrapDialog;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.FreeTrialEditor;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
 import com.huawei.kunpeng.intellij.ui.dialog.IDEBaseDialog;
@@ -117,11 +118,19 @@ public class LeftTreeConfigPanel extends IDEBasePanel {
 //        };
         MouseAdapter configMouseAdapter = new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent event) {
+            public void mouseClicked(MouseEvent e) {
                 ConfigureServerEditor.openPage();
             }
         };
+        MouseAdapter freeTrialMouseAdapter = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent event) {
+                FreeTrialEditor.openPage();
+            }
+        };
         hyperLinkButton.addMouseListener(configMouseAdapter);
+        freeTrialButton.addMouseListener(freeTrialMouseAdapter);
+
     }
 
     @Override

@@ -26,7 +26,7 @@ public class ConfigureServerWebView extends WebView {
         String currentTheme = isLightThemeInContext ? "light" : "dark";
         pageParams.put("currentTheme", currentTheme);
         NavigatorPageBean navigatorPage =
-                MessageRouterHandler.generateNavigatorPage("/navigate", "/freeTrialProcessEnvironment",
+                MessageRouterHandler.generateNavigatorPage("/navigate", "/config",
                         pageParams, sessionBean);
         super.createWebView(navigatorPage, null, "Configure Server");
     }
