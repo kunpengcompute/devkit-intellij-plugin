@@ -43,13 +43,14 @@ public class IDEFileEditorManagerListener implements FileEditorManagerListener.B
     @Override
     public void beforeFileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
         if (file.getName().contains("HyperTuner")) {
-            String pluginPath = CommonUtil.getPluginInstalledPath() + NginxUtil.STOP_NGINX_BAT;
-            File stopNginxBatFile = new File(pluginPath);
-            if (stopNginxBatFile.exists()) {
-                NginxUtil.stopNginx();
-            } else {
-                Logger.info("file does not exist");
-            }
+//            String pluginPath = CommonUtil.getPluginInstalledPath() + NginxUtil.STOP_NGINX_BAT;
+//            File stopNginxBatFile = new File(pluginPath);
+//            if (stopNginxBatFile.exists()) {
+//                NginxUtil.stopNginx();
+//            } else {
+//                Logger.info("file does not exist");
+//            }
+            NginxUtil.stopNginx();
             TuningCommonUtil.refreshServerConfigPanel();
             IDENotificationUtil.notificationCommon(new NotificationBean("",
                     TuningI18NServer.toLocale("plugins_hyper_tuner_config_closure"), NotificationType.WARNING));

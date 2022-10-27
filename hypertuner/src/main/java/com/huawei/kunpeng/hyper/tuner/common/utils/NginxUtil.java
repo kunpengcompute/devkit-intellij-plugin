@@ -29,28 +29,23 @@ import java.io.*;
 import java.text.MessageFormat;
 
 public class NginxUtil {
-    private static final String NGINX_MAC_PATH = "/nginx-hypertuner/nginx";
     /**
      * 配置文件所在目录
      */
     private static final String CONF_PATH = "\\nginx\\nginx-1.18.0\\conf\\nginx.conf";
-    private static final String CONF_MAC_PATH = "/conf/nginx.conf";
-    /**
-     * mac下安装nginx脚本
-     */
-    public static final String INSTALL_NGINX_BASH = "/install_nginx.sh";
+    private static final String CONF_MAC_PATH = "/nginx/nginx/conf/nginx.conf";
 
     /**
      * 启动nginx服务脚本
      */
     private static final String START_NGINX_BAT = "\\nginx\\nginx-1.18.0\\start_nginx.bat";
-    private static final String START_NGINX_BASH = "/start_nginx.sh";
+    private static final String START_NGINX_BASH = "/nginx/nginx/start_nginx.sh";
 
     /**
      * 停止nginx服务脚本
      */
     public static final String STOP_NGINX_BAT = "\\nginx\\nginx-1.18.0\\stop_nginx.bat";
-    public static final String STOP_NGINX_BASH = "/stop_nginx.sh";
+    public static final String STOP_NGINX_BASH = "/nginx/nginx/stop_nginx.sh";
 
     private static SystemOS systemOS = IDEContext.getValueFromGlobalContext(null, BaseCacheVal.SYSTEM_OS.vaLue());
 
@@ -64,7 +59,6 @@ public class NginxUtil {
     public static void updateNginxConfig(String ip, String port, String localPort) {
         String content = MessageFormat.format(TuningI18NServer.toLocale(
                 "plugins_hyper_tuner_nginx_config"), localPort, ip, port);
-        String installPath = getInstallPath();
         if (systemOS.equals(SystemOS.WINDOWS)) {
             // 写入到文件覆盖源文件内容
             saveAsFileWriter(content);
@@ -81,11 +75,12 @@ public class NginxUtil {
                 e.printStackTrace();
             }
         } else if (systemOS.equals(SystemOS.MAC)) {
+            System.out.print(content);
             writeToFile(content);
-            writeNginxStartBash(installPath);
-            writeNginxStopBash(installPath);
+            writeNginxStartBash();
+            writeNginxStopBash();
             try {
-                startBash(installPath);
+                startBash();
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -133,19 +128,15 @@ public class NginxUtil {
         File file = null;
         try {
             String pluginPath = CommonUtil.getPluginInstalledPath();
-            String installPath = getInstallPath();
             if (content.contains("nginx -s reload")) {
                 // nginx 启动服务脚本写入
-                file = new File(installPath + NGINX_MAC_PATH + START_NGINX_BASH);
+                file = new File(pluginPath + START_NGINX_BASH);
             } else if (content.contains("nginx -s quit")) {
                 // nginx 关闭服务脚本写入
-                file = new File(installPath + NGINX_MAC_PATH + STOP_NGINX_BASH);
-            } else if (content.contains("make && make install")) {
-                // nginx 安装脚本写入
-                file = new File(pluginPath + INSTALL_NGINX_BASH);
+                file = new File(pluginPath + STOP_NGINX_BASH);
             } else {
                 // nginx配置文件写入
-                file = new File(installPath + NGINX_MAC_PATH + CONF_MAC_PATH);
+                file = new File(pluginPath + CONF_MAC_PATH);
             }
             file.createNewFile();
             fileWriter = new FileWriter(file);
@@ -174,12 +165,13 @@ public class NginxUtil {
     }
 
     /**
-     * 写入启动nginx配置bash脚本（linux、mac）
-     * TODO
+     * 写入启动nginx配置bash脚本（mac）
      */
-    public static void writeNginxStartBash(String installPath) {
+    public static void writeNginxStartBash() {
+        System.out.println("writing start nginx script");
+        String pluginPath = CommonUtil.getPluginInstalledPath();
         String content = MessageFormat.format(TuningI18NServer.toLocale(
-                "plugins_hyper_tuner_start_nginx_bash"), installPath);
+                "plugins_hyper_tuner_start_nginx_bash"), pluginPath);
         writeToFile(content);
     }
 
@@ -195,12 +187,13 @@ public class NginxUtil {
     }
 
     /**
-     * 写入启动nginx关闭服务bash脚本（linux、mac）
-     * TODO
+     * 写入启动nginx关闭服务bash脚本（mac）
      */
-    public static void writeNginxStopBash(String installPath) {
+    public static void writeNginxStopBash() {
+        System.out.println("writing nginx stop bash");
+        String pluginPath = CommonUtil.getPluginInstalledPath();
         String content = MessageFormat.format(TuningI18NServer.toLocale(
-                "plugins_hyper_tuner_stop_nginx_bash"), installPath);
+                "plugins_hyper_tuner_stop_nginx_bash"), pluginPath);
         writeToFile(content);
     }
 
@@ -219,13 +212,14 @@ public class NginxUtil {
     /**
      * 启动nginx开启服务bash脚本
      */
-    public static void startBash(String installPath) {
+    public static void startBash() {
+        String pluginPath = CommonUtil.getPluginInstalledPath();
         System.out.println("starting nginx!!!");
         try {
             // 修改文件权限以执行bash脚本
-            Runtime.getRuntime().exec("chmod 777 " + installPath + NGINX_MAC_PATH + START_NGINX_BASH);
-            Runtime.getRuntime().exec("bash " + installPath + NGINX_MAC_PATH + START_NGINX_BASH);
-        } catch (IOException e) {
+            Runtime.getRuntime().exec(new String[]{"chmod", "777", pluginPath + START_NGINX_BASH});
+            Runtime.getRuntime().exec(new String[]{"bash", pluginPath + START_NGINX_BASH});
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -246,12 +240,11 @@ public class NginxUtil {
      * 启动nginx关闭服务bash脚本
      */
     public static void startStopBash() {
-        System.out.println("stopping nginx!!!");
-        String installPath = getInstallPath();
+        String pluginPath = CommonUtil.getPluginInstalledPath();
         try {
-            Runtime.getRuntime().exec("chmod 777 " + installPath + NGINX_MAC_PATH + STOP_NGINX_BASH);
-            Runtime.getRuntime().exec(installPath + NGINX_MAC_PATH + STOP_NGINX_BASH);
-        } catch (IOException e) {
+            Runtime.getRuntime().exec(new String[]{"chmod", "777", pluginPath + STOP_NGINX_BASH});
+            Runtime.getRuntime().exec(new String[]{"bash", pluginPath + STOP_NGINX_BASH});
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -265,84 +258,6 @@ public class NginxUtil {
             startStopBat();
         } else {
             startStopBash();
-        }
-    }
-
-    /**
-     * mac下安装nginx脚本写入与执行
-     * TODO
-     */
-    public static void installNginx() {
-        String pluginPath = CommonUtil.getPluginInstalledPath();
-        String content = MessageFormat.format(TuningI18NServer.toLocale(
-                "plugins_hyper_tuner_install_nginx_bash"), pluginPath);
-        writeToFile(content);
-        System.out.println(pluginPath);
-        // 执行安装脚本
-        try {
-            Runtime.getRuntime().exec("chmod 777 " + pluginPath + INSTALL_NGINX_BASH);
-//            Runtime.getRuntime().exec("bash " + pluginPath + INSTALL_NGINX_BASH);
-            Process process = Runtime.getRuntime().exec("bash " + pluginPath + INSTALL_NGINX_BASH);
-            InputStream is1 = process.getInputStream();
-            new Thread(() -> {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is1));
-                try{
-                    while (reader.readLine()!=null) {
-                        System.out.println(reader.readLine());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
-            }).start();
-            InputStream is2 = process.getErrorStream();
-            BufferedReader reader2 = new BufferedReader(new InputStreamReader(is2));
-            while (reader2.readLine()!=null) {
-                System.out.println(reader2.readLine());
-            }
-            int res = process.waitFor();
-//            while ((line = input.readLine()) != null) {
-////                sb.append(line);
-//                System.out.println(line);
-//            }
-//
-            System.out.println("install nginx result: " + res);
-//            if (result == 0) {
-//                return;
-//            }
-//            showInstallNotification(sb.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-//            showInstallNotification();
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * 显示安装过程中的错误信息弹窗
-     * TODO
-     */
-    private static void showInstallNotification(String info) {
-        String title = "nginx installation";
-        // content是执行nginx安装脚本的返回值
-        NotificationBean notificationBean = new NotificationBean(title, info, NotificationType.WARNING);
-        IDENotificationUtil.notificationCommon(notificationBean);
-    }
-
-    /**
-     * 获取安装Nginx路径
-     * @return String userPath : /Users/xxx/
-     */
-    private static String getInstallPath() {
-        String pluginPath = CommonUtil.getPluginInstalledPath();
-        if (!pluginPath.contains(" ")){
-            // 用户插件所在路径不包含空格，可直接安装在插件路径下
-            return pluginPath;
-        } else {
-            String[] paths = pluginPath.split("/");
-            // paths[0] is ""
-            String userPath = "/" + paths[1] + "/" + paths[2];
-            return userPath;
         }
     }
 }

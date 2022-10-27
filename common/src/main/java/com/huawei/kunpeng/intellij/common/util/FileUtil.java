@@ -289,49 +289,6 @@ public class FileUtil {
     }
 
     /**
-     * tar.gz文件解压（Mac系统）
-     * TODO
-     */
-    public static void unTarGzipFile(String inputTarFile, String destDirPath) {
-        if (!FileUtil.validateFilePath(inputTarFile) || !FileUtil.validateFilePath(destDirPath)) {
-            return;
-        }
-        File srcFile = new File(inputTarFile);
-        if (!srcFile.exists()) {
-            Logger.error("unTarGzip file, the file does not exist.");
-        }
-        try {
-            doUnTarGzipFile(inputTarFile, destDirPath);
-        } catch (IOException e) {
-            Logger.error("unTarGzip file error, IOException!!!");
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void doUnTarGzipFile(String inputTarFile, String destDirPath) throws IOException {
-//        InputStream fin = Files.newInputStream(srcFile.toPath());
-//        BufferedInputStream in = new BufferedInputStream(fin);
-//        OutputStream out = Files.newOutputStream()
-        InputStream fin = Files.newInputStream(Paths.get(inputTarFile));
-        BufferedInputStream in = new BufferedInputStream(fin);
-        GzipCompressorInputStream gzIn = new GzipCompressorInputStream(in);
-        TarArchiveInputStream tarIn = new TarArchiveInputStream(gzIn);
-//        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new GzipCompressorInputStream(in));
-        TarArchiveEntry entry;
-        while ((entry = tarIn.getNextTarEntry()) != null) {
-            if (entry.isDirectory()){
-                continue;
-            }
-            File targetFile = new File(destDirPath, entry.getName());
-            File parent = targetFile.getParentFile();
-            if (!parent.exists()) {
-                parent.mkdirs();
-            }
-            IOUtils.copy(tarIn, Files.newOutputStream(targetFile.toPath()));
-        }
-    }
-
-    /**
      * 目录层级的文件复制
      *
      * @param sourcePath 源目录路径

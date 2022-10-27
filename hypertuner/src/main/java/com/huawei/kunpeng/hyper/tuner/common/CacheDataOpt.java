@@ -19,7 +19,6 @@ package com.huawei.kunpeng.hyper.tuner.common;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
-import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
 import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
 import com.huawei.kunpeng.intellij.common.BaseCacheDataOpt;
 import com.huawei.kunpeng.intellij.common.IDEContext;
@@ -30,7 +29,6 @@ import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.util.ui.UIUtil;
 
 import java.io.File;
@@ -101,7 +99,6 @@ public class CacheDataOpt extends BaseCacheDataOpt {
 
         Logger.info("=====start loading nginx=====");
         // 解压缩nginx安装包，需根据OS类型执行不同方法
-        // TODO
         if (systemOS.equals(SystemOS.WINDOWS)) {
             Optional<File> optionalFile2 = FileUtil.getFile(
                     CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_PLUGIN_NAME,
@@ -113,32 +110,17 @@ public class CacheDataOpt extends BaseCacheDataOpt {
             FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_PLUGIN_NAME,
                     CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
         } else if (systemOS.equals(SystemOS.MAC)) {
-//            Logger.info("start loading nginx in mac system");
-//            Optional<File> optionalFile2 = FileUtil.getFile(
-//                    CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
-//                    true);
-//            optionalFile2.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file,
-//                    TuningIDEConstant.NGINX_MAC_PLUGIN_NAME, true));
-//            // untar步骤其实可以放入脚本中运行
-//            Logger.info("=====start unzip nginx=====");
-//            FileUtil.unTarGzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
-//                    CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
-            // install
-            Logger.info("this is mac os system");
-            Logger.info("=========installing nginx============");
-            NginxUtil.installNginx();
-            Logger.info("Nginx installed!!!");
+            Logger.info("start loading nginx in mac system");
+            Optional<File> optionalFile2 = FileUtil.getFile(
+                    CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
+                    true);
+            optionalFile2.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file,
+                    TuningIDEConstant.NGINX_MAC_PLUGIN_NAME, true));
+            // untar步骤其实可以放入脚本中运行
+            Logger.info("=====start unzip nginx=====");
+            FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
+                    CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
         }
-//        Logger.info("=====start loading nginx");
-//        Optional<File> optionalFile2 = FileUtil.getFile(
-//                CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_PLUGIN_NAME, true);
-//        optionalFile2.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.NGINX_PLUGIN_NAME,
-//                true));
-//
-//        Logger.info("=====start unzip nginx");
-//        FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_PLUGIN_NAME,
-//                CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
-
         // 加载index页面到缓存，并替换base路径
         Logger.info("=====start loading index=====");
         String indexHtml = FileUtil.readFileContent(TuningIDEContext.getWebViewIndex());
