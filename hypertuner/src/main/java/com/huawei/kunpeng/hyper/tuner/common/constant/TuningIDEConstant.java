@@ -82,7 +82,7 @@ public class TuningIDEConstant<T> extends IDEConstant {
     /**
      * nginx mac资源包地址
      */
-    public static final String NGINX_MAC_PLUGIN_NAME = "/nginx/nginx-1.23.1.tar.gz";
+    public static final String NGINX_MAC_PLUGIN_NAME = "/nginx/nginx-mac.zip";
 
 
     /**

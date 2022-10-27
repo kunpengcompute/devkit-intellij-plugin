@@ -39,23 +39,13 @@ public class NginxUtilTest {
 
         Logger.info("=====start untargzip nginx test=====");
         // 解压nginx.zip文件
-        FileUtil.unTarGzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
+        FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
                 CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
         Logger.info("=====nginx loading successful!!!");
-
-        // 拷贝install_nginx.sh文件
-        optionalFile = FileUtil.getFile(
-                CommonUtil.getPluginInstalledPath() + NginxUtil.INSTALL_NGINX_BASH, true);
-        optionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, NginxUtil.INSTALL_NGINX_BASH, true));
     }
 
     @After
     public void tearDown() throws Exception {
-    }
-
-    @Test
-    public void installNginx() {
-        NginxUtil.installNginx();
     }
 
     @Test
@@ -78,10 +68,10 @@ public class NginxUtilTest {
     }
 
     @Test
-    public void writeNginxStartBash() { NginxUtil.writeNginxStartBash(""); }
+    public void writeNginxStartBash() { NginxUtil.writeNginxStartBash(); }
 
     @Test
-    public void writeNginxStopBash() { NginxUtil.writeNginxStopBash(""); }
+    public void writeNginxStopBash() { NginxUtil.writeNginxStopBash(); }
 
     @Test
     public void updateNginxConfig() {
