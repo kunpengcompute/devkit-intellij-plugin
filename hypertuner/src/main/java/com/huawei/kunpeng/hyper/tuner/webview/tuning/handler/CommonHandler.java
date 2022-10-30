@@ -20,6 +20,7 @@ import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.model.JavaPerfOperateLogBean;
+import com.huawei.kunpeng.hyper.tuner.webview.WebFileProvider;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.UpgradeServerEditor;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
@@ -34,9 +35,11 @@ import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.huawei.kunpeng.intellij.common.util.JsonUtil;
 import com.huawei.kunpeng.intellij.common.util.ShellTerminalUtil;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
+import com.huawei.kunpeng.intellij.js2java.fileditor.IDEFileEditorManager;
 import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 
 import com.alibaba.fastjson.JSONArray;
+import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
@@ -367,6 +370,24 @@ public class CommonHandler extends FunctionHandler {
      */
     public void openNewPage(MessageBean message, String module) {
 
+    }
+
+    /**
+     * 关闭文件
+     *
+     * @param message 数据
+     * @param module  模块
+     */
+    public void closePanel(MessageBean message, String module) {
+        Logger.info("closePanel start.");
+
+        Project project = CommonUtil.getDefaultProject();
+        VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
+        WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
+        if (webViewPage != null) {
+            webViewPage.dispose();
+        }
+        Logger.info("closePanel end.");
     }
 }
 
