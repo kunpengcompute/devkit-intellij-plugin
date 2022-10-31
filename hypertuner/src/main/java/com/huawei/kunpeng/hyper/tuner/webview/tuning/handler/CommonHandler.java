@@ -16,13 +16,14 @@
 
 package com.huawei.kunpeng.hyper.tuner.webview.tuning.handler;
 
+import com.huawei.kunpeng.hyper.tuner.action.install.TuningInstallAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.model.JavaPerfOperateLogBean;
 import com.huawei.kunpeng.hyper.tuner.webview.WebFileProvider;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.UpgradeServerEditor;
 import com.huawei.kunpeng.intellij.common.IDEContext;
+import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.constant.FileManageConstant;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
@@ -41,6 +42,7 @@ import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 import com.alibaba.fastjson.JSONArray;
 import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
@@ -52,12 +54,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -168,8 +168,8 @@ public class CommonHandler extends FunctionHandler {
     /**
      * 下载Base64格式图片文件
      *
-     * @param baseStr baseStr
-     * @param imagePath  imagePath
+     * @param baseStr   baseStr
+     * @param imagePath imagePath
      */
     public boolean base64ChangeImage(String baseStr, String imagePath) {
         if (baseStr == null) {
@@ -299,8 +299,8 @@ public class CommonHandler extends FunctionHandler {
     /**
      * 构建CSV
      *
-     * @param list list
-     * @param pathLog pathLog
+     * @param list     list
+     * @param pathLog  pathLog
      * @param fileName fileName
      * @return CSVPrinter
      * @throws IOException IOException
@@ -389,5 +389,102 @@ public class CommonHandler extends FunctionHandler {
         }
         Logger.info("closePanel end.");
     }
+
+    /**
+     * webview显示右下角提示消息处理
+     *
+     * @param message 数据
+     * @param module  模块
+     */
+    public void readConfig(MessageBean message, String module) {
+        Map<String, Object> context = IDEContext.getValueFromGlobalContext(null, "tuning");
+        String ip = Optional.ofNullable(context.get(BaseCacheVal.IP.vaLue()))
+                .map(Object::toString).orElse(null);
+        String config = "{\"sysPerfConfig\":[{\"port\":\"8086\",\"ip\":\"" + ip + "\"}]}";
+        // 回调
+        invokeCallback(message.getCmd(), message.getCbid(), config);
+    }
+
+    /**
+     * 登出操作
+     *
+     * @param message 数据
+     * @param module  模块
+     */
+    public void loginOut(MessageBean message, String module) {
+
+    }
+
+    /**
+     * 检测ssh连接
+     *
+     * @param message 数据
+     * @param module  模块
+     */
+    public void checkConn(MessageBean message, String module) {
+        ActionOperate actionOperate = new ActionOperate() {
+            @Override
+            public void actionOperate(Object data) {
+                Logger.info(String.valueOf(1));
+            }
+        };
+
+        Map<String, Object> params = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        params.put("ip", params.get("host"));
+        params.put("user", params.get("username"));
+        params.put("passPhrase", params.get("passphrase"));
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("param", params);
+        // 调试用
+        try {
+            FileUtil.writeFile(message.getCmd()+"+"+message.getCbid(), PathManager.getPluginsPath() +
+                    "/Kunpeng-DevKit-IDE-hyper-tuner-plugin/webview/tuning/a.txt");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        invokeCallback(message.getCmd(), message.getCbid(), "SUCCESS");
+
+        TuningInstallAction action = new TuningInstallAction();
+        action.onNextAction(result, actionOperate);
+
+
+    }
+
+    /**
+     * webview显示右下角提示消息处理
+     *
+     * @param message 显示信息
+     * @param module  模块
+     */
+    public void showInfoBox(MessageBean message, String module) {
+        Logger.info("showInfoBox start");
+        Map<String, String> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        String info = "";
+
+        // 调试用
+        try {
+            FileUtil.writeFile(info, PathManager.getPluginsPath() +
+                    "/Kunpeng-DevKit-IDE-hyper-tuner-plugin/webview/tuning/a.txt");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        switch (data.get("type")) {
+            case "error":
+                IDENotificationUtil.notificationCommon(new NotificationBean("", info, NotificationType.ERROR));
+                break;
+            case "warn":
+                IDENotificationUtil.notificationCommon(new NotificationBean("", info, NotificationType.WARNING));
+                break;
+            default:
+                IDENotificationUtil.notificationCommon(new NotificationBean("", info, NotificationType.INFORMATION));
+                break;
+        }
+        Logger.info("showInfoBox end.");
+    }
+
+
 }
 

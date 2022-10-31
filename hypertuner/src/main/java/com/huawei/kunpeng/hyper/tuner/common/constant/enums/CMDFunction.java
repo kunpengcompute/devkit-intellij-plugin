@@ -35,7 +35,9 @@ public enum CMDFunction {
     DOWNLOAD_JAVA_OPER_LOG("downloadJavaOperLog", FunctionManager.getFunctionHandler(CommonHandler.class)),
     DOWNLOAD_CERTIFICATE("downloadCertificate", FunctionManager.getFunctionHandler(CommonHandler.class)),
     READ_URL_CONFIG("readURLConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    CLOSE_PANEL("closePanel", FunctionManager.getFunctionHandler(CommonHandler.class));
+    CLOSE_PANEL("closePanel", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    CHECK_CONN("checkConn", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    SHOW_INFO_BOX("showInfoBox", FunctionManager.getFunctionHandler(CommonHandler.class));
 
     private final String functionName;
 
