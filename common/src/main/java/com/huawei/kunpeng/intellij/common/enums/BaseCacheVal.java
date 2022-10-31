@@ -37,6 +37,7 @@ public enum  BaseCacheVal {
     PORTING_ZH_PATH_UNICODE_STR("porting_zh_path_unicode_str"),
     PORTING_WEB_VIEW_INDEX("PortingWebViewIndex"),
     TUNING_WEB_VIEW_INDEX("TuningWebViewIndex"),
+    FREE_TRIAL_WEB_VIEW_INDEX("FreeTrialWebViewIndex"),
     PORTING_SESSION("portingSession"),
     MIGRATION_TIP("migrationTip"),
     SERVER_VERSION("serverVersion"),

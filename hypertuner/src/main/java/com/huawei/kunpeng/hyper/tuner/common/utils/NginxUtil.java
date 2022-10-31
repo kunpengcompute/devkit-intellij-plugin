@@ -335,15 +335,19 @@ public class NginxUtil {
      */
     private static String getInstallPath() {
         String pluginPath = CommonUtil.getPluginInstalledPath();
-        if (!pluginPath.contains(" ")){
-            // 用户插件所在路径不包含空格，可直接安装在插件路径下
-            return pluginPath;
-        } else {
-            String[] paths = pluginPath.split("/");
-            // paths[0] is ""
-            String userPath = "/" + paths[1] + "/" + paths[2];
-            return userPath;
-        }
+//        if (!pluginPath.contains(" ")){
+//            // 用户插件所在路径不包含空格，可直接安装在插件路径下
+//            return pluginPath;
+//        } else {
+//            String[] paths = pluginPath.split("/");
+//            // paths[0] is ""
+//            String userPath = "/" + paths[1] + "/" + paths[2];
+//            return userPath;
+//        }
+        String[] paths = pluginPath.split("/");
+        // paths[0] is ""
+        String userPath = "/" + paths[1] + "/" + paths[2];
+        return userPath;
     }
 }
 

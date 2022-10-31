@@ -33,7 +33,8 @@ public enum CMDFunction {
     DOWNLOAD_FILE_BY_BLOB("downloadFileByBlob", FunctionManager.getFunctionHandler(CommonHandler.class)),
     DOWNLOAD_FILE_BY_JSON("downloadFileByJson", FunctionManager.getFunctionHandler(CommonHandler.class)),
     DOWNLOAD_JAVA_OPER_LOG("downloadJavaOperLog", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    DOWNLOAD_CERTIFICATE("downloadCertificate", FunctionManager.getFunctionHandler(CommonHandler.class));
+    DOWNLOAD_CERTIFICATE("downloadCertificate", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    READ_URL_CONFIG("readURLConfig", FunctionManager.getFunctionHandler(CommonHandler.class));
 
     private final String functionName;
 

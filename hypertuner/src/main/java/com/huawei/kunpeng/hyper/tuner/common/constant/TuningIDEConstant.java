@@ -57,6 +57,7 @@ public class TuningIDEConstant<T> extends IDEConstant {
     /**
      * 工具名称
      */
+//    public static final String SYS = "sysperfanalysis";
     public static final String SYS = "sys";
 
     /**
@@ -68,6 +69,11 @@ public class TuningIDEConstant<T> extends IDEConstant {
      * tuning插件webview页面地址
      */
     public static final String TUNING_WEB_VIEW_INDEX_HTML = "index.html";
+
+    /**
+     * tuning插件free_trial页面地址
+     */
+    public static final String FREE_TRIAL_WEB_VIEW_INDEX_HTML = "index.html";
 
     /**
      * 代理html文件地址
@@ -90,8 +96,14 @@ public class TuningIDEConstant<T> extends IDEConstant {
      */
     public static final String TUNING_NAME = "Kunpeng-DevKit-IDE-hyper-tuner-plugin";
 
+
     /**
      * tuning页面包地址
      */
-    public static final String TUNING_PLUGIN_NAME = "/webview/tuning.zip";
+    public static final String TUNING_PLUGIN_NAME= "/webview/tuning.zip";
+
+    /**
+     * url文件urlConfig.json路径
+     */
+    public static final String URL_CONFIG_PATH = "/assets/urlConfig.json";
 }
