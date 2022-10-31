@@ -19,6 +19,7 @@ package com.huawei.kunpeng.hyper.tuner.common;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
+import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
 import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
 import com.huawei.kunpeng.intellij.common.BaseCacheDataOpt;
 import com.huawei.kunpeng.intellij.common.IDEContext;
@@ -29,6 +30,7 @@ import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.util.ui.UIUtil;
 
 import java.io.File;
@@ -108,6 +110,7 @@ public class CacheDataOpt extends BaseCacheDataOpt {
 
         Logger.info("=====start loading nginx=====");
         // 解压缩nginx安装包，需根据OS类型执行不同方法
+        // TODO
         if (systemOS.equals(SystemOS.WINDOWS)) {
             Optional<File> optionalFile2 = FileUtil.getFile(
                     CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_PLUGIN_NAME,

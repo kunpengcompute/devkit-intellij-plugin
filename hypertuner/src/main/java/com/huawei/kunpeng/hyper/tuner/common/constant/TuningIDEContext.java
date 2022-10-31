@@ -125,8 +125,9 @@ public class TuningIDEContext<T> extends IDEContext {
                             TuningIDEConstant.PATH_SEPARATOR +
                             TuningIDEConstant.TUNING_WEB_VIEW_PATH +
                             TuningIDEConstant.PATH_SEPARATOR +
-                            TuningIDEConstant.TOOL_NAME_TUNING + IDEConstant.PATH_SEPARATOR +
-                            TuningIDEConstant.SYS + IDEConstant.PATH_SEPARATOR +
+                            TuningIDEConstant.TOOL_NAME_TUNING +
+                            TuningIDEConstant.PATH_SEPARATOR +
+                            TuningIDEConstant.SYS + TuningIDEConstant.PATH_SEPARATOR +
                             TuningIDEConstant.TUNING_WEB_VIEW_INDEX_HTML);
         }
         return getValueFromGlobalContext(TuningIDEConstant.TOOL_NAME_TUNING,

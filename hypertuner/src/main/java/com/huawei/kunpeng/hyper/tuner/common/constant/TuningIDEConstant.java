@@ -35,11 +35,6 @@ public class TuningIDEConstant<T> extends IDEConstant {
     public static final String TOOL_NAME_TUNING = "tuning";
 
     /**
-     * 工具名称
-     */
-    public static final String SYS = "sys";
-
-    /**
      * 请求成功返回
      */
     public static final String SUCCESS_CODE = "UserManage.Success";
@@ -58,6 +53,17 @@ public class TuningIDEConstant<T> extends IDEConstant {
      * tuning插件集成nginx目录
      */
     public static final String TUNING_NGINX_PATH = "nginx";
+
+    /**
+     * 工具名称
+     */
+//    public static final String SYS = "sysperfanalysis";
+    public static final String SYS = "sys";
+
+    /**
+     * 工具名称
+     */
+    public static final String JAVA = "java";
 
     /**
      * tuning插件webview页面地址
@@ -94,7 +100,7 @@ public class TuningIDEConstant<T> extends IDEConstant {
     /**
      * tuning页面包地址
      */
-    public static final String TUNING_PLUGIN_NAME="/webview/tuning.zip";
+    public static final String TUNING_PLUGIN_NAME= "/webview/tuning.zip";
 
     /**
      * url文件urlConfig.json路径
