@@ -24,7 +24,6 @@ import com.huawei.kunpeng.intellij.common.UserInfoContext;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-import com.huawei.kunpeng.intellij.common.util.ConfigUtils;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.UninstallWrapDialog;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.panel.UninstallPanel;
@@ -65,7 +64,7 @@ public class TuningUninstallWrapDialog extends UninstallWrapDialog {
         TuningIDEContext.setTuningIDEPluginStatus(IDEPluginStatus.IDE_STATUS_INIT);
         UserInfoContext.getInstance().clearUserInfo();
         // 清空本地 ip 缓存
-        ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "","", "");
+//        ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "","", "");
         // 弹框消失则将两个组件缓存置空
         checkButton = null;
         gifLabel = null;

@@ -32,6 +32,7 @@ import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.ui.DialogWrapper;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -122,16 +123,21 @@ public class TuningIDEContext<T> extends IDEContext {
             setValueForGlobalContext(TuningIDEConstant.TOOL_NAME_TUNING, BaseCacheVal.TUNING_WEB_VIEW_INDEX.vaLue(),
                     PathManager.getPluginsPath() + IDEConstant.PATH_SEPARATOR +
                             TuningIDEConstant.TUNING_NAME +
-                            TuningIDEConstant.PATH_SEPARATOR +
-                            TuningIDEConstant.TUNING_WEB_VIEW_PATH +
-                            TuningIDEConstant.PATH_SEPARATOR +
-                            TuningIDEConstant.TOOL_NAME_TUNING +
-                            TuningIDEConstant.PATH_SEPARATOR +
-                            TuningIDEConstant.SYS + TuningIDEConstant.PATH_SEPARATOR +
-                            TuningIDEConstant.TUNING_WEB_VIEW_INDEX_HTML);
+                            TuningIDEConstant.WEB_VIEW_INDEX_HTML);
         }
         return getValueFromGlobalContext(TuningIDEConstant.TOOL_NAME_TUNING,
                 BaseCacheVal.TUNING_WEB_VIEW_INDEX.vaLue());
+    }
+
+    /**
+     * 获取tuning插件login页面index入口
+     * @return
+     */
+    public static String getLoginWebViewIndex() {
+        String indexPath = PathManager.getPluginsPath() + IDEConstant.PATH_SEPARATOR +
+                TuningIDEConstant.TUNING_NAME +
+                TuningIDEConstant.TUNING_LOGIN_WEB_VIEW_INDEX_HTML;
+        return indexPath;
     }
 
 }

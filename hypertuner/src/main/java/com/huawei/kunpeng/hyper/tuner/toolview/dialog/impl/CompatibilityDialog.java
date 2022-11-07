@@ -19,12 +19,10 @@ package com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl;
 import static com.huawei.kunpeng.intellij.common.constant.CSSConstant.ICON_INFO_ICON;
 import static com.huawei.kunpeng.intellij.common.constant.UserManageConstant.TERM_OPERATE_CLOSE;
 
-import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.constant.InstallConstant;
-import com.huawei.kunpeng.intellij.common.util.ConfigUtils;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
 import com.huawei.kunpeng.intellij.ui.dialog.IdeaDialog;
@@ -119,6 +117,6 @@ public class CompatibilityDialog extends IdeaDialog {
                 TuningI18NServer.toLocale("plugins_hyper_tuner_config_closure"), NotificationType.WARNING));
         ApplicationManager.getApplication().invokeLater(TuningCommonUtil::refreshServerConfigPanel);
         // 清空本地 ip 缓存
-        ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "", "", "");
+//        ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "", "", "");
     }
 }

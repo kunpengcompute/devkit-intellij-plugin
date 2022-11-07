@@ -16,6 +16,8 @@
 
 package com.huawei.kunpeng.hyper.tuner.webview.tuning.pagewebview;
 
+import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
+import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
@@ -42,7 +44,7 @@ public class IDELoginWebView extends WebView {
      */
     public IDELoginWebView(String localPort) {
         Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
-        List portConfig = JsonUtil.getValueIgnoreCaseFromMap(config, ConfigProperty.PORT_CONFIG.vaLue(), List.class);
+        List portConfig = JsonUtil.getValueIgnoreCaseFromMap(config, ConfigProperty.TUNING_CONFIG.vaLue(), List.class);
         String ip = null;
         String port = null;
         String localPortCache = null;
@@ -72,5 +74,18 @@ public class IDELoginWebView extends WebView {
         NavigatorPageBean navigatorPage = MessageRouterHandler.generateNavigatorPage("/navigate",
                 "/", pageParams, sessionBean);
         super.createWebView(navigatorPage, null, "IDELoginWebView");
+    }
+
+    /**
+     * 要覆盖的index.html位置
+     * @return login页面所用index.html位置
+     */
+    @Override
+    public String getIndexHtmlKey() {
+        return TuningIDEConstant.TUNING_LOGIN_WEB_VIEW_INDEX_HTML;
+    }
+    @Override
+    public String getWebViewIndex() {
+        return TuningIDEContext.getLoginWebViewIndex();
     }
 }

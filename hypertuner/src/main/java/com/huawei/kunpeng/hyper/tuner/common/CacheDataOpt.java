@@ -19,7 +19,6 @@ package com.huawei.kunpeng.hyper.tuner.common;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
-import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
 import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
 import com.huawei.kunpeng.intellij.common.BaseCacheDataOpt;
 import com.huawei.kunpeng.intellij.common.IDEContext;
@@ -30,7 +29,6 @@ import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.util.ui.UIUtil;
 
 import java.io.File;
@@ -93,24 +91,9 @@ public class CacheDataOpt extends BaseCacheDataOpt {
                         configDef.get(BaseCacheVal.PORT.vaLue()));
             }
         }
-        Logger.info("=====start loading webview=====");
-        Optional<File> optionalFile = FileUtil.getFile(
-                CommonUtil.getPluginInstalledPath() + TuningIDEConstant.WEB_VIEW_INDEX_HTML, true);
-        optionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.WEB_VIEW_INDEX_HTML,
-                true));
 
-        Logger.info("=====start loading tuning.zip=====");
-        Optional<File> newOptionalFile = FileUtil.getFile(
-                CommonUtil.getPluginInstalledPath() + TuningIDEConstant.TUNING_PLUGIN_NAME, true);
-        newOptionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.TUNING_PLUGIN_NAME,
-                true));
-
-        FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.TUNING_PLUGIN_NAME,
-                CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_WEB_VIEW_PATH));
-
-        Logger.info("=====start loading nginx=====");
         // 解压缩nginx安装包，需根据OS类型执行不同方法
-        // TODO
+        Logger.info("=====start loading nginx=====");
         if (systemOS.equals(SystemOS.WINDOWS)) {
             Optional<File> optionalFile2 = FileUtil.getFile(
                     CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_PLUGIN_NAME,
@@ -128,16 +111,32 @@ public class CacheDataOpt extends BaseCacheDataOpt {
                     true);
             optionalFile2.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file,
                     TuningIDEConstant.NGINX_MAC_PLUGIN_NAME, true));
-            // untar步骤其实可以放入脚本中运行
             Logger.info("=====start unzip nginx=====");
             FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.NGINX_MAC_PLUGIN_NAME,
                     CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_NGINX_PATH));
         }
+
+        // 加载tuning插件登录页面index.html
+        Logger.info("=====start loading login index webview=====");
+        Optional<File> optionalFile = FileUtil.getFile(
+                CommonUtil.getPluginInstalledPath() + TuningIDEConstant.TUNING_LOGIN_WEB_VIEW_INDEX_HTML, true);
+        optionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.TUNING_LOGIN_WEB_VIEW_INDEX_HTML,
+                true));
+        // 加载tuning插件静态webview页面资源包
+        Logger.info("=====start loading tuning.zip=====");
+        Optional<File> newOptionalFile = FileUtil.getFile(
+                CommonUtil.getPluginInstalledPath() + TuningIDEConstant.TUNING_PLUGIN_NAME, true);
+        newOptionalFile.ifPresent(file -> FileUtil.readAndWriterFileFromJar(file, TuningIDEConstant.TUNING_PLUGIN_NAME,
+                true));
+
+        FileUtil.unzipFile(CommonUtil.getPluginInstalledPath() + TuningIDEConstant.TUNING_PLUGIN_NAME,
+                CommonUtil.getPluginInstalledPathFile(TuningIDEConstant.TUNING_WEB_VIEW_PATH));
         // 加载index页面到缓存，并替换base路径
         Logger.info("=====start loading index=====");
         String indexHtml = FileUtil.readFileContent(TuningIDEContext.getWebViewIndex());
         indexHtml = indexHtml.replaceFirst("base href=\"\\./\"", "base href=\"\"");
-        IDEContext.setValueForGlobalContext(null, TuningIDEConstant.TUNING_WEB_VIEW_INDEX_HTML, indexHtml);
-
+        IDEContext.setValueForGlobalContext(null, TuningIDEConstant.WEB_VIEW_INDEX_HTML, indexHtml);
+        String loginIndexHtml = FileUtil.readFileContent(TuningIDEContext.getLoginWebViewIndex());
+        IDEContext.setValueForGlobalContext(null, TuningIDEConstant.TUNING_LOGIN_WEB_VIEW_INDEX_HTML, loginIndexHtml);
     }
 }

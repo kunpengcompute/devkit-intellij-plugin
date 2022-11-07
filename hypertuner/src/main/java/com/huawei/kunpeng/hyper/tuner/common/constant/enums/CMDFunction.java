@@ -29,6 +29,7 @@ public enum CMDFunction {
     NULL("null", null),
     GET_DATA("getData", FunctionManager.getFunctionHandler(CommonHandler.class)),
     OPEN_NEW_PAGE("openNewPage", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    OPEN_HYPERLINKS("openHyperlinks", FunctionManager.getFunctionHandler(CommonHandler.class)),
     DOWNLOAD_BASE64_PNG("downloadBase64Png", FunctionManager.getFunctionHandler(CommonHandler.class)),
     DOWNLOAD_FILE_BY_BLOB("downloadFileByBlob", FunctionManager.getFunctionHandler(CommonHandler.class)),
     DOWNLOAD_FILE_BY_JSON("downloadFileByJson", FunctionManager.getFunctionHandler(CommonHandler.class)),
@@ -37,7 +38,10 @@ public enum CMDFunction {
     READ_URL_CONFIG("readURLConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
     CLOSE_PANEL("closePanel", FunctionManager.getFunctionHandler(CommonHandler.class)),
     CHECK_CONN("checkConn", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    SHOW_INFO_BOX("showInfoBox", FunctionManager.getFunctionHandler(CommonHandler.class));
+    SHOW_INFO_BOX("showInfoBox", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    // 读取配置服务器信息
+    READ_CONFIG("readConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    SAVE_CONFIG("saveConfig", FunctionManager.getFunctionHandler(CommonHandler.class));
 
     private final String functionName;
 

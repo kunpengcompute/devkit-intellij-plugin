@@ -57,7 +57,6 @@ public class TuningIDEConstant<T> extends IDEConstant {
     /**
      * 工具名称
      */
-//    public static final String SYS = "sysperfanalysis";
     public static final String SYS = "sys";
 
     /**
@@ -66,19 +65,14 @@ public class TuningIDEConstant<T> extends IDEConstant {
     public static final String JAVA = "java";
 
     /**
-     * tuning插件webview页面地址
+     * tuning插件登录页面webview页面地址
      */
-    public static final String TUNING_WEB_VIEW_INDEX_HTML = "index.html";
+    public static final String TUNING_LOGIN_WEB_VIEW_INDEX_HTML = "/webview/index.html";
 
     /**
-     * tuning插件free_trial页面地址
+     * tuning插件静态webview代理html文件地址
      */
-    public static final String FREE_TRIAL_WEB_VIEW_INDEX_HTML = "index.html";
-
-    /**
-     * 代理html文件地址
-     */
-    public static final String WEB_VIEW_INDEX_HTML = "/webview/index.html";
+    public static final String WEB_VIEW_INDEX_HTML = "/webview/tuning/sys/index.html";
 
     /**
      * nginx 资源包地址
