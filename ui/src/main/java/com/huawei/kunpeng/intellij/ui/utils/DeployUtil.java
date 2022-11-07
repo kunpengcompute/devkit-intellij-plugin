@@ -643,4 +643,86 @@ public class DeployUtil extends ShellTerminalUtil {
         config.setPassPhrase(param.get("passPhrase"));
         return config;
     }
+
+    /**
+     * 检测连接
+     *
+     * @param config        部署配置信息参数
+     */
+    public static void newTestConn(SshConfig config, String cmd, String cbid) {
+        String finger = newReadFingerprint(config);
+        if ("noFirst".equals(finger)) {
+            // 非首次连接 finger为noFirst
+            newExecuteOnPoolTestConn(config);
+        } else if (ValidateUtils.isNotEmptyString(finger)) {
+            // 首次连接打开弹窗警告 指纹不为null
+            config.setFingerprint(finger);
+            newExecuteOnPoolTestConn(config);
+//            openTip(config);
+        } else {
+            Logger.warn("Finger have some problem.");
+            // 检测完成后恢复检测按钮可用并去除动态图标
+//            recoveryCheckAndLoad();
+        }
+    }
+
+    /**
+     * 在后台线程执行连接测试
+     *
+     * @param config        配置信息
+     */
+    public static void newExecuteOnPoolTestConn(SshConfig config) {
+        ApplicationManager.getApplication()
+                .executeOnPooledThread(
+                        () -> {
+                            if (connect(config)) {
+                                IDENotificationUtil.notificationCommon(
+                                        new NotificationBean(
+                                                CommonI18NServer.toLocale("plugins_common_testConn_title"),
+                                                CommonI18NServer.toLocale("plugins_common_testConn_ok"),
+                                                NotificationType.INFORMATION));
+                            }
+                        });
+    }
+
+    /**
+     * Read fingerprint.
+     *
+     * @param config   config
+     * @return String string值
+     */
+    public static String newReadFingerprint(SshConfig config) {
+        String fingerprint = "noFirst";
+        currentSession = getSession(config);
+        if (Objects.isNull(currentSession)) {
+            return "";
+        }
+        try {
+            currentSession.connect(CONNECTION_TIME_OUT_IN_MILLISECONDS);
+        } catch (JSchException e) {
+            String message = e.getMessage();
+            // 算法不匹配
+            if (message != null && message.startsWith("Algorithm negotiation fail")) {
+                IDENotificationUtil.notificationForHyperlink(new NotificationBean(
+                        CommonI18NServer.toLocale("plugins_common_button_connect"),
+                        CommonI18NServer.toLocale("plugins_ssh_algorithm_negotiation_error"),
+                        NotificationType.ERROR), op ->
+                        CommonUtil.openURI(CommonI18NServer.toLocale("plugins_ssh_algorithm_negotiation_error_faq")));
+                fingerprint = "";
+            } else {
+                // 首次连接抓到unknowkey StrictHostKeyChecking=ask 获取该指纹弹窗确认
+                fingerprint = readFingerprintFromPromptMessage(currentSession, message).orElse(null);
+                if (fingerprint == null) {
+                    Logger.error("failed to get ssh fingerprint of remote. Message: JSchException");
+                    // 指纹为null 网络不通连接超时
+//                    consumer.accept(config.getHost());
+                }
+            }
+        } finally {
+            if (currentSession != null) {
+                currentSession.disconnect();
+            }
+        }
+        return fingerprint;
+    }
 }

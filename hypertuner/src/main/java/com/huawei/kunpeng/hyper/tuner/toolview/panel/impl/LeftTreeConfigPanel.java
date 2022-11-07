@@ -21,6 +21,7 @@ import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningServerConfigWrapDialog;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.FreeTrialEditor;
+import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
 import com.huawei.kunpeng.intellij.ui.dialog.IDEBaseDialog;
@@ -34,6 +35,7 @@ import com.intellij.openapi.wm.ex.ToolWindowEx;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import javax.swing.*;
 
 /**
@@ -107,15 +109,6 @@ public class LeftTreeConfigPanel extends IDEBasePanel {
 
     @Override
     protected void registerComponentAction() {
-//        MouseAdapter configMouseAdapter = new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent event) {
-//                IDEBasePanel panel = new TuningServerConfigPanel(null);
-//                IDEBaseDialog dialog =
-//                        new TuningServerConfigWrapDialog(TuningUserManageConstant.CONFIG_TITLE, panel);
-//                dialog.displayPanel();
-//            }
-//        };
         MouseAdapter configMouseAdapter = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

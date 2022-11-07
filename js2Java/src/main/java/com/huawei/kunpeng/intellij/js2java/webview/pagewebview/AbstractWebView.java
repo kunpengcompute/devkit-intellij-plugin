@@ -188,7 +188,7 @@ public abstract class AbstractWebView {
             indexHtml = IDEContext.getValueFromGlobalContext(null, getIndexHtmlKey());
 
             // 替换重载内容
-            indexHtml = indexHtml.replaceFirst("top\\.navigatorPage", "top\\.navigatorPage = " + jsonStr);
+            indexHtml = indexHtml.replaceFirst("self\\.navigatorPage", "self\\.navigatorPage = " + jsonStr);
         } else {
             indexHtml = indexHtmlNew;
         }
@@ -402,13 +402,13 @@ public abstract class AbstractWebView {
             for (String str : list) {
                 str = Matcher.quoteReplacement(str);
                 if (list.size() == 1) {
-                    indexHtml = indexHtml.replaceFirst("top\\.navigatorPage",
-                            "top\\.navigatorPage = " + str);
+                    indexHtml = indexHtml.replaceFirst("self\\.navigatorPage",
+                            "self\\.navigatorPage = " + str);
                     break;
                 }
                 if (i == 0) {
-                    indexHtml = indexHtml.replaceFirst("top\\.navigatorPage",
-                            "top\\.navigatorPage = " + str + "IntellIJStr");
+                    indexHtml = indexHtml.replaceFirst("self\\.navigatorPage",
+                            "self\\.navigatorPage = " + str + "IntellIJStr");
                     i++;
                 } else {
                     indexHtml = indexHtml.replace("IntellIJStr", str + "IntellIJStr");
@@ -450,8 +450,8 @@ public abstract class AbstractWebView {
         AtomicBoolean status = new AtomicBoolean(true);
         return StreamSupport.stream(Splitter.on("\n").split(indexHtml).spliterator(), false)
                 .map(lineStr -> {
-                    if (status.get() && lineStr.contains("top\\.navigatorPage")) {
-                        String newLineStr = lineStr.replaceFirst("top\\.navigatorPage = ",
+                    if (status.get() && lineStr.contains("self\\.navigatorPage")) {
+                        String newLineStr = lineStr.replaceFirst("self\\.navigatorPage = ",
                                 new Gson().toJson(navigatorPage));
                         status.set(false);
                         return newLineStr;
