@@ -33,8 +33,10 @@ import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
 import com.huawei.kunpeng.intellij.ui.dialog.AccountTipsDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.FingerTipDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.InstallServerConfirmDialog;
+import com.huawei.kunpeng.intellij.ui.dialog.NewFingerTipDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.InstallUpgradeWrapDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.UninstallWrapDialog;
+import com.huawei.kunpeng.intellij.ui.enums.CheckConnResponse;
 import com.huawei.kunpeng.intellij.ui.panel.FingerPanel;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
@@ -46,6 +48,7 @@ import com.jcraft.jsch.KeyPair;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.UserInfo;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -647,40 +650,37 @@ public class DeployUtil extends ShellTerminalUtil {
     /**
      * 检测连接
      *
+     * @param actionOperate 自定义操作
      * @param config        部署配置信息参数
      */
-    public static void newTestConn(SshConfig config, String cmd, String cbid) {
-        String finger = newReadFingerprint(config);
+    public static void newTestConn(ActionOperate actionOperate, SshConfig config) {
+        String finger = newReadFingerprint(config, actionOperate);
         if ("noFirst".equals(finger)) {
             // 非首次连接 finger为noFirst
-            newExecuteOnPoolTestConn(config);
+            newExecuteOnPoolTestConn(config, actionOperate);
         } else if (ValidateUtils.isNotEmptyString(finger)) {
             // 首次连接打开弹窗警告 指纹不为null
             config.setFingerprint(finger);
-            newExecuteOnPoolTestConn(config);
-//            openTip(config);
+            newOpenTip(config, actionOperate);
         } else {
             Logger.warn("Finger have some problem.");
-            // 检测完成后恢复检测按钮可用并去除动态图标
-//            recoveryCheckAndLoad();
+            actionOperate.actionOperate(CheckConnResponse.FINGERPRINT_FAILURE);
         }
     }
 
     /**
      * 在后台线程执行连接测试
      *
-     * @param config        配置信息
+     * @param config 配置信息
      */
-    public static void newExecuteOnPoolTestConn(SshConfig config) {
+    public static void newExecuteOnPoolTestConn(SshConfig config, ActionOperate actionOperate) {
         ApplicationManager.getApplication()
                 .executeOnPooledThread(
                         () -> {
                             if (connect(config)) {
-                                IDENotificationUtil.notificationCommon(
-                                        new NotificationBean(
-                                                CommonI18NServer.toLocale("plugins_common_testConn_title"),
-                                                CommonI18NServer.toLocale("plugins_common_testConn_ok"),
-                                                NotificationType.INFORMATION));
+                                actionOperate.actionOperate(CheckConnResponse.SUCCESS);
+                            } else {
+                                actionOperate.actionOperate(CheckConnResponse.USERAUTH_FAILURE);
                             }
                         });
     }
@@ -688,12 +688,12 @@ public class DeployUtil extends ShellTerminalUtil {
     /**
      * Read fingerprint.
      *
-     * @param config   config
+     * @param config config
      * @return String string值
      */
-    public static String newReadFingerprint(SshConfig config) {
+    public static String newReadFingerprint(SshConfig config, ActionOperate actionOperate) {
         String fingerprint = "noFirst";
-        currentSession = getSession(config);
+        currentSession = newGetSession(config, actionOperate);
         if (Objects.isNull(currentSession)) {
             return "";
         }
@@ -703,11 +703,7 @@ public class DeployUtil extends ShellTerminalUtil {
             String message = e.getMessage();
             // 算法不匹配
             if (message != null && message.startsWith("Algorithm negotiation fail")) {
-                IDENotificationUtil.notificationForHyperlink(new NotificationBean(
-                        CommonI18NServer.toLocale("plugins_common_button_connect"),
-                        CommonI18NServer.toLocale("plugins_ssh_algorithm_negotiation_error"),
-                        NotificationType.ERROR), op ->
-                        CommonUtil.openURI(CommonI18NServer.toLocale("plugins_ssh_algorithm_negotiation_error_faq")));
+                actionOperate.actionOperate(CheckConnResponse.FINGERPRINT_FAILURE);
                 fingerprint = "";
             } else {
                 // 首次连接抓到unknowkey StrictHostKeyChecking=ask 获取该指纹弹窗确认
@@ -715,7 +711,7 @@ public class DeployUtil extends ShellTerminalUtil {
                 if (fingerprint == null) {
                     Logger.error("failed to get ssh fingerprint of remote. Message: JSchException");
                     // 指纹为null 网络不通连接超时
-//                    consumer.accept(config.getHost());
+                    actionOperate.actionOperate(CheckConnResponse.TIME_OUT);
                 }
             }
         } finally {
@@ -724,5 +720,56 @@ public class DeployUtil extends ShellTerminalUtil {
             }
         }
         return fingerprint;
+    }
+
+    /**
+     * create session
+     *
+     * @param config        配置
+     * @param actionOperate 操作
+     * @return session
+     */
+    public static Session newGetSession(SshConfig config, ActionOperate actionOperate) {
+        Session newSession = null;
+        try {
+            jsch = new JSch();
+            if (ValidateUtils.isNotEmptyString(config.getPassword())) {
+                newSession = jsch.getSession(config.getUser(), config.getHost(), config.getPort());
+                newSession.setPassword(String.valueOf(config.getPassword()));
+            } else if (ValidateUtils.isNotEmptyString(config.getIdentity())) {
+                jsch.addIdentity(config.getIdentity(), config.getPassPhrase());
+                newSession = jsch.getSession(config.getUser(), config.getHost(), config.getPort());
+            } else {
+                Logger.warn("ssh password and identify is null.");
+            }
+            if (properties.isEmpty()) {
+                try (InputStream stream = DeployUtil.class.getClassLoader()
+                        .getResourceAsStream("assets/ssh.properties")) {
+                    properties.load(stream);
+                }
+            }
+            if (!properties.isEmpty() && newSession != null) {
+                newSession.setConfig(properties);
+            }
+        } catch (JSchException | IOException e) {
+            Logger.error("failed to connect remote " + "stack trace :JSchException | IOException ");
+            if (e.getMessage().startsWith("invalid privatekey")) {
+                actionOperate.actionOperate(CheckConnResponse.PASSPHRASE_FAILURE);
+            }
+        }
+        return newSession;
+    }
+
+    /**
+     * 打开指纹弹窗
+     *
+     * @param actionOperate 回调
+     * @param config        返回配置
+     */
+    public static void newOpenTip(SshConfig config, ActionOperate actionOperate) {
+        NewFingerTipDialog dialog = new NewFingerTipDialog(null, new FingerPanel(null, null, null, config, true));
+        dialog.setConfig(config);
+        dialog.setActionOperate(actionOperate);
+        dialog.displayPanel();
     }
 }

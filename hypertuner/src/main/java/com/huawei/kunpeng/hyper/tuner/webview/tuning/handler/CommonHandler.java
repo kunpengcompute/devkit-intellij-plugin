@@ -48,6 +48,7 @@ import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 import com.alibaba.fastjson.JSONArray;
 import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
 import com.huawei.kunpeng.intellij.ui.dialog.AccountTipsDialog;
+import com.huawei.kunpeng.intellij.ui.enums.CheckConnResponse;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
 import com.intellij.execution.process.mediator.daemon.QuotaState;
 import com.intellij.notification.NotificationDisplayType;
@@ -70,6 +71,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import lombok.extern.java.Log;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -382,10 +384,10 @@ public class CommonHandler extends FunctionHandler {
      */
     public void openNewPage(MessageBean message, String module) {
         Map<String, String> messageData = JsonUtil.getJsonObjFromJsonStr(message.getData());
-        String page=messageData.get("router");
-        boolean closePage= Optional.of(Objects.equals(messageData.get("closePage"), "true")).orElse(false);
+        String page = messageData.get("router");
+        boolean closePage = Optional.of(Objects.equals(messageData.get("closePage"), "true")).orElse(false);
 
-        if(closePage) {
+        if (closePage) {
             Project project = CommonUtil.getDefaultProject();
             VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
             WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
@@ -394,7 +396,7 @@ public class CommonHandler extends FunctionHandler {
             }
         }
 
-        switch (page){
+        switch (page) {
             case "config":
                 ConfigureServerEditor.openPage();
                 break;
@@ -458,11 +460,16 @@ public class CommonHandler extends FunctionHandler {
         param.put("passPhrase", param.get("passphrase"));
 
         SshConfig config = DeployUtil.getConfig(param);
-        DeployUtil.newTestConn(config,message.getCmd(),message.getCbid());
 
-//        NewDeployUtil.openTip(config);
+        ActionOperate actionOperate = new ActionOperate() {
+            @Override
+            public void actionOperate(Object data) {
+                CheckConnResponse response = (CheckConnResponse) data;
+                invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"" + response.value() + "\"}");
+            }
+        };
 
-        invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"SUCCESS\"}");
+        DeployUtil.newTestConn(actionOperate, config);
     }
 
     /**
@@ -520,15 +527,15 @@ public class CommonHandler extends FunctionHandler {
         param.put("ip", param.get("host"));
         param.put("user", param.get("username"));
         param.put("passPhrase", param.get("passphrase"));
-        param.put("displayName",InstallManageConstant.UPGRADE_TITLE);
+        param.put("displayName", InstallManageConstant.UPGRADE_TITLE);
         Map<String, Object> data = new HashMap<>();
-        data.put("param",param);
+        data.put("param", param);
 
         TuningUpgradeAction action = new TuningUpgradeAction();
         Logger.info("Upgrade begin...");
-        action.onOKAction(data);
+//        action.onOKAction(data);
         invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"closeLoading\"}");
-        invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"failed\"}");
+        invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"listen\"}");
     }
 
     /**
@@ -537,10 +544,9 @@ public class CommonHandler extends FunctionHandler {
      * @param message
      * @param module
      */
-    public void hideTerminal(MessageBean message, String module){
+    public void hideTerminal(MessageBean message, String module) {
 
     }
-
 
 
 }
