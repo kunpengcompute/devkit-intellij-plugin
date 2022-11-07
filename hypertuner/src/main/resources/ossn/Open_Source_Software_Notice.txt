@@ -1,0 +1,123 @@
+OPEN SOURCE SOFTWARE NOTICE
+
+Please note we provide an open source software notice along with this product and/or this product firmware (in the following just ��this product��). The open source software licenses are granted by the respective right holders. And the open source licenses prevail all other license information with regard to the respective open source software contained in the product, including but not limited to End User Software Licensing Agreement. This notice is provided on behalf of Huawei Technologies Co. Ltd. and any of its local subsidiaries which may have provided this product to you in your local country.
+
+Warranty Disclaimer
+THE OPEN SOURCE SOFTWARE IN THIS PRODUCT IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT WITHOUT ANY WARRANTY, WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE APPLICABLE LICENSES FOR MORE DETAILS.
+
+Copyright Notice and License Texts
+
+
+Software:
+commons-codec 1.15
+Copyright notice:
+Copyright (C) 2002 Kevin Atkinson (kevina@gnu.org)
+Copyright (c) 2008 Alexander Beider & Stephen P. Morse.
+Copyright 2002-2020 The Apache Software Foundation
+License:
+Apache License V2.0
+BSD 3-Clause License
+Please see above.
+
+Software:
+commons-collections4 4.4
+Copyright notice:
+Copyright 2001-2019 The Apache Software Foundation
+License:
+Apache License V2.0
+Please see above.
+
+Software:
+commons-csv 1.8
+Copyright notice:
+Copyright 2005-2020 The Apache Software Foundation
+License:
+Apache License V2.0
+Please see above.
+
+Software:
+commons-math3 3.6.1
+Copyright notice:
+Copyright (c) 2008, Frances Y. Kuo and Stephen Joe All rights reserved.
+Copyright © 2003-2009 SciPy Developers.
+Copyright © 2003-2013 SciPy Developers.
+Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura, All rights reserved.
+Copyright (c) 2004, Ernst Hairer
+Copyright 2010-2012 CS Systèmes d'Information
+Copyright 2001-2016 The Apache Software Foundation
+Copyright © 2001, 2002 Enthought, Inc.
+License:
+Apache License V2.0
+BSD 3-Clause License
+Public Domain
+BSD 2-Clause License
+Minpack Copyright Notice
+Please see above.
+
+Software:
+fastjson 1.2.75
+Copyright notice:
+Copyright 1999-2017 Alibaba Group.
+License:
+Apache License V2.0
+Please see above.
+
+Software:
+jasypt 1.9.3
+Copyright notice:
+Copyright (c) 2007-2010, The JASYPT team (http:www.jasypt.org)
+Copyright (c) 1995-2006 International Business Machines Corporation and others
+License:
+Apache License V2.0
+Please see above.
+
+Software:
+jsch 0.1.55
+Copyright notice:
+License:
+BSD 3-Clause License
+Please see above.
+
+Software:
+logback-classic 1.2.9
+Copyright notice:
+License:
+Eclipse Public License(EPL) V1.0
+Please see above.
+
+Software:
+logback-core 1.2.9
+Copyright notice:
+License:
+Eclipse Public License(EPL) V1.0
+Please see above.
+
+Software:
+poi 5.0.0
+Copyright notice:
+Copyright (C) 2006-2007 Valek Filippov (frob@df.ru)
+Copyright (c) 2015 Inbot
+Copyright (c) 2000-2003, BEA Systems, <http:www.bea.com/> (dead link), which was acquired by Oracle Corporation in 2008.
+Copyright (c) 2009-2018 FedICT (federal ICT department of Belgium), e-Contract.be BVBA (https:www.e-contract.be), Bart Hanssens from FedICT
+Copyright (c) 2000-2015 www.hamcrest.org All rights reserved.
+Copyright (c) 2004-2017 QOS.ch All rights reserved.
+Copyright (c) 2000 - 2021 The Legion of the Bouncy Castle Inc.
+Copyright 2003-2021 The Apache Software Foundation
+This product contains W3C XML Schema documents. Copyright 2001-2003 (c) World Wide Web Consortium (Massachusetts Institute of Technology, European Research Consortium for Informatics and Mathematics, Keio University)
+License:
+Apache License V2.0
+Please see above.
+
+Software:
+slf4j-api 1.7.32
+Copyright notice:
+License:
+MIT License
+Please see above.
+
+Software:
+SparseBitSet 1.2
+Copyright notice:
+License:
+Apache License V2.0
+Please see above.
