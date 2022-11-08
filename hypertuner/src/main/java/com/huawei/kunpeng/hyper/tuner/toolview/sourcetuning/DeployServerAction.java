@@ -21,6 +21,7 @@ import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.InstallDisclaimerDialog;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.DeployServerEditor;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
@@ -55,8 +56,7 @@ public class DeployServerAction extends AnAction implements DumbAware {
      */
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        IDEBaseDialog dialog = new InstallDisclaimerDialog(InstallManageConstant.BEFORE_INSTALL, null);
-        dialog.displayPanel();
+        DeployServerEditor.openPage();
     }
 
     /**
@@ -66,10 +66,6 @@ public class DeployServerAction extends AnAction implements DumbAware {
      */
     @Override
     public void update(@NotNull AnActionEvent event) {
-
-    }
-
-    private void setConfigRemoteServerStatus(@NotNull AnActionEvent event, int value) {
 
     }
 }

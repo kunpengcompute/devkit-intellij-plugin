@@ -58,6 +58,13 @@ public enum PageType {
         }
     },
 
+    DEPLOY_SERVER("deploy_server"){
+        @Override
+        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
+            return Optional.of(new DeployServerEditor(file));
+        }
+    },
+
     /**
      * 卸载工具
      */

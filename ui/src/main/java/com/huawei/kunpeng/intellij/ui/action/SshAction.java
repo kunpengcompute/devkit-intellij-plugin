@@ -90,6 +90,44 @@ public abstract class SshAction extends IDEPanelBaseAction {
     }
 
     /**
+     * 部署配置信息
+     *
+     * @param params 部署配置信息参数
+     */
+    public void newOKAction(Map params, ActionOperate actionOperate) {
+        Map<String, String> param = JsonUtil.getValueIgnoreCaseFromMap(params, "param", Map.class);
+        SshConfig config = DeployUtil.getConfig(param);
+        Session session = DeployUtil.getSession(config);
+        if (Objects.isNull(session)) {
+            return;
+        }
+        try {
+            DeployUtil.setUserInfo(session, config);
+            session.connect(30000);
+        } catch (JSchException e) {
+            Logger.error("ssh session connect error: {}", e.getMessage());
+            return;
+        }
+        String dir = TMP_PATH + new SimpleDateFormat(TMP_FORMAT).format(new Date(System.currentTimeMillis()))
+                + IDEConstant.PATH_SEPARATOR;
+        // 创建dir目录
+        DeployUtil.sftp(session, dir, SftpAction.MKDIR);
+        // 上传脚本至dir下
+        upload(session, dir);
+        // 打开终端执行脚本
+        openTerminal(param, dir);
+        // 检查脚本执行状态
+        final Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                checkStatus(session, timer, dir);
+            }
+        };
+        timer.schedule(task, 0, 1000);
+    }
+
+    /**
      * 上传脚本至dir下
      *
      * @param session Ssh session
