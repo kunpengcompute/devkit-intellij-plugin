@@ -533,9 +533,9 @@ public class CommonHandler extends FunctionHandler {
 
         TuningUpgradeAction action = new TuningUpgradeAction();
         Logger.info("Upgrade begin...");
-//        action.onOKAction(data);
-        invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"closeLoading\"}");
-        invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"listen\"}");
+        action.onOKAction(data);
+//        invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"closeLoading\"}");
+//        invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"listen\"}");
     }
 
     /**
