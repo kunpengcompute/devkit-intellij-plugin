@@ -41,7 +41,9 @@ public enum CMDFunction {
     SHOW_INFO_BOX("showInfoBox", FunctionManager.getFunctionHandler(CommonHandler.class)),
     // 读取配置服务器信息
     READ_CONFIG("readConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    SAVE_CONFIG("saveConfig", FunctionManager.getFunctionHandler(CommonHandler.class));
+    SAVE_CONFIG("saveConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    OPEN_URL_IN_BROWSER("openUrlInBrowser", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    UPGRADE("upgrade", FunctionManager.getFunctionHandler(CommonHandler.class));
 
     private final String functionName;
 

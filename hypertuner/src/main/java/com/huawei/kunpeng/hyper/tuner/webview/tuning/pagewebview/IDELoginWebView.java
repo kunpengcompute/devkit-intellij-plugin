@@ -44,7 +44,7 @@ public class IDELoginWebView extends WebView {
      */
     public IDELoginWebView(String localPort) {
         Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
-        List portConfig = JsonUtil.getValueIgnoreCaseFromMap(config, ConfigProperty.TUNING_CONFIG.vaLue(), List.class);
+        List portConfig = JsonUtil.getValueIgnoreCaseFromMap(config, ConfigProperty.PORT_CONFIG.vaLue(), List.class);
         String ip = null;
         String port = null;
         String localPortCache = null;

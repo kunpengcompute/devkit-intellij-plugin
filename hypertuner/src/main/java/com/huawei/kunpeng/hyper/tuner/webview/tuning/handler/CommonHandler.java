@@ -17,6 +17,7 @@
 package com.huawei.kunpeng.hyper.tuner.webview.tuning.handler;
 
 import com.huawei.kunpeng.hyper.tuner.action.install.TuningInstallAction;
+import com.huawei.kunpeng.hyper.tuner.action.upgrade.TuningUpgradeAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
@@ -26,18 +27,24 @@ import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerE
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
+import com.huawei.kunpeng.intellij.common.bean.SshConfig;
 import com.huawei.kunpeng.intellij.common.constant.FileManageConstant;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
+import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.*;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
+import com.huawei.kunpeng.intellij.js2java.bean.NavigatorPageBean;
 import com.huawei.kunpeng.intellij.js2java.fileditor.IDEFileEditorManager;
+import com.huawei.kunpeng.intellij.js2java.handler.MessageRouterHandler;
 import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 
 import com.alibaba.fastjson.JSONArray;
 import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
+import com.huawei.kunpeng.intellij.ui.enums.CheckConnResponse;
+import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.fileChooser.FileChooser;
@@ -419,34 +426,23 @@ public class CommonHandler extends FunctionHandler {
      * @param module  模块
      */
     public void checkConn(MessageBean message, String module) {
+        Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        // 增加对应键值以对应方法参数
+        param.put("ip", param.get("host"));
+        param.put("user", param.get("username"));
+        param.put("passPhrase", param.get("passphrase"));
+
+        SshConfig config = DeployUtil.getConfig(param);
+
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
-                Logger.info(String.valueOf(1));
+                CheckConnResponse response = (CheckConnResponse) data;
+                invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"" + response.value() + "\"}");
             }
         };
 
-        Map<String, Object> params = JsonUtil.getJsonObjFromJsonStr(message.getData());
-        params.put("ip", params.get("host"));
-        params.put("user", params.get("username"));
-        params.put("passPhrase", params.get("passphrase"));
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("param", params);
-        // 调试用
-        try {
-            FileUtil.writeFile(message.getCmd()+"+"+message.getCbid(), PathManager.getPluginsPath() +
-                    "/Kunpeng-DevKit-IDE-hyper-tuner-plugin/webview/tuning/a.txt");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
-        invokeCallback(message.getCmd(), message.getCbid(), "SUCCESS");
-
-        TuningInstallAction action = new TuningInstallAction();
-        action.onNextAction(result, actionOperate);
-
-
+        DeployUtil.newTestConn(actionOperate, config);
     }
 
     /**
@@ -458,16 +454,7 @@ public class CommonHandler extends FunctionHandler {
     public void showInfoBox(MessageBean message, String module) {
         Logger.info("showInfoBox start");
         Map<String, String> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
-        String info = "";
-
-        // 调试用
-        try {
-            FileUtil.writeFile(info, PathManager.getPluginsPath() +
-                    "/Kunpeng-DevKit-IDE-hyper-tuner-plugin/webview/tuning/a.txt");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        String info = data.get("info");
         switch (data.get("type")) {
             case "error":
                 IDENotificationUtil.notificationCommon(new NotificationBean("", info, NotificationType.ERROR));
@@ -480,6 +467,58 @@ public class CommonHandler extends FunctionHandler {
                 break;
         }
         Logger.info("showInfoBox end.");
+    }
+
+    /**
+     * 调用默认浏览器打开FAQ网页
+     *
+     * @param message 数据
+     * @param module  模块
+     */
+    public void openUrlInBrowser(MessageBean message, String module) {
+        try {
+            String url = (String) JsonUtil.getJsonObjFromJsonStr(message.getData()).get("url");
+            java.net.URI uri = java.net.URI.create(url);
+            java.awt.Desktop dp = java.awt.Desktop.getDesktop();
+            if (dp.isSupported(java.awt.Desktop.Action.BROWSE)) {
+                dp.browse(uri);
+            }
+        } catch (NullPointerException | IOException e) {
+            Logger.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 升级服务器
+     *
+     * @param message
+     * @param module
+     */
+    public void upgrade(MessageBean message, String module) {
+        Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        // 增加对应键值以对应方法参数
+        param.put("ip", param.get("host"));
+        param.put("user", param.get("username"));
+        param.put("passPhrase", param.get("passphrase"));
+        param.put("displayName", InstallManageConstant.UPGRADE_TITLE);
+        Map<String, Object> data = new HashMap<>();
+        data.put("param", param);
+
+        TuningUpgradeAction action = new TuningUpgradeAction();
+        Logger.info("Upgrade begin...");
+//        action.onOKAction(data);
+        invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"closeLoading\"}");
+        invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"listen\"}");
+    }
+
+    /**
+     * 隐藏终端
+     *
+     * @param message
+     * @param module
+     */
+    public void hideTerminal(MessageBean message, String module) {
+
     }
 
     /**
@@ -532,7 +571,15 @@ public class CommonHandler extends FunctionHandler {
         }
         params.put("localPort", randomPort + "");
 
-        ConfigureServerEditor.saveConfigSuccess(params);
+//        ConfigureServerEditor.saveConfig(params);
+        Project project = CommonUtil.getDefaultProject();
+        VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
+        WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
+        if (webViewPage instanceof ConfigureServerEditor) {
+//            webViewPage = (ConfigureServerEditor) webViewPage;
+            ((ConfigureServerEditor) webViewPage).saveConfig(params);
+            webViewPage.dispose();
+        }
     }
 
 

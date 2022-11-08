@@ -14,7 +14,6 @@ import javax.swing.*;
 
 public class UpgradeServerEditor extends TuningWebFileEditor {
     private final UpgradeServerWebView upgradeServerWebView;
-    private static Integer localPort;
 
     /**
      * 默认构造函数
@@ -44,10 +43,9 @@ public class UpgradeServerEditor extends TuningWebFileEditor {
     }
 
     /**
-     * 打开性能分析工具端登录页
+     * 打开升级服务器页
      */
     public static void openPage() {
-//        localPort = Integer.parseInt(localPortStr);
         String fileName = TuningIDEConstant.TUNING_KPHT +
                 IDEConstant.PATH_SEPARATOR +
                 PageType.UPGRADE_SERVER.value() +

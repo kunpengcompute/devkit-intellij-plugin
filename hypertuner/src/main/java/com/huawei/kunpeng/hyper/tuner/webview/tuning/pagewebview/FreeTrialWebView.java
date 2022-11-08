@@ -26,17 +26,10 @@ public class FreeTrialWebView extends WebView{
 
     public FreeTrialWebView() {
         // 组装与webview交互的message
-        Map<String, Object> pageParams = new HashMap<>();
-        boolean isLightThemeInContext = IDEContext.getValueFromGlobalContext(CommonUtil.getProjectName(),
-                BaseCacheVal.LIGHT_THEME.vaLue());
-        String currentTheme = "dark";
-        if (isLightThemeInContext) {
-            currentTheme = "light";
-        }
-        pageParams.put("currentTheme", currentTheme);
         Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put("intelliJFlag", true);
-        pageParams.put("queryParams", queryParams);
+        Map<String, Object> pageParams = new HashMap<>();
+        queryParams.put("intellijFlag", true);
+        pageParams.put("queryParams",queryParams);
         NavigatorPageBean navigatorPage = MessageRouterHandler.generateNavigatorPage("/navigate",
                 "/freeTrialProcessEnvironment", pageParams, sessionBean);
         super.createWebView(navigatorPage, null, "FreeTrialWebView");

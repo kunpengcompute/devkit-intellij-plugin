@@ -181,14 +181,14 @@ public abstract class AbstractWebView {
      * @param indexHtmlNew 新的index页面
      * @return String
      */
-    protected void overrideIndexPage(String jsonStr, String indexHtmlNew) {
-        String indexHtml;
+    protected String overrideIndexPage(String jsonStr, String indexHtmlNew) {
+        String indexHtml = "";
         if (StringUtil.stringIsEmpty(indexHtmlNew)) {
             // 获取index.html内容
             indexHtml = IDEContext.getValueFromGlobalContext(null, getIndexHtmlKey());
 
             // 替换重载内容
-            indexHtml = indexHtml.replaceFirst("self\\.navigatorPage", "self\\.navigatorPage = " + jsonStr);
+            indexHtml = indexHtml.replaceFirst("top\\.navigatorPage", "top\\.navigatorPage = " + jsonStr);
         } else {
             indexHtml = indexHtmlNew;
         }
@@ -203,7 +203,7 @@ public abstract class AbstractWebView {
         }
 
         FileUtil.writeFile(indexHtml, getWebViewIndex(), null);
-//        return indexHtml;
+        return indexHtml;
     }
 
     /**

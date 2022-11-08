@@ -95,9 +95,9 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
     }
 
     /**
-     * 配置服务器成功信息回传后
+     * 配置服务器信息回传后
      */
-    public static void saveConfigSuccess(Map<String, String> params) {
+    public void saveConfig(Map<String, String> params) {
         preSaveConfig();
         if (!save(params)) {
             // 配置服务器失败
@@ -122,6 +122,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
                 NginxUtil.updateNginxConfig(params.get("ip"), params.get("port"), params.get("localPort"));
                 // 打开web首页
                 IDELoginEditor.openPage(params.get("localPort"));
+
             }
         }
     }
@@ -132,7 +133,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
      * @param params ip port certFile证书文件 useCertFlag是否使用证书
      * @return true:保存服务器配置成功
      */
-    private static boolean save(Map<String, String> params) {
+    private boolean save(Map<String, String> params) {
         String host = params.get("ip");
         String port = params.get("port");
         String localPort = params.get("localPort");
@@ -165,7 +166,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
     /**
      * 配置服务器成功后提示携带登录跳转
      */
-    private static void showNotification() {
+    private void showNotification() {
         Project project = CommonUtil.getDefaultProject();
         String content = CommonI18NServer.toLocale("common_config_success");
         NotificationBean notificationBean = new NotificationBean(CommonI18NServer.toLocale(
@@ -175,7 +176,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
         IDENotificationUtil.notificationCommon(notificationBean);
     }
 //
-    private static void synchronizedLeftTree() {
+    private void synchronizedLeftTree() {
         // 如果打开多个project， 同步每一个project左侧树状态
         Project[] openProjects = ProjectUtil.getOpenProjects();
         ApplicationManager.getApplication().invokeLater(() -> {
@@ -191,7 +192,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
      *
      * @return ResponseBean 响应实体
      */
-    protected static ResponseBean getServiceConfigResponse() {
+    protected ResponseBean getServiceConfigResponse() {
         RequestDataBean message = new RequestDataBean(TuningIDEConstant.TOOL_NAME_TUNING, SERVER_STATUS_URL,
                 HttpMethod.GET.vaLue(), false);
         return TuningHttpsServer.INSTANCE.requestData(message);
@@ -202,7 +203,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
      *
      * @param ip 配置服务器地址
      */
-    private static void updateIDEContext(String ip) {
+    private void updateIDEContext(String ip) {
         // update globe IDEPluginStatus
         IDEContext.setIDEPluginStatus(toolName, IDEPluginStatus.IDE_STATUS_SERVER_CONFIG);
         ConfigInfo curInfo = new ConfigInfo(ip, "");
@@ -214,7 +215,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
      *
      * @param proj openProjects
      */
-    protected static void customizeRefreshPanel(Project proj) {
+    protected void customizeRefreshPanel(Project proj) {
         ToolWindow toolWindow =
                 ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
         ReconnectPanel reconnectPanel = new ReconnectPanel(toolWindow, proj);
@@ -224,7 +225,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
         }
     }
 
-    protected static void preSaveConfig() {
+    protected void preSaveConfig() {
         // 左侧树面板加载loading，loadingText为系统默认
         UIUtils.changeToolWindowToLoadingPanel(CommonUtil.getDefaultProject(), null,
                 TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
@@ -235,7 +236,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
      *
      * @return boolean true：兼容当前服务端版本，false：不兼容当前服务端版本，并在右下角提示弹窗
      */
-    protected static boolean checkServiceVersionCompatible() {
+    protected boolean checkServiceVersionCompatible() {
         RequestDataBean message = new RequestDataBean(TuningIDEConstant.TOOL_NAME_TUNING, SERVER_VERSION_URL,
                 HttpMethod.GET.vaLue(), false);
         ResponseBean responseBean = TuningHttpsServer.INSTANCE.requestData(message);
