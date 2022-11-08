@@ -361,7 +361,7 @@ public class CommonHandler extends FunctionHandler {
      * @param message 数据
      * @param module  模块
      */
-    public void readURLConfig(MessageBean message, String module) {
+    public void readUrlConfig(MessageBean message, String module) {
         Map urlConfig = FileUtil.ConfigParser.parseJsonConfigFromFile(TuningIDEConstant.URL_CONFIG_PATH);
         invokeCallback(message.getCmd(), message.getCbid(), JsonUtil.getJsonStrFromJsonObj(urlConfig));
     }
