@@ -19,6 +19,7 @@ package com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning;
 import com.huawei.kunpeng.hyper.tuner.action.serverconfig.TuningIDEServerConfigAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
@@ -53,7 +54,8 @@ public class ConfigRemoteServerAction extends AnAction implements DumbAware {
      */
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        new TuningIDEServerConfigAction().actionPerformed(event);
+//        new TuningIDEServerConfigAction().actionPerformed(event);
+        ConfigureServerEditor.openPage();
     }
 
     /**
