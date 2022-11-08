@@ -2,7 +2,7 @@
 <head>
     <meta charset="utf-8">
     <title>KunPeng Hyper Tuner</title>
-    <base href="./">
+    <base href="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -80,20 +80,20 @@
     }
     </style>
     <script>
-    top.navigatorPage;
-    top.webviewSession = top.webviewSession || {
+    self.navigatorPage;
+    self.webviewSession = self.webviewSession || {
         setItem: function (key, value) {
-            top.webviewSession[key] = value;
+            self.webviewSession[key] = value;
         },
         getItem: function (key) {
-            return top.webviewSession[key];
+            return self.webviewSession[key];
         },
         removeItem: function (key) {
-            delete top.webviewSession[key];
+            delete self.webviewSession[key];
         }
     }
 
-    const webSession = ((top.navigatorPage || {}).data || {}).webSession;
+    const webSession = ((self.navigatorPage || {}).data || {}).webSession;
 
     /**
      * webview向vscode发送消息公共接口
@@ -103,7 +103,7 @@
      */
     function postMessage(message, callback) {
         const callbackId = new Date().getTime() * 100000 + window.crypto.getRandomValues(new Uint32Array(1))[0]
-            + '#' + window.top.document.title;
+            + '#' + window.self.document.title;
         const messageReq = {
             cbid: callbackId,
             cmd: message.cmd ? message.cmd : 'getData',
@@ -191,8 +191,8 @@
             } else if (e.data.messageType === 'login') {
                 let myFrame = document.getElementById("myFrame");
                    var hostMessage = {
-                        serverAddr : top.navigatorPage.data.pageParams.ip,
-                        serverPort : top.navigatorPage.data.pageParams.port,
+                        serverAddr : self.navigatorPage.data.pageParams.ip,
+                        serverPort : self.navigatorPage.data.pageParams.port,
                         ideAddress: receiveUrl,
                         ideType: 'isIntellij'
                    }
@@ -202,7 +202,7 @@
     })
 
      window.onload= function (){
-        let currentTheme = top.navigatorPage.data.pageParams.currentTheme;
+        let currentTheme = self.navigatorPage.data.pageParams.currentTheme;
         var mask = document.getElementById("maskBox");
         if(currentTheme === 'dark'){
             mask.style.background = 'rgb(43,43,43)';
@@ -210,11 +210,11 @@
             mask.style.background = '#FFF';
         }
 
-        var currLang = top.navigatorPage.data.webSession.language
+        var currLang = self.navigatorPage.data.webSession.language
         var loadingEl = document.querySelector(".text")
         loadingEl.innerText = 'Loading...'
         let myFrame = document.getElementById("myFrame");
-        var url ="http://127.0.0.1:"+ top.navigatorPage.data.pageParams.localPort+"/";
+        var url ="http://127.0.0.1:"+ self.navigatorPage.data.pageParams.localPort+"/";
         myFrame.src =url;
         // 监听加载iframe 加载完成之后，关闭loading遮罩层
         myFrame.onload = (()=>{
@@ -347,11 +347,11 @@
 </body>
 <script>
    let time = '';
-   var receiveUrl = "http://127.0.0.1:"+ top.navigatorPage.data.pageParams.localPort;
+   var receiveUrl = "http://127.0.0.1:"+ self.navigatorPage.data.pageParams.localPort;
    let myFrame1 = document.getElementById("myFrame");
     var hostMessage = {
-        serverAddr : top.navigatorPage.data.pageParams.ip,
-        serverPort : top.navigatorPage.data.pageParams.port,
+        serverAddr : self.navigatorPage.data.pageParams.ip,
+        serverPort : self.navigatorPage.data.pageParams.port,
         ideAddress: receiveUrl,
         ideType: 'isIntellij'
     }

@@ -40,9 +40,8 @@ public class ConfigUtils {
      * @param ip       ip
      * @param port     port
      * @param localPort     代理本地port
-     * @param certFile certFile
      */
-    public static void fillIp2JsonFile(String toolName, String ip, String port, String localPort, String certFile) {
+    public static void fillIp2JsonFile(String toolName, String ip, String port, String localPort) {
         Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
         if (config.get(ConfigProperty.PORT_CONFIG.vaLue()) instanceof List) {
             List configList = (List) config.get(ConfigProperty.PORT_CONFIG.vaLue());
@@ -56,7 +55,7 @@ public class ConfigUtils {
             BaseCacheDataOpt.updateGlobalIPAndPort(toolName, ip, port, localPort);
             FileUtil.ConfigParser.saveJsonConfigToFile(config.toString(), IDEConstant.CONFIG_PATH);
         }
-        FileUtil.updateCertConfig(certFile);
+//        FileUtil.updateCertConfig(certFile);
     }
 
     /**

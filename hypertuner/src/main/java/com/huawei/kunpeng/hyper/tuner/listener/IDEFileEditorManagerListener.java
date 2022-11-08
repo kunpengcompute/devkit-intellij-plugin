@@ -21,8 +21,6 @@ import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
 import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
-import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.ConfigUtils;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.intellij.notification.NotificationType;
@@ -55,7 +53,7 @@ public class IDEFileEditorManagerListener implements FileEditorManagerListener.B
             IDENotificationUtil.notificationCommon(new NotificationBean("",
                     TuningI18NServer.toLocale("plugins_hyper_tuner_config_closure"), NotificationType.WARNING));
             // 清空本地 ip 缓存
-            ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "","", "");
+            ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "","");
         }
     }
 }

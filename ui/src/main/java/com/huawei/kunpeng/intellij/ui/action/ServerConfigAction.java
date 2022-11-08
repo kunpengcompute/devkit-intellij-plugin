@@ -32,7 +32,6 @@ import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.ConfigUtils;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
-import com.huawei.kunpeng.intellij.common.util.IDENetUtils;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.huawei.kunpeng.intellij.common.util.JsonUtil;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
@@ -42,7 +41,6 @@ import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -73,7 +71,7 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
         String port = params.get("port");
         String localPort = params.get("localPort");
         String certFile = params.get("certFile");
-        ConfigUtils.fillIp2JsonFile(toolName, host, port, localPort, certFile);
+//        ConfigUtils.fillIp2JsonFile(toolName, host, port, localPort, certFile);
         // handle cert
         verifyOrTrustCert(params);
         // 将plugin设置为配置服务器状态
@@ -97,7 +95,7 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
         // 将plugin设置为初始状态
         IDEContext.setIDEPluginStatus(toolName, IDEPluginStatus.IDE_STATUS_INIT);
         // 清空本地 ip 缓存
-        ConfigUtils.fillIp2JsonFile(toolName, "", "", "", "");
+//        ConfigUtils.fillIp2JsonFile(toolName, "", "", "", "");
         return false;
     }
 

@@ -188,7 +188,7 @@ public abstract class AbstractWebView {
             indexHtml = IDEContext.getValueFromGlobalContext(null, getIndexHtmlKey());
 
             // 替换重载内容
-            indexHtml = indexHtml.replaceFirst("self\\.navigatorPage", "self\\.navigatorPage = " + jsonStr);
+            indexHtml = indexHtml.replaceFirst("top\\.navigatorPage", "top\\.navigatorPage = " + jsonStr);
         } else {
             indexHtml = indexHtmlNew;
         }
@@ -402,6 +402,7 @@ public abstract class AbstractWebView {
             for (String str : list) {
                 str = Matcher.quoteReplacement(str);
                 if (list.size() == 1) {
+                    System.out.println("list size is 1!!!");
                     indexHtml = indexHtml.replaceFirst("self\\.navigatorPage",
                             "self\\.navigatorPage = " + str);
                     break;
@@ -473,7 +474,7 @@ public abstract class AbstractWebView {
         while (true) {
             if (str.length() > 10000) {
                 list.add(str.substring(0, 10000));
-                str = str.substring(10000, str.length());
+                str = str.substring(10000);
             } else {
                 list.add(str);
                 break;

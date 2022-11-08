@@ -66,6 +66,16 @@ public enum PageType {
     },
 
     /**
+     * 卸载工具
+     */
+    UNINSTALL_HYPER_TUNER("uninstall_hyper_tuner") {
+        @Override
+        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
+            return Optional.of(new UninstallEditor(file));
+        }
+    },
+
+    /**
      * 升级服务器
      */
     UPGRADE_SERVER("upgrade_server"){

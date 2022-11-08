@@ -34,11 +34,7 @@ import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-import com.huawei.kunpeng.intellij.common.util.FileUtil;
-import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
-import com.huawei.kunpeng.intellij.common.util.JsonUtil;
-import com.huawei.kunpeng.intellij.common.util.ShellTerminalUtil;
+import com.huawei.kunpeng.intellij.common.util.*;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
 import com.huawei.kunpeng.intellij.js2java.bean.NavigatorPageBean;
 import com.huawei.kunpeng.intellij.js2java.fileditor.IDEFileEditorManager;
@@ -47,14 +43,9 @@ import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 
 import com.alibaba.fastjson.JSONArray;
 import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
-import com.huawei.kunpeng.intellij.ui.dialog.AccountTipsDialog;
 import com.huawei.kunpeng.intellij.ui.enums.CheckConnResponse;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
-import com.intellij.execution.process.mediator.daemon.QuotaState;
-import com.intellij.notification.NotificationDisplayType;
-import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
-import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
@@ -71,7 +62,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lombok.extern.java.Log;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -383,24 +373,7 @@ public class CommonHandler extends FunctionHandler {
      * @param module  模块
      */
     public void openNewPage(MessageBean message, String module) {
-        Map<String, String> messageData = JsonUtil.getJsonObjFromJsonStr(message.getData());
-        String page = messageData.get("router");
-        boolean closePage = Optional.of(Objects.equals(messageData.get("closePage"), "true")).orElse(false);
 
-        if (closePage) {
-            Project project = CommonUtil.getDefaultProject();
-            VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
-            WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
-            if (webViewPage != null) {
-                webViewPage.dispose();
-            }
-        }
-
-        switch (page) {
-            case "config":
-                ConfigureServerEditor.openPage();
-                break;
-        }
     }
 
     /**
@@ -421,20 +394,20 @@ public class CommonHandler extends FunctionHandler {
         Logger.info("closePanel end.");
     }
 
-    /**
-     * webview显示右下角提示消息处理
-     *
-     * @param message 数据
-     * @param module  模块
-     */
-    public void readConfig(MessageBean message, String module) {
-        Map<String, Object> context = IDEContext.getValueFromGlobalContext(null, "tuning");
-        String ip = Optional.ofNullable(context.get(BaseCacheVal.IP.vaLue()))
-                .map(Object::toString).orElse(null);
-        String config = "{\"sysPerfConfig\":[{\"port\":\"8086\",\"ip\":\"" + ip + "\"}]}";
-        // 回调
-        invokeCallback(message.getCmd(), message.getCbid(), config);
-    }
+//    /**
+//     * webview显示右下角提示消息处理
+//     *
+//     * @param message 数据
+//     * @param module  模块
+//     */
+//    public void readConfig(MessageBean message, String module) {
+//        Map<String, Object> context = IDEContext.getValueFromGlobalContext(null, "tuning");
+//        String ip = Optional.ofNullable(context.get(BaseCacheVal.IP.vaLue()))
+//                .map(Object::toString).orElse(null);
+//        String config = "{\"sysPerfConfig\":[{\"port\":\"8086\",\"ip\":\"" + ip + "\"}]}";
+//        // 回调
+//        invokeCallback(message.getCmd(), message.getCbid(), config);
+//    }
 
     /**
      * 登出操作
@@ -546,6 +519,67 @@ public class CommonHandler extends FunctionHandler {
      */
     public void hideTerminal(MessageBean message, String module) {
 
+    }
+
+    /**
+     * 读取配置服务器数据
+     *
+     * @param message 数据
+     * @param module 模块
+     */
+    public void readConfig(MessageBean message, String module) {
+        Logger.info("read config message");
+        Map<String, String> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        Logger.info("cmd is: " + message.getCmd());
+        Logger.info("data is " + message.getData());
+//        Logger.info(data.values().toString());
+    }
+
+//    public void isLogin(MessageBean message, String module) {
+//        Logger.info("clicking save button in configure server, this is isLogin function");
+//        Map<String, Object> params = JsonUtil.getJsonObjFromJsonStr(message.getData());
+//        Logger.info("cmd is: " + message.getCmd());
+//        Logger.info("data is " + params.values().toString());
+//
+//        invokeCallback(message.getCmd(), message.getCbid(), "what data");
+//    }
+
+    public void saveConfig(MessageBean message, String module) {
+        Logger.info("save config");
+        Map<String, Object> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        Logger.info("cmd is: " + message.getCmd());
+        Logger.info("data is: " + message.getData());
+        if (data.get("showInfoBox").equals(Boolean.TRUE)) {
+            // show info box
+            Logger.info("show info box");
+//            IDENotificationUtil.notificationCommon(new NotificationBean("Configure Server",
+//                    "Server is configured successfully!", NotificationType.INFORMATION));
+//            TuningCommonUtil.showNotification();
+        }
+        // 跳转到登录页面
+        Map<String, String> params = new HashMap<>();
+        Map<String, String> configData = JsonUtil.getJsonObjFromJsonStr((String)data.get("data"));
+        Logger.info("config data is ", configData);
+        params.put("ip", configData.get("ip"));
+        params.put("port", configData.get("port"));
+        Random random = new Random();
+        random.setSeed(10000L);
+        int randomPort = random.nextInt(10240) + 45295;
+        // 随机寻找一个未被占用的端口
+        while (IDENetUtils.isLocalePortUsing(randomPort)) {
+            randomPort = random.nextInt(10240) + 45295;
+        }
+        params.put("localPort", randomPort + "");
+
+//        ConfigureServerEditor.saveConfig(params);
+        Project project = CommonUtil.getDefaultProject();
+        VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
+        WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
+        if (webViewPage instanceof ConfigureServerEditor) {
+//            webViewPage = (ConfigureServerEditor) webViewPage;
+            ((ConfigureServerEditor) webViewPage).saveConfig(params);
+            webViewPage.dispose();
+        }
     }
 
 

@@ -59,6 +59,6 @@ public class TuningCertConfirmWrapDialog extends CertConfirmWrapDialog {
         // 将plugin设置为初始状态
         IDEContext.setIDEPluginStatus(toolName, IDEPluginStatus.IDE_STATUS_INIT);
         // 清空本地 ip 缓存
-        ConfigUtils.fillIp2JsonFile(toolName, "", "", "","");
+//        ConfigUtils.fillIp2JsonFile(toolName, "", "", "","");
     }
 }

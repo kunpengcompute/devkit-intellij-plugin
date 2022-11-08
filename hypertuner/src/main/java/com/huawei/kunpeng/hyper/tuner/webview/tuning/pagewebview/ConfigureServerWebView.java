@@ -20,7 +20,11 @@ public class ConfigureServerWebView extends WebView {
      */
     public ConfigureServerWebView() {
         // 组装与webview交互的message
+        System.out.println("init configure server webview");
         Map<String, Object> pageParams = new HashMap<>();
+        Map<String, Object> queryParams = new HashMap<>();
+        queryParams.put("intellijFlag", true);
+        pageParams.put("queryParams",queryParams);
         boolean isLightThemeInContext = IDEContext.getValueFromGlobalContext(CommonUtil.getProjectName(),
                 BaseCacheVal.LIGHT_THEME.vaLue());
         String currentTheme = isLightThemeInContext ? "light" : "dark";
