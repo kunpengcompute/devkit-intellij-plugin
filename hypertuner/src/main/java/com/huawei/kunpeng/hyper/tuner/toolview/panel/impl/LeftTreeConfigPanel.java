@@ -16,15 +16,11 @@
 
 package com.huawei.kunpeng.hyper.tuner.toolview.panel.impl;
 
-import com.huawei.kunpeng.hyper.tuner.common.constant.TuningUserManageConstant;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
-import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningServerConfigWrapDialog;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.FreeTrialEditor;
-import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
-import com.huawei.kunpeng.intellij.ui.dialog.IDEBaseDialog;
 import com.huawei.kunpeng.intellij.ui.enums.Panels;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.intellij.openapi.project.Project;
@@ -35,7 +31,6 @@ import com.intellij.openapi.wm.ex.ToolWindowEx;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
 import javax.swing.*;
 
 /**
@@ -46,7 +41,7 @@ import javax.swing.*;
 public class LeftTreeConfigPanel extends IDEBasePanel {
     private static final long serialVersionUID = 772197307383362340L;
 
-    private JLabel decLabel;
+    private JLabel configLabel;
 
     private JLabel freeTrialLabel;
 
@@ -55,11 +50,11 @@ public class LeftTreeConfigPanel extends IDEBasePanel {
     // 滚动条面板
     private JScrollPane scrollPanel;
 
-    private JButton hyperLinkButton;
+    private JButton configServerButton;
 
     private JButton freeTrialButton;
 
-    private JPanel secondPanel;
+    private JPanel contentPanel;
 
 
     private Project project;
@@ -98,13 +93,13 @@ public class LeftTreeConfigPanel extends IDEBasePanel {
 
         // 去除滚动条面板的边框
         scrollPanel.setBorder(null);
-        decLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_not_connected"));
-        secondPanel.setMinimumSize(new Dimension(width, -1));
+        configLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_not_connected"));
+        contentPanel.setMinimumSize(new Dimension(width, -1));
         freeTrialLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_text"));
-//        hyperLinkLabel.setForeground(new Color(47, 101, 202));
-//        hyperLinkLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        hyperLinkButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_config_now"));
+        configServerButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_config_now"));
+        configServerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         freeTrialButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_button"));
+        freeTrialButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
     @Override
@@ -121,7 +116,7 @@ public class LeftTreeConfigPanel extends IDEBasePanel {
                 FreeTrialEditor.openPage();
             }
         };
-        hyperLinkButton.addMouseListener(configMouseAdapter);
+        configServerButton.addMouseListener(configMouseAdapter);
         freeTrialButton.addMouseListener(freeTrialMouseAdapter);
 
     }

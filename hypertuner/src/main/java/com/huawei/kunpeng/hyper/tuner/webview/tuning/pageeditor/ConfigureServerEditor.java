@@ -152,6 +152,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
             // update global Context
             updateIDEContext(host);
             // clear userConfig when config server again
+            ConfigUtils.fillIp2JsonFile(toolName, params.get("ip"), params.get("port"), params.get("localPort"));
             ConfigUtils.updateUserConfig(ConfigProperty.AUTO_LOGIN_CONFIG.vaLue(), " ", false, false);
             synchronizedLeftTree();
             return true;

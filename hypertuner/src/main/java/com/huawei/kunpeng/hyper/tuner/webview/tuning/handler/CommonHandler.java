@@ -21,6 +21,7 @@ import com.huawei.kunpeng.hyper.tuner.action.upgrade.TuningUpgradeAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
+import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
 import com.huawei.kunpeng.hyper.tuner.model.JavaPerfOperateLogBean;
 import com.huawei.kunpeng.hyper.tuner.webview.WebFileProvider;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
@@ -562,21 +563,12 @@ public class CommonHandler extends FunctionHandler {
         Logger.info("config data is ", configData);
         params.put("ip", configData.get("ip"));
         params.put("port", configData.get("port"));
-        Random random = new Random();
-        random.setSeed(10000L);
-        int randomPort = random.nextInt(10240) + 45295;
-        // 随机寻找一个未被占用的端口
-        while (IDENetUtils.isLocalePortUsing(randomPort)) {
-            randomPort = random.nextInt(10240) + 45295;
-        }
-        params.put("localPort", randomPort + "");
+        params.put("localPort", NginxUtil.getLocalPort());
 
-//        ConfigureServerEditor.saveConfig(params);
         Project project = CommonUtil.getDefaultProject();
         VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
         WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
         if (webViewPage instanceof ConfigureServerEditor) {
-//            webViewPage = (ConfigureServerEditor) webViewPage;
             ((ConfigureServerEditor) webViewPage).saveConfig(params);
             webViewPage.dispose();
         }

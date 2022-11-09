@@ -21,7 +21,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="a77ef" binding="secondPanel" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="10">
+              <grid id="a77ef" binding="contentPanel" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="10">
                 <margin top="0" left="0" bottom="0" right="10"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -52,7 +52,7 @@
                           <verticalTextPosition value="0"/>
                         </properties>
                       </component>
-                      <component id="f487c" class="org.jdesktop.swingx.JXButton" binding="freeTrialButton">
+                      <component id="6e88b" class="javax.swing.JButton" binding="freeTrialButton">
                         <constraints>
                           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="1" use-parent-layout="false">
                             <minimum-size width="-1" height="35"/>
@@ -73,7 +73,7 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="2fa53" class="javax.swing.JLabel" binding="decLabel">
+                      <component id="2fa53" class="javax.swing.JLabel" binding="configLabel">
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="1" fill="1" indent="1" use-parent-layout="false">
                             <preferred-size width="0" height="0"/>
@@ -86,7 +86,7 @@
                           <text value="plugins_hyper_tuner_lefttree_server_not_connected"/>
                         </properties>
                       </component>
-                      <component id="88859" class="javax.swing.JButton" binding="hyperLinkButton">
+                      <component id="88859" class="javax.swing.JButton" binding="configServerButton">
                         <constraints>
                           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="1" fill="1" indent="1" use-parent-layout="false">
                             <minimum-size width="-1" height="35"/>

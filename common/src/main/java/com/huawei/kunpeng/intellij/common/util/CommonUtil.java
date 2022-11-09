@@ -416,7 +416,7 @@ public class CommonUtil {
     }
 
     /**
-     * 从配置文件中读取 ip
+     * 从配置文件中读取 ip和port
      *
      * @return string ip
      */
@@ -431,6 +431,19 @@ public class CommonUtil {
             }
         }
         return ip;
+    }
+
+    public static Map readCurIpAndPortFromConfig() {
+        Map<String, String> info = null;
+        Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
+        List serverConfig = JsonUtil.getValueIgnoreCaseFromMap(config, ConfigProperty.PORT_CONFIG.vaLue(), List.class);
+        if (!ValidateUtils.isEmptyCollection(serverConfig)) {
+            if (serverConfig.get(0) instanceof Map) {
+                info = (Map) serverConfig.get(0);
+                return info;
+            }
+        }
+        return info;
     }
 
     /**

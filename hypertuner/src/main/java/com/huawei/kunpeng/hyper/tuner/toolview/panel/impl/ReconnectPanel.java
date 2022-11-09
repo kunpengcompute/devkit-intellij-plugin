@@ -17,7 +17,10 @@
 package com.huawei.kunpeng.hyper.tuner.toolview.panel.impl;
 
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
+import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
 import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.FreeTrialEditor;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.IDELoginEditor;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
@@ -26,15 +29,16 @@ import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.openapi.wm.ex.ToolWindowEx;
+import org.jdesktop.swingx.JXButton;
 
-import java.awt.Color;
-import java.awt.Cursor;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Map;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 /**
  * 左侧树重新连接面板
@@ -47,13 +51,22 @@ public class ReconnectPanel extends IDEBasePanel {
     // 滚动条面板
     private JScrollPane scrollPanel;
 
-    private JLabel hyperLinkLabel;
-
-    private JLabel decLabel;
-
-    private JPanel leftTreeLoginMainPanel;
+    private JPanel mainPanel;
+    private JLabel ipLabel;
+    private JLabel portLabel;
+    private JLabel ipInfoLabel;
+    private JLabel portInfoLabel;
+    private JLabel notLoginLabel;
+    private JButton loginButton;
+    private JLabel freeTrialLabel;
+    private JButton freeTrialButton;
+    private JPanel contentPanel;
 
     private Project project;
+
+    // 已配置服务器的ip和端口
+    private String ip;
+    private String port;
 
     /**
      * 左侧树登录面板构造函数
@@ -68,7 +81,7 @@ public class ReconnectPanel extends IDEBasePanel {
         this.panelName = StringUtil.stringIsEmpty(panelName) ? Panels.LEFT_TREE_LOGIN.panelName() : panelName;
         initPanel();
         registerComponentAction();
-        createContent(leftTreeLoginMainPanel, null, false);
+        createContent(mainPanel, null, false);
     }
 
     /**
@@ -82,24 +95,47 @@ public class ReconnectPanel extends IDEBasePanel {
     }
 
     private void initPanel() {
+        ToolWindowManager instance = ToolWindowManager.getInstance(this.project);
+        ToolWindowEx tw = (ToolWindowEx) instance.getToolWindow("Project");
+        int width = tw.getComponent().getWidth();
+
         // 取消滚动条面板的边框
         scrollPanel.setBorder(null);
-        String ip = CommonUtil.readCurIpFromConfig();
-        decLabel.setText(ip + " " + TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_config_connected"));
-        hyperLinkLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_config_again"));
-        hyperLinkLabel.setForeground(new Color(47, 101, 202));
-        hyperLinkLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        Map<String, String> serverConfig = CommonUtil.readCurIpAndPortFromConfig();
+        ip = serverConfig.get("ip");
+        port = serverConfig.get("port");
+        contentPanel.setMinimumSize(new Dimension(width, -1));
+        ipInfoLabel.setText(ip);
+        portInfoLabel.setText(port);
+        ipLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_ip_address"));
+        portLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_port"));
+        notLoginLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_notlogin_text"));
+        loginButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_login_button"));
+        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        freeTrialLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_text"));
+        freeTrialButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_button"));
+        freeTrialButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
     @Override
     protected void registerComponentAction() {
         MouseAdapter loginMouseAdapter = new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent event) {
-                TuningCommonUtil.showConfigSaveConfirmDialog();
+            public void mouseClicked(MouseEvent e) {
+                String localPort = NginxUtil.getLocalPort();
+                NginxUtil.updateNginxConfig(ip, port, localPort);
+                IDELoginEditor.openPage(localPort);
             }
         };
-        hyperLinkLabel.addMouseListener(loginMouseAdapter);
+        MouseAdapter freeTrialMouseAdapter = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent event) {
+                FreeTrialEditor.openPage();
+            }
+        };
+        loginButton.addMouseListener(loginMouseAdapter);
+        freeTrialButton.addMouseListener(freeTrialMouseAdapter);
+
     }
 
     @Override

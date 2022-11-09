@@ -22,11 +22,13 @@ import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
+import com.huawei.kunpeng.intellij.common.util.IDENetUtils;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.intellij.notification.NotificationType;
 
 import java.io.*;
 import java.text.MessageFormat;
+import java.util.Random;
 
 public class NginxUtil {
     /**
@@ -259,6 +261,17 @@ public class NginxUtil {
         } else {
             startStopBash();
         }
+    }
+
+    public static String getLocalPort() {
+        Random random = new Random();
+        random.setSeed(10000L);
+        int randomPort = random.nextInt(10240) + 45295;
+        // 随机寻找一个未被占用的端口
+        while (IDENetUtils.isLocalePortUsing(randomPort)) {
+            randomPort = random.nextInt(10240) + 45295;
+        }
+        return randomPort + "";
     }
 }
 
