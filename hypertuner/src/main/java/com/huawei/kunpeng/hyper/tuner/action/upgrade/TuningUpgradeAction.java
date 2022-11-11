@@ -24,24 +24,30 @@ import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningInstallUpgradeWrapDialog;
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
+import com.huawei.kunpeng.intellij.common.bean.SshConfig;
+import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
+import com.huawei.kunpeng.intellij.common.enums.SftpAction;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
+import com.huawei.kunpeng.intellij.common.util.JsonUtil;
 import com.huawei.kunpeng.intellij.ui.action.SshAction;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.InstallUpgradeWrapDialog;
+import com.huawei.kunpeng.intellij.ui.enums.UpgradeResponse;
 import com.huawei.kunpeng.intellij.ui.panel.InstallUpgradePanel;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
 
 import com.intellij.notification.NotificationType;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
-import java.util.Timer;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import javax.swing.event.HyperlinkEvent;
 
@@ -69,6 +75,16 @@ public class TuningUpgradeAction extends SshAction {
                 session,
                 TuningI18NServer.toLocale("plugins_hyper_tuner_shell_upgradelRun"),
                 dir + "upgrade_tuning_run.sh");
+    }
+
+    public void newUpload(Session session, String dir, ActionOperate actionOperate) {
+        // 上传脚本至dir下
+        DeployUtil.newUpload(
+                session, TuningI18NServer.toLocale("plugins_hyper_tuner_shell_upgradel"), dir + "upgrade_tuning.sh", actionOperate);
+        DeployUtil.newUpload(
+                session,
+                TuningI18NServer.toLocale("plugins_hyper_tuner_shell_upgradelRun"),
+                dir + "upgrade_tuning_run.sh",actionOperate);
     }
 
     @Override
@@ -136,5 +152,45 @@ public class TuningUpgradeAction extends SshAction {
     @Override
     public void checkStatus(Session session, Timer timer, String dir) {
         DeployUtil.checkUpgradeLog(session, timer, dir + "upgrade_tuning.log", this::failedHandle, this::successHandle);
+    }
+
+    public void newCheckStatus(Session session, Timer timer, String dir, ActionOperate actionOperate) {
+        DeployUtil.newCheckUpgradeLog(session, timer, dir + "upgrade_tuning.log", actionOperate);
+    }
+
+    public void newOKAction(Map params, ActionOperate actionOperate) {
+        Map<String, String> param = JsonUtil.getValueIgnoreCaseFromMap(params, "param", Map.class);
+        SshConfig config = DeployUtil.getConfig(param);
+        Session session = DeployUtil.getSession(config);
+        if (Objects.isNull(session)) {
+            actionOperate.actionOperate(UpgradeResponse.SSH_ERROR);
+            return;
+        }
+        try {
+            DeployUtil.setUserInfo(session, config);
+            session.connect(30000);
+        } catch (JSchException e) {
+            Logger.error("ssh session connect error: {}", e.getMessage());
+            actionOperate.actionOperate(UpgradeResponse.SSH_ERROR);
+            return;
+        }
+        String dir = TMP_PATH + new SimpleDateFormat(TMP_FORMAT).format(new Date(System.currentTimeMillis()))
+                + IDEConstant.PATH_SEPARATOR;
+        Logger.info(dir);
+        // 创建dir目录
+        DeployUtil.sftp(session, dir, SftpAction.MKDIR);
+        // 上传脚本至dir下
+        newUpload(session, dir, actionOperate);
+        // 打开终端执行脚本
+        openTerminal(param, dir);
+        // 检查脚本执行状态
+        final Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                newCheckStatus(session, timer, dir, actionOperate);
+            }
+        };
+        timer.schedule(task, 0, 1000);
     }
 }
