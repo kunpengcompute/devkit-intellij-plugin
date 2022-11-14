@@ -37,6 +37,7 @@ import com.huawei.kunpeng.intellij.ui.dialog.NewFingerTipDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.InstallUpgradeWrapDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.UninstallWrapDialog;
 import com.huawei.kunpeng.intellij.ui.enums.CheckConnResponse;
+import com.huawei.kunpeng.intellij.ui.enums.UpgradeResponse;
 import com.huawei.kunpeng.intellij.ui.panel.FingerPanel;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
@@ -470,6 +471,31 @@ public class DeployUtil extends ShellTerminalUtil {
     }
 
     /**
+     * 查询服务器上临时upgrade_porting.log日志内容。
+     *
+     * @param session          session
+     * @param logPath          dir
+     */
+    public static void newCheckUpgradeLog(
+            Session session, Timer timer, String logPath, ActionOperate actionOperate) {
+        String res = sftp(session, logPath, SftpAction.READ);
+        Logger.info(logPath);
+        Logger.info("haha+"+res);
+        if (ValidateUtils.isEmptyString(res)) {
+            return;
+        }
+        if (res.contains("failed")) {
+            Logger.info("upgrade failed");
+            actionOperate.actionOperate(UpgradeResponse.FAILED);
+        }
+        if (res.contains("success")) {
+            Logger.info("upgrade success");
+            actionOperate.actionOperate(UpgradeResponse.SUCCESS);
+        }
+        closeSession(session);
+    }
+
+    /**
      * 打开指纹弹窗
      *
      * @param actionOperate 回调
@@ -563,6 +589,40 @@ public class DeployUtil extends ShellTerminalUtil {
                 sftp.chmod(Integer.parseInt(SHELL_CHMOD, 8), targetPath);
             } catch (JSchException | SftpException | CharacterCodingException e) {
                 Logger.error("failed to open ssh channel. stack trace : JSchException | SftpException");
+            } finally {
+                if (sftp != null && sftp.isConnected()) {
+                    sftp.disconnect();
+                }
+            }
+        }
+    }
+
+    /**
+     * Upload.
+     *
+     * @param session      the session
+     * @param targetPath   the targetPath
+     * @param shellContent 脚本内容
+     */
+    public static void newUpload(Session session, String shellContent, String targetPath, ActionOperate actionOperate) {
+        if (session != null) {
+            ChannelSftp sftp = null;
+            try {
+                Channel tmp = session.openChannel("sftp");
+                if (!(tmp instanceof ChannelSftp)) {
+                    return;
+                }
+                sftp = (ChannelSftp) tmp;
+                sftp.connect(CONNECTION_TIME_OUT_IN_MILLISECONDS);
+                ByteBuffer buffer = StandardCharsets.UTF_8.newEncoder().encode(CharBuffer.wrap(shellContent));
+                byte[] bytes = new byte[buffer.limit()];
+                buffer.get(bytes);
+                sftp.put(new ByteArrayInputStream(bytes), targetPath, OVERWRITE);
+                // 脚本权限八进制500转换为十进制
+                sftp.chmod(Integer.parseInt(SHELL_CHMOD, 8), targetPath);
+            } catch (JSchException | SftpException | CharacterCodingException e) {
+                Logger.error("failed to open ssh channel. stack trace : JSchException | SftpException");
+                actionOperate.actionOperate(UpgradeResponse.UPLOAD_ERROR);
             } finally {
                 if (sftp != null && sftp.isConnected()) {
                     sftp.disconnect();

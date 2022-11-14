@@ -45,6 +45,7 @@ import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 import com.alibaba.fastjson.JSONArray;
 import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
 import com.huawei.kunpeng.intellij.ui.enums.CheckConnResponse;
+import com.huawei.kunpeng.intellij.ui.enums.UpgradeResponse;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.PathManager;
@@ -63,8 +64,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.jetbrains.plugins.terminal.TerminalView;
 
 /**
  * 公共的function处理器
@@ -374,7 +378,24 @@ public class CommonHandler extends FunctionHandler {
      * @param module  模块
      */
     public void openNewPage(MessageBean message, String module) {
+        Map<String, String> messageData = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        String page = messageData.get("router");
+        boolean closePage = Optional.of(Objects.equals(messageData.get("closePage"), "true")).orElse(false);
 
+        if (closePage) {
+            Project project = CommonUtil.getDefaultProject();
+            VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
+            WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
+            if (webViewPage != null) {
+                webViewPage.dispose();
+            }
+        }
+
+        switch (page) {
+            case "config":
+                ConfigureServerEditor.openPage();
+                break;
+        }
     }
 
     /**
@@ -507,9 +528,14 @@ public class CommonHandler extends FunctionHandler {
 
         TuningUpgradeAction action = new TuningUpgradeAction();
         Logger.info("Upgrade begin...");
-        action.onOKAction(data);
-//        invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"closeLoading\"}");
-//        invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"listen\"}");
+        ActionOperate actionOperate = new ActionOperate() {
+            @Override
+            public void actionOperate(Object data) {
+                UpgradeResponse response = (UpgradeResponse) data;
+                invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"" + response.value() + "\"}");
+            }
+        };
+        action.newOKAction(data,actionOperate);
     }
 
     /**
@@ -519,7 +545,11 @@ public class CommonHandler extends FunctionHandler {
      * @param module
      */
     public void hideTerminal(MessageBean message, String module) {
-
+        Project project = CommonUtil.getDefaultProject();
+        ToolWindow terminal = ToolWindowManager.getInstance(project).getToolWindow("Terminal");
+        if (terminal != null) {
+            terminal.hide();
+        }
     }
 
     /**
