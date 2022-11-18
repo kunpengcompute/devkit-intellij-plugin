@@ -1,0 +1,801 @@
+#安装
+plugins_hyper_tuner_install_title=Install Hyper Tuner
+plugins_hyper_tuner_install_failedLink=here
+plugins_hyper_tuner_install_failedSuffix=</a> to retry.</html>
+plugins_hyper_tuner_install_failedPrefix=<html><span>Rectify the fault based on the installation \
+    failure causes provided on the <a href="https://support.huaweicloud.com/faq-paplugin-kunpengdevps/kunpengpaplugin_10_0029.html">official website</a>.</span><br />Failed to install the tool. Click <a href="#">
+plugins_common_button_cancel=Cancel
+plugins_hyper_tuner_shell_install=#!/bin/bash\n \
+    function help_info(){\n \
+    echo "usage bash install_tuning.sh\n \
+    -a arm\n \
+    -b x86\n \
+    -c key\n \
+    -h help infomation"\n \
+    }\n \
+    #get opts\n \
+    while getopts ":a:b:c:h" args\n \
+    do\n \
+    case $args in\n \
+    a)\n \
+    arm=$OPTARG\n \
+    ;;\n \
+    b)\n \
+    x86=$OPTARG\n \
+    ;;\n \
+    c)\n \
+    key=$OPTARG\n \
+    ;;\n \
+    h)\n \
+    help_info\n \
+    exit 0\n \
+    ;;\n \
+    ?)\n \
+    echo "unknow option '-$OPTARG'"\n \
+    help_info\n \
+    exit 2\n \
+    ;;\n \
+    esac\n \
+    done\n \
+    path=$(cd `dirname $0`;pwd)\n \
+    source /etc/profile\n \
+    touch $path/install_tuning.log\n \
+    chmod 600 $path/install_tuning.log\n \
+    function clean() {\n \
+    rm -rf $path/install_tuning_run.sh\n \
+    rm -rf $path/install_tuning.sh\n \
+    }\n \
+    function Logger() {\n \
+    if [ "Error" == $1 ]; then\n \
+    clean\n \
+    echo -e "\\e[1;31m`date '+[%Y-%m-%d %H:%M:%S]'` [$1] [$2] $3 \\e[0m "\n \
+    echo "failed" > $path/install_tuning.log\n \
+    else\n \
+    echo -e "`date '+[%Y-%m-%d %H:%M:%S]'` [$1] [$2] $3 "\n \
+    fi\n \
+    logger -t "devkit-ide" [$1] [$2] $3\n \
+    }\n \
+    if [ "$USER" != "root" ]; then\n \
+    echo -e "\\e[1;31mPlease input your root password to start installing:\\e[0m"\n \
+    fi\n \
+    su - root -c "cd $path && bash install_tuning_run.sh -a $arm -b $x86 -c $path -d ${key} "$USER""\n \
+    if [ $? == 1 ];then\n \
+    Logger Error "Check Password" "Check Password failed, please check detail."\n \
+    exit 1\n \
+    fi
+plugins_hyper_tuner_shell_installRun=#!/bin/bash\n \
+    function help_info(){\n \
+    echo "usage bash install_tuning.sh\n \
+    -a arm\n \
+    -b x86\n \
+    -c path\n \
+    -d key\n \
+    -h help infomation"\n \
+    }\n \
+    #get opts\n \
+    while getopts ":a:b:c:d:h" args\n \
+    do\n \
+    case $args in\n \
+    a)\n \
+    arm=$OPTARG\n \
+    ;;\n \
+    b)\n \
+    x86=$OPTARG\n \
+    ;;\n \
+    c)\n \
+    path=$OPTARG\n \
+    ;;\n \
+    d)\n \
+    key=$OPTARG\n \
+    ;;\n \
+    h)\n \
+    help_info\n \
+    exit 0\n \
+    ;;\n \
+    ?)\n \
+    echo "unknow option '-$OPTARG'"\n \
+    help_info\n \
+    exit 2\n \
+    ;;\n \
+    esac\n \
+    done\n \
+    function clean() {\n \
+    rm -rf $path/install_tuning_run.sh\n \
+    rm -rf $path/install_tuning.sh\n \
+    }\n \
+    function ackclean(){\n \
+    echo "The installation package path is $path"\n \
+    echo -n "Are you sure you want to delete the installation package?(y/n,n is default)"\n \
+    read ack\n \
+    if [ "y" == "${ack}" ] || [ "Y" == "${ack}" ]; then\n \
+    rm -rf $path/Hyper*Tuner*linux*\n \
+    rm -rf $path/KEYS.txt\n \
+    fi\n \
+    }\n \
+    function Logger() {\n \
+    if [ "Error" == $1 ]; then\n \
+    clean\n \
+    echo -e "\\e[1;31m`date '+[%Y-%m-%d %H:%M:%S]'` [$1] [$2] $3 \\e[0m "\n \
+    echo "failed" > $path/install_tuning.log\n \
+    echo "The log path is /var/log/messages. You can delete installation package with\n \
+    rm -rf $path/Hyper*Tuner*linux*\n \
+    rm -rf $path/KEYS.txt"\n \
+    else\n \
+    echo -e "`date '+[%Y-%m-%d %H:%M:%S]'` [$1] [$2] $3 "\n \
+    fi\n \
+    logger -t "devkit-ide" [$1] [$2] $3\n \
+    }\n \
+    function signature(){\n \
+    if [ ! -f "$1" ];then\n \
+    Logger Error "Signature" "Signature file is invalid.\n \
+    KEYS download url is: ${key_url}\n \
+    Asc download url is: ${pkg_url}.asc\n \
+    Logger "${key_url}"\n \
+    Logger "${pkg_url}"\n \
+    You can download ${pkg_url}.asc and KEYS.txt to save to path $path"\n \
+    exit 2\n \
+    fi\n \
+    command -v gpg\n \
+    if [ $? != 0 ];then\n \
+    Logger Error "Signature" "You need to install signature tool gpg first."\n \
+    exit 2\n \
+    fi\n \
+    command -v expect\n \
+    if [ $? != 0 ]; then\n \
+    Logger Error "Download" "You need to install shell tool expect first."\n \
+    exit 2\n \
+    fi\n \
+    gpg --import "$path/KEYS.txt"\n \
+    gpg --fingerprint\n \
+    /usr/bin/expect <<EOF\n \
+    set timeout -1\n \
+    gpg --edit-key " OpenPGP signature key for Huawei software (created on 30th Dec2013) " trust\n\
+    expect "Your decision?"\n\
+    send "5\n\
+    "\n\
+    expect "Do you really want to set this key to ultimate trust? (y/N)"\n\
+    send "y\n\
+    "\n\
+    expect "gpg>"\n\
+    send "quit\n\
+    "\n\
+    expect eof\n\
+    EOF\n\
+    result=$(gpg --verify "$1")\n\
+    if [[ $result =~ "This key is not certified with a trusted signature" ]];then\n \
+    Logger Error "Signature" "This key is not certified with a trusted signature."\n \
+    exit 2\n \
+    elif [[ $result =~ "Good signature" ]];then\n \
+    Logger Step "Signature" "Signature passed successfully."\n \
+    exit 0\n \
+    elif [[ $result =~ "BAD signature" ]];then\n \
+    Logger Error "Signature" "Signature failed.please check the completion of package."\n \
+    exit 2\n \
+    elif [[ $result =~ "Can't check signature: public key not found" ]];then\n \
+    Logger Error "Signature" "Can't check signature: public key not found."\n \
+    exit 2\n \
+    elif [[ $result =~ "can't hash datafile: No data" ]];then\n \
+    Logger Error "Signature" "Cannot find the download package.please make sure it is in the same folder with signature file "\n \
+    exit 2\n \
+    fi\n \
+    }\n \
+    # Start\n \
+    Logger Step "Start" "Start install hyper tuner."\n \
+    # Step1.Check Env\n \
+    Logger Step "Check Env" "Start to check if hyper_tuner already installed."\n \
+    if [ -f "/etc/systemd/system/thor.service" ] || [ -f "/etc/init.d/thor" ]; then\n \
+    Logger Error "Check Env" "Toolkit hyper_tuner already installed, task is exiting..."\n \
+    exit 2\n \
+    fi\n \
+    Logger Step "Check Env" "End to check if hyper_tuner already installed successfully."\n \
+    Logger Step "Check Env" "Start to check cpu mode of x86 or arm."\n \
+    if [[ $(uname -a) =~ "x86" ]]; then\n \
+    Logger Step "Check Env" "It is x86 host."\n \
+    pkg_url=$x86\n \
+    else\n \
+    Logger Step "Check Env" "It is arm host."\n \
+    pkg_url=$arm\n \
+    Logger "${pkg_url}"\n \
+    fi\n \
+    pkg_name=${pkg_url##*/}\n \
+    if [[ ${pkg_name} =~ "tuner" ]];then\n \
+    pkg_file="Hyper_tuner"\n \
+    else\n \
+    pkg_file="Hyper_tuner"\n \
+    fi\n \
+    curl_url=$(echo ${pkg_url} | awk -F "/Tuning" '{print $1}')\n \
+    key_url=$(echo ${key} | sed 's/%26/\\&/g')\n \
+    Logger "${pkg_name}"\n \
+    Logger "${pkg_file}"\n \
+    Logger "${curl_url}"\n \
+    Logger "${key_url}"\n \
+    Logger Step "Check Env" "End to check cpu mode of x86 or arm."\n \
+    if [ ! -f "$path/${pkg_name}" ];then\n \
+    Logger Step "Check Env" "Start to check network connection"\n \
+    function install_curl(){\n \
+    apt install -y curl 2>/dev/null\n \
+    if [ $? != 0 ]; then\n \
+    yum install -y curl 2>/dev/null\n \
+    fi\n \
+    }\n \
+    curl --help >/dev/null 2>&1\n \
+    if [ $? != 0 ]; then\n \
+    install_curl\n \
+    fi\n \
+    Logger "${curl_url}"\n \
+    curl -ksSL --connect-timeout 5 -I ${curl_url}\n \
+    if [ $? != 0 ]; then\n \
+    Logger Error "Check Env" "Network issue, please check connection.\n \
+    Package download url is: ${pkg_url}\n \
+    You can download ${pkg_name} save to path $path"\n \
+    exit 2\n \
+    fi\n \
+    Logger Step "Check Env" "End to check network connection successfully."\n \
+    Logger Step "Check Env" "Start to check target package url"\n \
+    if [[ $(curl -ksSL --connect-timeout 5 -I ${pkg_url}) =~ "404 Not Found" ]]; then\n \
+    Logger Error "Check Env" "Target url is not exist, please check. url: ${pkg_url}"\n \
+    exit 3\n \
+    fi\n \
+    Logger Step "Check Env" "End to check target package url successfully."\n \
+    # Step2.Download\n \
+    Logger Step "Download" "Start to download hyper_tuner package."\n \
+    cd $path && curl "${pkg_url}" -O\n \
+    chmod 000 ${pkg_name}\n \
+    if [ $? != 0 ]; then\n \
+    Logger Error "Download" "Download package failed, please check detail."\n \
+    clean\n \
+    exit 4\n \
+    fi\n \
+    Logger Step "Download" "End to download hyper_tuner package successfully."\n \
+    fi\n \
+    # Step3.Decompression\n \
+    Logger Step "Decompression" "Start to check Space required for extract hyper_tuner package."\n \
+    pkg_space=2147483648\n \
+    if [[ $(tar tvf ${pkg_name} | awk \'{print $3, $6}\' | awk \'{sum += $1} END {print sum}\') -gt ${pkg_space} ]]; then\n \
+    Logger Error "Decompression" "The space required for decompressing the package is incorrect."\n \
+    exit 2\n \
+    else\n \
+    Logger Step "Decompression" "End to check Space required for extract hyper_tuner package."\n \
+    fi\n \
+    Logger Step "Decompression" "Start to extract hyper_tuner package."\n \
+    cd $path && tar zxf ${pkg_name}\n \
+    if [ $? != 0 ]; then\n \
+    Logger Error "Decompression" "Extract package failed, please check detail."\n \
+    clean\n \
+    exit 5\n \
+    fi\n \
+    Logger Step "Decompression" "End to extract hyper_tuner package successfully."\n \
+    # Step4.Install\n \
+    Logger Step "Install" "Start to install hyper_tuner package."\n \
+    Logger $path/${pkg_file}\n \
+    cd $path/${pkg_file} && bash install.sh -ide\n \
+    if [ $? != 0 ];then\n \
+    Logger Error "Install" "Install package failed, please check detail logs above."\n \
+    clean\n \
+    # Clean environment\n \
+    cd $(cat /home/auto_malluma/Hyper_tuner/Hyper_tuner/install.ini | grep INSTALL_PATH | cut -d '=' -f2)\n \
+    bash hyper_tuner_uninstall.sh -ide\n \
+    clean\n \
+    exit 6\n \
+    else\n \
+    Logger Step "Install" "End to install hyper_tuner package successfully."\n \
+    clean\n \
+    fi\n \
+    cd $(cat /home/malluma/tuningkit_conf/install.ini | grep INSTALL_PATH | cut -d \'=\' -f2)\n \
+    grep listen ./tool/nginx/conf/nginx.conf | xargs >> $path/.install_sysPerf.step\n \
+    #Step6. Clean Env \n \
+    Logger Step "Clean Env" "Start to clean environment."\n \
+     rm -rf $path/*\n \
+    if [ $? != 0 ];then\n \
+    Logger Error "Clean Env" "Clean env failed, please check detail."\n \
+    clean\n \
+    exit 7\n \
+    fi\n \
+    history -cw\n \
+    Logger Step "Clean Env" "End to clean environment successfully."\n \
+    Logger Step "End" "All steps finished successfully."\n \
+    echo "success" > $path/.install_sysPerf.step
+#卸载
+plugins_hyper_tuner_uninstall_failedPrefix=<html>Failed to uninstall the tool. Click <a href="#">
+plugins_hyper_tuner_uninstall_failedLink=here
+plugins_hyper_tuner_uninstall_failedSuffix=</a> to retry.</html>
+plugins_hyper_tuner_uninstall_title=Uninstall Hyper Tuner
+plugins_hyper_tuner_shell_uninstall=#!/bin/bash\n \
+    source /etc/profile\n \
+    path=$(cd `dirname $0`;pwd)\n \
+    touch $path/uninstall_tuning.log\n \
+    chmod 600 $path/uninstall_tuning.log\n \
+    function clean(){\n \
+    rm -rf $path/uninstall_tuning.sh\n \
+    rm -rf $path/uninstall_tuning_log.sh\n \
+    }\n \
+    function Logger(){\n \
+    if [ "Error" == $1 ]; then\n \
+    clean\n \
+    echo -e "\\e[1;31m`date '+[%Y-%m-%d %H:%M:%S]'` [$1] [$2] $3 \\e[0m "\n \
+    echo "failed" > $path/uninstall_porting.log\n \
+    else\n \
+    echo -e "`date '+[%Y-%m-%d %H:%M:%S]'` [$1] [$2] $3 "\n \
+    fi\n \
+    logger -t "devkit-ide" [$1] [$2] $3\n \
+    }\n \
+    #Step1. UnInstall\n \
+    Logger Step "UnInstall" "Start to uninstall hyper_tuner package."\n \
+    if [ "$USER" != "root" ]; then\n \
+    echo -e "\\e[1;31mPlease input your root password to start uninstalling:\\e[0m"\n \
+    fi\n \
+    su - root -c "cd $path && bash uninstall_tuning_log.sh "$USER" $path"\n \
+    if [ $? == 1 ];then\n \
+    Logger Error "Check Password" "Check Password failed, please check detail."\n \
+    exit 1\n \
+    fi\n \
+    rm -rf $0
+plugins_hyper_tuner_shell_uninstallLog=#!/bin/bash\n \
+    path=$2\n \
+    function clean(){\n \
+    rm -rf $path/uninstall_porting.sh\n \
+    rm -rf $path/uninstall_porting_log.sh\n \
+    }\n \
+    function Logger(){\n \
+    if [ "Error" == $1 ]; then\n \
+    echo -e "\\e[1;31m`date '+[%Y-%m-%d %H:%M:%S]'` [$1] [$2] $3 \\e[0m "\n \
+    echo "failed" > $path/uninstall_tuning.log\n \
+    clean\n \
+    else\n \
+    echo -e "`date '+[%Y-%m-%d %H:%M:%S]'` [$1] [$2] $3 "\n \
+    fi\n \
+    logger -t "devkit-ide" [$1] [$2] $3\n \
+    }\n \
+    workdirectory=$(service thor status | grep hyper_tuner | awk 'NR==1{print $3}' | awk -F "/hyper_tuner/" '{print $1}')\n \
+    workdirectory=`echo $workdirectory | sed 's/(//g'` \n \
+    Logger "$workdirectory" \n \
+    if [ ! -d "$workdirectory/hyper_tuner" ];then\n \
+    Logger Error "UnInstall" "The tool is uninstalled. Do not uninstall it again."\n \
+    exit 2\n \
+    fi\n \
+    Logger "$workdirectory/hyper_tuner"\n \
+    cd $workdirectory/hyper_tuner\n \
+    bash hyper_tuner_uninstall.sh\n \
+    if [ $? != 0 ];then\n \
+    Logger Error "UnInstall" "UnInstall package failed, please check detail logs above."\n \
+    exit 3\n \
+    else\n \
+    Logger Step "UnInstall" "End to uninstall hyper_tuner package successfully."\n \
+    echo "success" > $path/uninstall_tuning.log\n \
+    clean\n \
+    fi\n \
+    rm -rf $0
+#升级
+plugins_hyper_tuner_upgrade_title=Upgrade Hyper Tuner
+plugins_hyper_tuner_upgrade_failedPrefix=<html><span>Rectify the fault based on the upgrade failure causes provided on the \
+  <a href="https://support.huaweicloud.com/hypertuner-faq/kunpengfaq_06_0005.html">official website</a>.\
+  </span><br /> Failed to upgrade the tool. Click <a href="#">
+plugins_hyper_tuner_upgrade_failedLink=here
+plugins_hyper_tuner_upgrade_failedSuffix=</a> to retry.</html>
+plugins_hyper_tuner_upgrade_success=The tool is successfully upgraded.
+plugins_hyper_tuner_shell_upgradel=#!/bin/bash\n \
+    function help_info(){\n \
+    echo "usage bash upgrade_tuning.sh\n \
+    -a arm\n \
+    -b x86\n \
+    -c key\n \
+    -h help information"\n \
+    }\n \
+    #get opts\n \
+    while getopts ":a:b:c:h" args\n \
+    do\n \
+    case $args in\n \
+    a)\n \
+    arm=$OPTARG\n \
+    ;;\n \
+    b)\n \
+    x86=$OPTARG\n \
+    ;;\n \
+    c)\n \
+    key=$OPTARG\n \
+    ;;\n \
+    h)\n \
+    help_info\n \
+    exit 0\n \
+    ;;\n \
+    ?)\n \
+    echo "unknow option '-$OPTARG'"\n \
+    help_info\n \
+    exit 2\n \
+    ;;\n \
+    esac\n \
+    done\n \
+    path=$(cd `dirname $0`;pwd)\n \
+    source /etc/profile\n \
+    touch $path/upgrade_tuning.log\n \
+    chmod 600 $path/upgrade_tuning.log\n \
+    function clean() {\n \
+    rm -rf $path/upgrade_tuning_run.sh\n \
+    rm -rf $path/upgrade_tuning.sh\n \
+    }\n \
+    function Logger() {\n \
+    if [ "Error" == $1 ]; then\n \
+    clean\n \
+    echo -e "\\e[1;31m`date '+[%Y-%m-%d %H:%M:%S]'` [$1] [$2] $3 \\e[0m "\n \
+    echo "failed" > $path/upgrade_tuning.log\n \
+    else\n \
+    echo -e "`date '+[%Y-%m-%d %H:%M:%S]'` [$1] [$2] $3 "\n \
+    fi\n \
+    logger -t "devkit-ide" [$1] [$2] $3\n \
+    }\n \
+    if [ "$USER" != "root" ]; then\n \
+    echo -e "\\e[1;31mPlease input your root password to start upgrading:\\e[0m"\n \
+    fi\n \
+    su - root -c "cd $path && bash upgrade_tuning_run.sh -a $arm -b $x86 -c $path -d ${key} "$USER""\n \
+    if [ $? == 1 ];then\n \
+    Logger Error "Check Password" "Check Password failed, please check detail."\n \
+    exit 1\n \
+    fi
+plugins_hyper_tuner_shell_upgradelRun=#!/bin/bash\n \
+    function help_info(){\n \
+    echo "usage bash upgrade_tuning.sh\n \
+    -a arm\n \
+    -b x86\n \
+    -c path\n \
+    -d key\n \
+    -h help information"\n \
+    }\n \
+    #get opts\n \
+    while getopts ":a:b:c:d:h" args\n \
+    do\n \
+    case $args in\n \
+    a)\n \
+    arm=$OPTARG\n \
+    ;;\n \
+    b)\n \
+    x86=$OPTARG\n \
+    ;;\n \
+    c)\n \
+    path=$OPTARG\n \
+    ;;\n \
+    d)\n \
+    key=$OPTARG\n \
+    ;;\n \
+    h)\n \
+    help_info\n \
+    exit 0\n \
+    ;;\n \
+    ?)\n \
+    echo "unknow option '-$OPTARG'"\n \
+    help_info\n \
+    exit 2\n \
+    ;;\n \
+    esac\n \
+    done\n \
+    function clean() {\n \
+    rm -rf $path/upgrade_tuning_run.sh\n \
+    rm -rf $path/upgrade_tuning.sh\n \
+    }\n \
+    function ackclean(){\n \
+    echo "The installation package path is $path"\n \
+    echo -n "Are you sure you want to delete the installation package?(y/n,n is default)"\n \
+    read ack\n \
+    if [ "y" == "${ack}" ] || [ "Y" == "${ack}" ]; then\n \
+    rm -rf $path/Hyper*Tuner*linux*\n \
+    rm -rf $path/KEYS.txt\n \
+    fi\n \
+    }\n \
+    function Logger() {\n \
+    if [ "Error" == $1 ]; then\n \
+    clean\n \
+    echo -e "\\e[1;31m`date '+[%Y-%m-%d %H:%M:%S]'` [$1] [$2] $3 \\e[0m "\n \
+    echo "failed" > $path/upgrade_tuning.log\n \
+    echo "The log path is /var/log/messages. You can delete installation package with\n \
+    rm -rf $path/Hyper*Tuner*linux*\n \
+    rm -rf $path/KEYS.txt"\n \
+    else\n \
+    echo -e "`date '+[%Y-%m-%d %H:%M:%S]'` [$1] [$2] $3 "\n \
+    fi\n \
+    logger -t "devkit-ide" [$1] [$2] $3\n \
+    }\n \
+    function signature(){\n \
+    if [ ! -f "$1" ];then\n \
+    Logger Error "Signature" "Signature file is invalid.\n \
+    KEYS download url is: ${key_url}\n \
+    Asc download url is: ${pkg_url}.asc\n \
+    You can download ${pkg_name}.asc and KEYS.txt to save to path $path"\n \
+    exit 2\n \
+    fi\n \
+    command -v gpg\n \
+    if [ $? != 0 ];then\n \
+    Logger Error "Signature" "You need to install signature tool gpg first."\n \
+    exit 2\n \
+    fi\n \
+    command -v expect\n \
+    if [ $? != 0 ]; then\n \
+    Logger Error "Download" "You need to install shell tool expect first."\n \
+    exit 2\n \
+    fi\n \
+    gpg --import "$path/KEYS.txt"\n \
+    gpg --fingerprint\n \
+    /usr/bin/expect <<EOF\n \
+    set timeout -1\n \
+    gpg --edit-key " OpenPGP signature key for Huawei software (created on 30th Dec2013) " trust\n\
+    expect "Your decision?"\n\
+    send "5\n\
+    "\n\
+    expect "Do you really want to set this key to ultimate trust? (y/N)"\n\
+    send "y\n\
+    "\n\
+    expect "gpg>"\n\
+    send "quit\n\
+    "\n\
+    expect eof\n\
+    EOF\n\
+    result=$(gpg --verify "$1")\n\
+    if [[ $result =~ "This key is not certified with a trusted signature" ]];then\n \
+    Logger Error "Signature" "This key is not certified with a trusted signature."\n \
+    exit 2\n \
+    elif [[ $result =~ "Good signature" ]];then\n \
+    Logger Step "Signature" "Signature passed successfully."\n \
+    exit 0\n \
+    elif [[ $result =~ "BAD signature" ]];then\n \
+    Logger Error "Signature" "Signature failed.please check the completion of package."\n \
+    exit 2\n \
+    elif [[ $result =~ "Can't check signature: public key not found" ]];then\n \
+    Logger Error "Signature" "Can't check signature: public key not found."\n \
+    exit 2\n \
+    elif [[ $result =~ "can't hash datafile: No data" ]];then\n \
+    Logger Error "Signature" "Cannot find the download package.please make sure it is in the same folder with signature file "\n \
+    exit 2\n \
+    fi\n \
+    }\n \
+    # Start\n \
+    Logger Step "Start" "Start upgrade hyper tuner."\n \
+    # Step1.Check Env\n \
+    Logger Step "Check Env" "Start to check if hyper_tuner has been installed."\n \
+    if [ ! -f "/etc/systemd/system/thor.service" ] && [ ! -f "/etc/init.d/thor" ]; then\n \
+    Logger Error "Check Env" "Toolkit hyper_tuner has not been installed, please install first, task is exiting..."\n \
+    exit 2\n \
+    fi\n \
+    Logger Step "Check Env" "End to check if hyper_tuner has been installed successfully."\n \
+    Logger Step "Check Env" "Start to check cpu mode of x86 or arm."\n \
+    if [[ $(uname -a) =~ "x86" ]]; then\n \
+    Logger Step "Check Env" "It is x86 host."\n \
+    pkg_url=$x86\n \
+    else\n \
+    Logger Step "Check Env" "It is arm host."\n \
+    pkg_url=$arm\n \
+    fi\n \
+    pkg_name=${pkg_url##*/}\n \
+    if [[ ${pkg_name} =~ "tuner" ]];then\n \
+    pkg_file="Hyper_tuner"\n \
+    else\n \
+    pkg_file="Hyper_tuner"\n \
+    fi\n \
+    #pkg_file=$(echo ${pkg_name} | awk -F ".tar.gz" '{print $1}')\n \
+    curl_url=$(echo ${pkg_url} | awk -F "/Tuning" '{print $1}')\n \
+    key_url=$(echo ${key} | sed 's/%26/\\&/g')\n \
+    Logger Step "Check Env" "End to check cpu mode of x86 or arm."\n \
+    if [ ! -f "$path/${pkg_name}" ];then\n \
+    Logger Step "Check Env" "Start to check network connection"\n \
+    function install_curl(){\n \
+    apt install -y curl 2>/dev/null\n \
+    if [ $? != 0 ]; then\n \
+    yum install -y curl 2>/dev/null\n \
+    fi\n \
+    }\n \
+    curl --help >/dev/null 2>&1\n \
+    if [ $? != 0 ]; then\n \
+    install_curl\n \
+    fi\n \
+    curl -ksSL --connect-timeout 5 -I  ${curl_url}\n \
+    if [ $? != 0 ]; then\n \
+    Logger Error "Check Env" "Network issue, please check connection.\n \
+    Package download url is: ${pkg_url}\n \
+    You can download ${pkg_name} save to path $path"\n \
+    exit 2\n \
+    fi\n \
+    Logger Step "Check Env" "End to check network connection successfully."\n \
+    Logger Step "Check Env" "Start to check target package url"\n \
+    if [[ $(curl -ksSL --connect-timeout 5 -I ${pkg_url}) =~ "404 Not Found" ]]; then\n \
+    Logger Error "Check Env" "Target url is not exist, please check. url: ${pkg_url}"\n \
+    exit 3\n \
+    fi\n \
+    Logger Step "Check Env" "End to check target package url successfully."\n \
+    # Step2.Download\n \
+    Logger Step "Download" "Start to download hyper_tuner package."\n \
+    cd $path && curl "${pkg_url}" -O\n \
+    if [ $? != 0 ]; then\n \
+    Logger Error "Download" "Download package failed, please check detail."\n \
+    clean\n \
+    exit 4\n \
+    fi\n \
+    Logger Step "Download" "End to download hyper_tuner package successfully."\n \
+    fi\n \
+    # Step3.Decompression\n \
+    Logger Step "Decompression" "Start to check Space required for extract hyper_tuner package."\n \
+    pkg_space=2147483648\n \
+    if [[ $(tar tvf ${pkg_name} | awk \'{print $3, $6}\' | awk \'{sum += $1} END {print sum}\') -gt ${pkg_space} ]]; then\n \
+    Logger Error "Decompression" "The space required for decompressing the package is incorrect."\n \
+    exit 2\n \
+    else\n \
+    Logger Step "Decompression" "End to check Space required for extract hyper_tuner package."\n \
+    fi\n \
+    Logger Step "Decompression" "Start to extract hyper_tuner package."\n \
+    cd $path && tar zxf ${pkg_name}\n \
+    if [ $? != 0 ]; then\n \
+    Logger Error "Decompression" "Extract package failed, please check detail."\n \
+    clean\n \
+    exit 5\n \
+    fi\n \
+    Logger Step "Decompression" "End to extract hyper_tuner package successfully."\n \
+    # Step4.Upgrade\n \
+    Logger Step "Upgrade" "Start to upgrade hyper_tuner package."\n \
+    Logger Step "------ $path/Hyper_tuner/${pkg_name}.tar.gz"\n \
+    cd /opt/hyper_tuner && ./Upgrade upgrade $path/Hyper_tuner/${pkg_name}\n \
+    if [ $? != 0 ];then\n \
+    Logger Error "Upgrade" "Upgrade package failed, please check detail logs above."\n \
+    clean\n \
+    # Clean environment\n \
+    #cd $(cat /home/auto_malluma/Hyper_tuner/Hyper_tuner/install.ini | grep INSTALL_PATH | cut -d '=' -f2)\n \
+    cd /opt/hyper_tuner/  \n \
+    bash hyper_tuner_uninstall.sh -ide\n \
+    clean\n \
+    exit 6\n \
+    else\n \
+    Logger Step "Upgrade" "End to upgrade Hyper_tuner package successfully."\n \
+    clean\n \
+    fi\n \
+    # Step6.Clean Env\n \
+    Logger Step "Clean Env" "Start to clean environment."\n \
+    rm -rf $path/*\n \
+    if [ $? != 0 ];then\n \
+    Logger Error "Clean Env" "Clean env failed, please check detail."\n \
+    clean\n \
+    exit 7\n \
+    fi\n \
+    history -cw\n \
+    Logger Step "Clean Env" "End to clean environment successfully."\n \
+    Logger Step "End" "All steps finished successfully."
+plugins_common_message_responseError_viewDetail=Handling Suggestions
+plugins_common_message_responseError_messageSuffix=</a></html>
+plugins_tuning_upgrade_title=Upgrade Hyper Tuner
+plugins_common_keyFileExceedMaxSize=The file exceeds 10 MB. You need to manually upload the file to the server and change the file owner and permission.
+plugins_ui_common_login_title=Log in to Hyper Tuner
+plugins_common_message_localFileNotExist=Local file does not exist.
+plugins_hyper_tuner_title_log_in=Login
+#未配置远端服务器主窗口显示
+plugins_hyper_tuner_lefttree_server_not_connected=You have not connected to the remote server.
+plugins_hyper_tuner_lefttree_server_config_now=Configure Server
+plugins_hyper_tuner_lefttree_server_config_again=Reconfigure Server
+plugins_hyper_tuner_lefttree_server_config_connected=connected
+plugins_hyper_tuner_config_description=Configure the remote server address for installing hyper tuner. If you have not deployed the tool on the server.
+plugins_hyper_tuner_config_closure=The current performance analysis tool is closed, please reconfigure the server
+#安装部署提示弹框
+plugins_hyper_tuner_message_beforeInstallTitle=<html><body><div><p align="left">Read the following text carefully before starting \
+  the Installation<br/></p></div></body></html>
+plugins_hyper_tuner_message_beforeInstallDsc=<html><body>\
+  <div style="color:rgb({0},{1},{2});font-family:{3};font-size:{4}">\
+  <br/>\
+  1. This tool identifies your system status based on the information you entered(such as IP address, port number,\
+  user name, and password), and implement one-click deployment. The information you entered will not\
+  be used for other purposes or be transferred outside your server.<br/>\
+  <br/>\
+  2. During the use of this tool, you may need to downLoad and install soft dependencies,\
+  which may contain third-party software is provided "AS IS","\
+  and Huawei assumes no responsibility for risks incurred by using the software.<br/>\
+  <br/>\
+  3. During the use of this tool amy download and install necessary software\
+  packages and verification tools, which may contain software from Huawei website:<br/>\
+  <a style="text-decoration:none;color:rgb(47,101,202);"; href="https://cmc-szver-artifactory.cmc.tools.huawei.com/artifactory/cmc-software-release/Hyper%20Tuner/Hyper%20Tuner%202/Hyper%20Tuner%202.5.T20.B010/Hyper-Tuner_2.5.T20_linux.tar.gz">\
+  Installation package</a>&nbsp;&nbsp;\
+  <a style="text-decoration:none;color:rgb(47,101,202);"; href="https://download.huawei.com/edownload/e/download.do?actionFlag=download&mid=SUPE_SERTOOL_VERSION&nid=TV1100000147&partNo=2005">\
+  Verification tool</a>\
+  </p><br/><br/><br/></div></body></html>
+plugins_hyper_tuner_config_saveConfirm_title=Save Configuration
+plugins_hyper_tuner_uninstall_success=The tool is uninstalled successfully.
+#登录提示
+plugins_hyper_tuner_login_help_url=https://www.hikunpeng.com/document/detail/en/kunpengdevps/intellij/usermanual/kunpengideintellij_10_0167.html
+plugins_hyper_tuner_login_other=You have logged in from another terminal. Please check and try again.
+plugins_hyper_tuner_login_needLoginTitle=Login timeout or not logged in.
+plugins_hyper_tuner_login_needLogin=Please login
+#关于
+plugins_hyper_tuner_about_product_title=About Hyper Tuner
+plugins_hyper_tuner_about_product_info=Kunpeng Hyper Tuner Plugin
+plugins_hyper_tuner_about_product_version=Vesion V2.5.RC1.1
+plugins_hyper_tuner_about_product_release_time=Time of release: 2022.09.30
+plugins_common_message_responseError_messagePrefix=<html><span>The server does not respond. Check that the tool has been deployed on the server and the network connection is normal.</span><br /><a href="#">
+plugins_common_hyper_tuner_user_disclaimer_head=Once you select "I have read the disclaimer", you confirm that you understand and agree to the entire content of this disclaimer:
+plugins_common_hyper_tuner_user_disclaimer_content=<html><body>\
+  <div style="color:rgb({0},{1},{2});font-family:{3};font-size:{4}">\
+  <p align="left">\
+1. It is recommended that you use this tool in a non-production environment to prevent impact on services in the production environment. <br/><br/>\
+2. The user name and password that are not used for the authentication of the tool will not be saved in the system. <br/> <br/>\
+3. You have confirmed that you are the owner of the application or have obtained authorization from the owner. <br/> <br/>\
+4. The analysis result may contain the internal information and related data of the application you analyze. Please manage the analysis result properly. <br/> <br/>\
+5. Unless otherwise specified in laws and regulations or contracts, Huawei does not make any express or implied statement or warranty on the analysis results, nor makes any warranty or commitment on the marketability, satisfaction, non-infringement, or applicability of the analysis results for specific purposes. <br/> <br/>\
+6. Any actions you take based on the analysis records shall comply with laws and regulations, and you shall bear the risks. <br/> <br/>\
+7. No individual or organization may use the application and associated analytical records for any activity without the authorization of Huawei. Huawei is not responsible for any consequences and bears no legal liabilities. Huawei will reserve the right to pursue legal action if necessary.<br/> <br/>\
+  </p> <br/>\
+  <br/></div></body></html>
+plugins_common_hyper_tuner_user_disclaimer_tips_title=Information
+plugins_common_hyper_tuner_user_disclaimer_refuse_warning=If you do not agree to the disclaimer, you will exit the performance analysis tool. Exercise caution when deciding to do so.
+plugins_hyper_tuner_lefttree_config_server=Config Hyper Tuner
+#工具维护
+plugins_hyper_tuner_lefttree_maintenance=Tool Maintenance
+plugins_hyper_tuner_lefttree_install=Install
+plugins_hyper_tuner_lefttree_uninstall=Uninstall
+plugins_hyper_tuner_lefttree_upgrade=Upgrade
+plugins_hyper_tuner_name=Hyper Tuner
+plugins_hyper_tuner_feedback=https://bbs.huaweicloud.com/forum/forum-928-1.html
+#帮助
+plugins_hyper_tuner_help=https://www.hikunpeng.com/document/detail/en/kunpengdevps/intellij/usermanual/kunpengideintellij_10_0158.html
+plugins_common_tips_ipExtra=Set IP address
+plugins_common_tips_ipSSH=Use the IP address {0} entered for SSH connection
+plugins_common_tips_ipFault=Confirm the IP address {0} is correct
+plugins_hyper_tuner_default_port=Default port is 8086
+plugins_common_message_ipError=Enter a correct IP address.
+plugins_hyper_tuner_tip_file_upload_failed=Failed to upload the file:
+plugins_hyper_tuner_start_nginx_bat=@echo off\n\
+{0}\n\
+cd {1}\\nginx\\nginx-1.18.0\n\
+tasklist|find /i "nginx.exe"\n\
+if %errorlevel%==0 ( \n\
+nginx -s reload\n\
+exit) else (\n\
+start nginx.exe\n\
+exit\n\
+)
+plugins_hyper_tuner_stop_nginx_bat=@echo off\n\
+{0}\n\
+cd {1}\\nginx\\nginx-1.18.0\n\
+title kill nginx service\n\
+tasklist | find /i "nginx.exe" || exit\n\
+taskkill /im nginx.exe /f\n\
+exit
+plugins_hyper_tuner_nginx_config=events '{' \n\
+  worker_connections  1024; \n\
+  '}'\n\
+http '{'\n\
+    server '{'\n\
+        listen       {0};\n\
+        server_name  localhost;\n\
+        location /java-perf/api/api/ '{'\n\
+            proxy_hide_header Allow;\n\
+            proxy_hide_header X-Frame-Options;\n\
+            proxy_hide_header X-Content-Type-Options;\n\
+            proxy_hide_header X-XSS-Protection;\n\
+            proxy_hide_header Content-Security-Policy;\n\
+            proxy_set_header X-Real-IP $remote_addr;\n\
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n\
+            proxy_pass https://{1}:{2}/java-perf/api/;\n\
+         '}'\n\
+        location / '{'\n\
+            proxy_hide_header Allow;\n\
+            proxy_hide_header X-Frame-Options;\n\
+            proxy_hide_header X-Content-Type-Options;\n\
+            proxy_hide_header X-XSS-Protection;\n\
+            proxy_hide_header Content-Security-Policy;\n\
+            proxy_set_header X-Real-IP $remote_addr;\n\
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n\
+            proxy_pass https://{1}:{2};\n\
+       '}'\n\
+        client_header_buffer_size  1k;\n\
+        client_max_body_size  2048m;\n\
+        large_client_header_buffers  4  2k;\n\
+        client_body_buffer_size  16K;\n\
+    '}' \n\
+'}'
+# webview 在线分析 导入证书
+plugins_hyper_tuner_javaperf_import_caCret=Import Ca Cert
+plugins_hyper_tuner_javaperf_import_caCret_success=After the certificate is imported successfully, restart the IDEA for \
+  the modification to take effect.
+plugins_hyper_tuner_javaperf_import_caCret_fail=Failed to import the certificate. Please try again.
+# 插件版本提示
+plugins_hyper_tuner_version_not_the=The Kunpeng Hyper Tuner Plugin version may not match the software version of the \
+  code migration tool server. It is recommended that you upgrade the current plug and code migration tool server to the latest version.
+plugins_hyper_tuner_version_tip=Compatibility Tips
+plugins_hyper_tuner_version_server_old=<html><body>\
+  The plugin version does not match the software version of the server. \
+  The server version of the code migration tool that this plugin can match is: {0};\
+  the current server version of the code migration tool is: {1}. Please upgrade the server version to the matching version.\
+</body></html>
+plugins_hyper_tuner_version_plugin_old=The plugin version does not match the software version of the code migration tool server. \
+  If you continue, unexpected errors may occur. The current server version of code migration tool is: {0}, \
+  and the matching plug-in version is: {1}. It is recommended that you upgrade the plug-in to the matching version.

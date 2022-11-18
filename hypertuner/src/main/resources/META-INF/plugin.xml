@@ -1,5 +1,5 @@
 <idea-plugin require-restart="true">
-    <version>2.3.5</version>
+    <version>2.5.2</version>
     <!--插件id-->
     <id>com.huawei.kunpeng.hyper.tuner</id>
     <!--插件name-->
@@ -182,7 +182,7 @@
                   implementationClass="com.huawei.kunpeng.hyper.tuner.webview.TuningWebFileType"/>
         <fileEditorProvider implementation="com.huawei.kunpeng.hyper.tuner.webview.WebFileProvider"/>
         <!--显示工具窗口-->
-        <toolWindow id="Hyper Tuner" secondary="true" icon="/assets/img/toolwindow.png" anchor="left"
+        <toolWindow id="Hyper Tuner" secondary="true" icon="/assets/img/toolwindow.svg" anchor="left"
                     factoryClass="com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning.HyperTunerToolWindowFactory"
                     order="last"/>
     </extensions>
