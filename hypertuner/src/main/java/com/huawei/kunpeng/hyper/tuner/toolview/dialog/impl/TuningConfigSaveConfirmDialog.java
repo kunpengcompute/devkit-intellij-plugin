@@ -17,14 +17,9 @@
 package com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl;
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
-import com.huawei.kunpeng.hyper.tuner.common.constant.TuningUserManageConstant;
 import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
-import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningServerConfigWrapDialog;
-import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-import com.huawei.kunpeng.intellij.js2java.provider.AbstractWebFileProvider;
 import com.huawei.kunpeng.intellij.ui.dialog.ConfigSaveConfirmDialog;
-import com.huawei.kunpeng.intellij.ui.dialog.IDEBaseDialog;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.utils.UIUtils;
 
@@ -50,9 +45,9 @@ public class TuningConfigSaveConfirmDialog extends ConfigSaveConfirmDialog {
     }
 
     private void mouseClickedDisplayPanel() {
-        IDEBasePanel panel = new TuningServerConfigPanel(null);
-        IDEBaseDialog dialog = new TuningServerConfigWrapDialog(TuningUserManageConstant.CONFIG_TITLE, panel);
-        AbstractWebFileProvider.closeAllWebViewPage();
-        dialog.displayPanel();
+//        IDEBasePanel panel = new TuningServerConfigPanel(null);
+//        IDEBaseDialog dialog = new TuningServerConfigWrapDialog(TuningUserManageConstant.CONFIG_TITLE, panel);
+//        AbstractWebFileProvider.closeAllWebViewPage();
+//        dialog.displayPanel();
     }
 }

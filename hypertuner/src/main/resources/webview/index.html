@@ -144,6 +144,7 @@
                     }
                 }, null)
             } else if(e.data.messageType==='openUrl'){
+                console.log("iframe: open url");
                 postMessage({
                     cmd:"openHyperlinks",
                     data:{
@@ -189,14 +190,23 @@
                     }
                 }, null)
             } else if (e.data.messageType === 'login') {
+                // 登录成功
+                // change sidebar
                 let myFrame = document.getElementById("myFrame");
-                   var hostMessage = {
-                        serverAddr : self.navigatorPage.data.pageParams.ip,
-                        serverPort : self.navigatorPage.data.pageParams.port,
-                        ideAddress: receiveUrl,
-                        ideType: 'isIntellij'
-                   }
-                   myFrame1.contentWindow.postMessage(JSON.stringify(hostMessage), '*');
+                var hostMessage = {
+                    serverAddr : self.navigatorPage.data.pageParams.ip,
+                    serverPort : self.navigatorPage.data.pageParams.port,
+                    ideAddress: receiveUrl,
+                    ideType: 'isIntellij'
+                }
+                myFrame1.contentWindow.postMessage(JSON.stringify(hostMessage), '*');
+                postMessage({
+                    cmd:"loginSuccess",
+                    data:{
+                        // data: e.data
+                        // TODO should get login info
+                    }
+                }, null);
             }
         }
     })
@@ -343,7 +353,7 @@
     </div>
     <div class="text">页面加载中...</div>
 </div>
-<iframe id="myFrame" style="width:100%;height:100%" src="" frameborder="0"></iframe>
+<iframe id="myFrame" width="100%" height="100%" src="" frameborder="0"></iframe>
 </body>
 <script>
    let time = '';

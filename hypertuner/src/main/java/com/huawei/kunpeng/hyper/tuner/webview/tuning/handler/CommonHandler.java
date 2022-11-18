@@ -16,15 +16,16 @@
 
 package com.huawei.kunpeng.hyper.tuner.webview.tuning.handler;
 
-import com.huawei.kunpeng.hyper.tuner.action.install.TuningInstallAction;
 import com.huawei.kunpeng.hyper.tuner.action.upgrade.TuningUpgradeAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
 import com.huawei.kunpeng.hyper.tuner.model.JavaPerfOperateLogBean;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningLoginSuccessPanel;
 import com.huawei.kunpeng.hyper.tuner.webview.WebFileProvider;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.IDELoginEditor;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
@@ -32,14 +33,12 @@ import com.huawei.kunpeng.intellij.common.bean.SshConfig;
 import com.huawei.kunpeng.intellij.common.constant.FileManageConstant;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
+import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
-import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.*;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
-import com.huawei.kunpeng.intellij.js2java.bean.NavigatorPageBean;
 import com.huawei.kunpeng.intellij.js2java.fileditor.IDEFileEditorManager;
-import com.huawei.kunpeng.intellij.js2java.handler.MessageRouterHandler;
 import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 
 import com.alibaba.fastjson.JSONArray;
@@ -47,8 +46,9 @@ import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
 import com.huawei.kunpeng.intellij.ui.enums.CheckConnResponse;
 import com.huawei.kunpeng.intellij.ui.enums.UpgradeResponse;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
+import com.intellij.ide.impl.ProjectUtil;
 import com.intellij.notification.NotificationType;
-import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
@@ -68,7 +68,6 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.jetbrains.plugins.terminal.TerminalView;
 
 /**
  * 公共的function处理器
@@ -395,6 +394,13 @@ public class CommonHandler extends FunctionHandler {
             case "config":
                 ConfigureServerEditor.openPage();
                 break;
+            case "login":
+                // TODO 打开新页面ui878ui809ouio8
+                Logger.info("openNewPage in intellij: login");
+                Map<String, String> serverConfig = CommonUtil.readCurIpAndPortFromConfig();
+                String localPort = NginxUtil.getLocalPort();
+                NginxUtil.updateNginxConfig(serverConfig.get("ip"), serverConfig.get("port"), localPort);
+                IDELoginEditor.openPage(localPort);
         }
     }
 
@@ -566,15 +572,6 @@ public class CommonHandler extends FunctionHandler {
 //        Logger.info(data.values().toString());
     }
 
-//    public void isLogin(MessageBean message, String module) {
-//        Logger.info("clicking save button in configure server, this is isLogin function");
-//        Map<String, Object> params = JsonUtil.getJsonObjFromJsonStr(message.getData());
-//        Logger.info("cmd is: " + message.getCmd());
-//        Logger.info("data is " + params.values().toString());
-//
-//        invokeCallback(message.getCmd(), message.getCbid(), "what data");
-//    }
-
     public void saveConfig(MessageBean message, String module) {
         Logger.info("save config");
         Map<String, Object> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
@@ -599,11 +596,37 @@ public class CommonHandler extends FunctionHandler {
         VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
         WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
         if (webViewPage instanceof ConfigureServerEditor) {
-            ((ConfigureServerEditor) webViewPage).saveConfig(params);
-            webViewPage.dispose();
+            String responseType = ((ConfigureServerEditor) webViewPage).saveConfig(params);
+            Logger.info("response Type: " + responseType);
+            // TODO save config成功后回调到webview显示立即登录弹框
+            invokeCallback(message.getCmd(), message.getCbid(), "{\"type\":\"" + responseType + "\"}");
+//            webViewPage.dispose();
         }
     }
 
-
+    /**
+     * 登录页面登录成功
+     * @param message
+     * @param module
+     */
+    public void loginSuccess(MessageBean message, String module) {
+        Logger.info("login successfully!!!");
+        String toolName = TuningIDEConstant.TOOL_NAME_TUNING;
+        IDEContext.setIDEPluginStatus(toolName, IDEPluginStatus.IDE_STATUS_LOGIN);
+        // 刷新左侧面板为已登录面板
+        Project[] openProjects = ProjectUtil.getOpenProjects();
+        ApplicationManager.getApplication().invokeLater(() -> {
+            for (Project proj : openProjects) {
+                // 登录成功后左侧面板刷新为已登录面板
+                ToolWindow toolWindow =
+                        ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
+                TuningLoginSuccessPanel tuningLoginSuccessPanel = new TuningLoginSuccessPanel(toolWindow, proj);
+                if (toolWindow != null) {
+                    toolWindow.getContentManager().addContent(tuningLoginSuccessPanel.getContent());
+                    toolWindow.getContentManager().setSelectedContent(tuningLoginSuccessPanel.getContent());
+                }
+            }
+        });
+    }
 }
 

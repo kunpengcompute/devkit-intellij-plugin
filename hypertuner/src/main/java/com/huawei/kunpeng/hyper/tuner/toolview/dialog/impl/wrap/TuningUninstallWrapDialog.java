@@ -19,7 +19,7 @@ package com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap;
 import com.huawei.kunpeng.hyper.tuner.action.uninstall.TuningUninstallAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
-import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.LeftTreeConfigPanel;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
 import com.huawei.kunpeng.intellij.common.UserInfoContext;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.log.Logger;
@@ -57,8 +57,8 @@ public class TuningUninstallWrapDialog extends UninstallWrapDialog {
             // 关闭打开的历史报告页面
             ToolWindow toolWindow =
                     ToolWindowManager.getInstance(project).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
-            LeftTreeConfigPanel leftTreeConfigPanel = new LeftTreeConfigPanel(toolWindow, project);
-            UIUtils.changeToolWindowToDestPanel(leftTreeConfigPanel, toolWindow);
+            TuningServerConfigPanel tuningServerConfigPanel = new TuningServerConfigPanel(toolWindow, project);
+            UIUtils.changeToolWindowToDestPanel(tuningServerConfigPanel, toolWindow);
         }
         // 清除所有状态
         TuningIDEContext.setTuningIDEPluginStatus(IDEPluginStatus.IDE_STATUS_INIT);

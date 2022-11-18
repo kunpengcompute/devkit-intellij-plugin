@@ -8,7 +8,7 @@ import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
 import com.huawei.kunpeng.hyper.tuner.http.TuningHttpsServer;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.CompatibilityDialog;
-import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.ReconnectPanel;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningConfigSuccessPanel;
 import com.huawei.kunpeng.hyper.tuner.webview.TuningWebFileEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pagewebview.ConfigureServerWebView;
 import com.huawei.kunpeng.intellij.common.ConfigInfo;
@@ -21,7 +21,6 @@ import com.huawei.kunpeng.intellij.common.constant.UserManageConstant;
 import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.enums.HttpMethod;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
-import com.huawei.kunpeng.intellij.common.http.HttpsServer;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
@@ -45,6 +44,26 @@ import java.util.List;
 import java.util.Map;
 
 public class ConfigureServerEditor extends TuningWebFileEditor {
+
+    /**
+     * saveConfig返回值
+     */
+    public enum SaveConfigResponse {
+        SUCCESS("SUCCESS"),
+        FAIL("FAIL"),
+        VERSION_MISMATCH("VERSIONMISMATCH");
+
+        private final String value;
+
+        SaveConfigResponse(String value) {
+            this.value=value;
+        }
+
+        public String value() {
+            return value;
+        }
+    }
+
     private final ConfigureServerWebView configureServerWebView;
 
     protected static String toolName;
@@ -97,7 +116,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
     /**
      * 配置服务器信息回传后
      */
-    public void saveConfig(Map<String, String> params) {
+    public String saveConfig(Map<String, String> params) {
         preSaveConfig();
         if (!save(params)) {
             // 配置服务器失败
@@ -107,6 +126,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
                     TuningI18NServer.toLocale("plugins_common_message_responseError_messagePrefix"),
                     NotificationType.ERROR
             ));
+            return SaveConfigResponse.FAIL.value();
         } else {
             // 配置服务器成功
             // 判断服务器兼容性
@@ -119,11 +139,11 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
 //                    // 打开web首页
 //                    IDELoginEditor.openPage(params.get("localPort"));
 //                });
-                NginxUtil.updateNginxConfig(params.get("ip"), params.get("port"), params.get("localPort"));
-                // 打开web首页
-                IDELoginEditor.openPage(params.get("localPort"));
-
+//                NginxUtil.updateNginxConfig(params.get("ip"), params.get("port"), params.get("localPort"));
+//                IDELoginEditor.openPage(params.get("localPort"));
+                return SaveConfigResponse.SUCCESS.value();
             }
+            return SaveConfigResponse.VERSION_MISMATCH.value();
         }
     }
 
@@ -148,7 +168,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
 //                serverCertConfirmFailed(toolName, host);
 //                return false;
 //            }
-            showNotification();
+//            showNotification();
             // update global Context
             updateIDEContext(host);
             // clear userConfig when config server again
@@ -219,10 +239,10 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
     protected void customizeRefreshPanel(Project proj) {
         ToolWindow toolWindow =
                 ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
-        ReconnectPanel reconnectPanel = new ReconnectPanel(toolWindow, proj);
+        TuningConfigSuccessPanel tuningConfigSuccessPanel = new TuningConfigSuccessPanel(toolWindow, proj);
         if (toolWindow != null) {
-            toolWindow.getContentManager().addContent(reconnectPanel.getContent());
-            toolWindow.getContentManager().setSelectedContent(reconnectPanel.getContent());
+            toolWindow.getContentManager().addContent(tuningConfigSuccessPanel.getContent());
+            toolWindow.getContentManager().setSelectedContent(tuningConfigSuccessPanel.getContent());
         }
     }
 

@@ -17,12 +17,10 @@
 package com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning;
 
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
-import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.LeftTreeConfigPanel;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.I18NServer;
 import com.huawei.kunpeng.intellij.js2java.provider.AbstractWebFileProvider;
 import com.huawei.kunpeng.intellij.ui.action.FeedBackAction;
-import com.huawei.kunpeng.intellij.ui.action.HelpAction;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
@@ -81,7 +79,7 @@ public class HyperTunerToolWindowFactory implements ToolWindowFactory {
     private void showCorrectPanel(@NotNull ToolWindow toolWindow) {
         // 启动插件之后先关闭所有WebView页面
         AbstractWebFileProvider.closeAllWebViewPage();
-        mainPanel = new LeftTreeConfigPanel(toolWindow, project);
+        mainPanel = new TuningServerConfigPanel(toolWindow, project);
     }
 
     /**

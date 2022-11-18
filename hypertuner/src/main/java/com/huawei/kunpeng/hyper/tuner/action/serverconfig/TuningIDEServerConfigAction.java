@@ -16,14 +16,6 @@
 
 package com.huawei.kunpeng.hyper.tuner.action.serverconfig;
 
-import com.huawei.kunpeng.hyper.tuner.common.constant.TuningUserManageConstant;
-import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
-import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningServerConfigWrapDialog;
-import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
-import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-import com.huawei.kunpeng.intellij.common.util.StringUtil;
-import com.huawei.kunpeng.intellij.ui.dialog.IDEBaseDialog;
-import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import org.jetbrains.annotations.NotNull;
@@ -42,15 +34,15 @@ public class TuningIDEServerConfigAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
         // 从配置文件读取信息
-        String ip = CommonUtil.readCurIpFromConfig();
-        if (!StringUtil.stringIsEmpty(ip)) {
-            // 加载切换服务器确认弹框
-            TuningCommonUtil.showConfigSaveConfirmDialog();
-        }else{
-            // 配置文件
-            IDEBasePanel panel = new TuningServerConfigPanel(null);
-            IDEBaseDialog dialog = new TuningServerConfigWrapDialog(TuningUserManageConstant.CONFIG_TITLE, panel);
-            dialog.displayPanel();
-        }
+//        String ip = CommonUtil.readCurIpFromConfig();
+//        if (!StringUtil.stringIsEmpty(ip)) {
+//            // 加载切换服务器确认弹框
+//            TuningCommonUtil.showConfigSaveConfirmDialog();
+//        }else{
+//            // 配置文件
+//            IDEBasePanel panel = new TuningServerConfigPanel(null);
+//            IDEBaseDialog dialog = new TuningServerConfigWrapDialog(TuningUserManageConstant.CONFIG_TITLE, panel);
+//            dialog.displayPanel();
+//        }
     }
 }

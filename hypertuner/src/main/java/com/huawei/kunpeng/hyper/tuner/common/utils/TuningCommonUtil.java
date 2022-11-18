@@ -19,7 +19,8 @@ package com.huawei.kunpeng.hyper.tuner.common.utils;
 import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.TuningConfigSaveConfirmDialog;
-import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.LeftTreeConfigPanel;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningConfigSuccessPanel;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.js2java.provider.AbstractWebFileProvider;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
@@ -45,9 +46,25 @@ public class TuningCommonUtil extends CommonUtil {
             // 配置服务器完成后刷新左侧树面板为配置服务器面板
             ToolWindow toolWindow =
                     ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
-            LeftTreeConfigPanel leftTreeConfigPanel = new LeftTreeConfigPanel(toolWindow, proj);
-            toolWindow.getContentManager().addContent(leftTreeConfigPanel.getContent());
-            toolWindow.getContentManager().setSelectedContent(leftTreeConfigPanel.getContent());
+            TuningServerConfigPanel tuningServerConfigPanel = new TuningServerConfigPanel(toolWindow, proj);
+            toolWindow.getContentManager().addContent(tuningServerConfigPanel.getContent());
+            toolWindow.getContentManager().setSelectedContent(tuningServerConfigPanel.getContent());
+            AbstractWebFileProvider.closeAllWebViewPage();
+        }
+    }
+
+    /**
+     * 刷新左侧树面板为配置服务器成功面板
+     */
+    public static void refreshServerConfigSuccessPanel() {
+        Project[] openProjects = ProjectUtil.getOpenProjects();
+        for (Project proj : openProjects) {
+            // 配置服务器完成后刷新左侧树面板为配置服务器面板
+            ToolWindow toolWindow =
+                    ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
+            TuningConfigSuccessPanel tuningConfigSuccessPanel = new TuningConfigSuccessPanel(toolWindow, proj);
+            toolWindow.getContentManager().addContent(tuningConfigSuccessPanel.getContent());
+            toolWindow.getContentManager().setSelectedContent(tuningConfigSuccessPanel.getContent());
             AbstractWebFileProvider.closeAllWebViewPage();
         }
     }

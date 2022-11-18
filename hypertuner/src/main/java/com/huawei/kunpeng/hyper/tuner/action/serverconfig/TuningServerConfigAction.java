@@ -25,7 +25,7 @@ import com.huawei.kunpeng.hyper.tuner.http.TuningHttpsServer;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.CompatibilityDialog;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.TuningCertConfirmWrapDialog;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.TuningConfigSaveConfirmDialog;
-import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.ReconnectPanel;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningConfigSuccessPanel;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.IDELoginEditor;
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
@@ -96,10 +96,10 @@ public class TuningServerConfigAction extends ServerConfigAction {
     protected void customizeRefreshPanel(Project proj) {
         ToolWindow toolWindow =
                 ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
-        ReconnectPanel reconnectPanel = new ReconnectPanel(toolWindow, proj);
+        TuningConfigSuccessPanel tuningConfigSuccessPanel = new TuningConfigSuccessPanel(toolWindow, proj);
         if (toolWindow != null) {
-            toolWindow.getContentManager().addContent(reconnectPanel.getContent());
-            toolWindow.getContentManager().setSelectedContent(reconnectPanel.getContent());
+            toolWindow.getContentManager().addContent(tuningConfigSuccessPanel.getContent());
+            toolWindow.getContentManager().setSelectedContent(tuningConfigSuccessPanel.getContent());
         }
     }
 

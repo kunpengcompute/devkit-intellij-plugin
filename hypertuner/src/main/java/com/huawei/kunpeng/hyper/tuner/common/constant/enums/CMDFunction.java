@@ -44,7 +44,8 @@ public enum CMDFunction {
     SAVE_CONFIG("saveConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
     OPEN_URL_IN_BROWSER("openUrlInBrowser", FunctionManager.getFunctionHandler(CommonHandler.class)),
     UPGRADE("upgrade", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    HIDE_TERMINAL("hideTerminal", FunctionManager.getFunctionHandler(CommonHandler.class));
+    HIDE_TERMINAL("hideTerminal", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    LOGIN_SUCCESS("loginSuccess", FunctionManager.getFunctionHandler(CommonHandler.class));
 
     private final String functionName;
 
