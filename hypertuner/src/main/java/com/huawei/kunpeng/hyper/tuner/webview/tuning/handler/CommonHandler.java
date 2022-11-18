@@ -17,6 +17,7 @@
 package com.huawei.kunpeng.hyper.tuner.webview.tuning.handler;
 
 import com.huawei.kunpeng.hyper.tuner.action.install.TuningInstallAction;
+import com.huawei.kunpeng.hyper.tuner.action.uninstall.TuningUninstallAction;
 import com.huawei.kunpeng.hyper.tuner.action.upgrade.TuningUpgradeAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 
@@ -32,22 +33,18 @@ import com.huawei.kunpeng.intellij.common.constant.FileManageConstant;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
-import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.*;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
-import com.huawei.kunpeng.intellij.js2java.bean.NavigatorPageBean;
 import com.huawei.kunpeng.intellij.js2java.fileditor.IDEFileEditorManager;
-import com.huawei.kunpeng.intellij.js2java.handler.MessageRouterHandler;
 import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 
 import com.alibaba.fastjson.JSONArray;
 import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
 import com.huawei.kunpeng.intellij.ui.enums.CheckConnResponse;
-import com.huawei.kunpeng.intellij.ui.enums.UpgradeResponse;
+import com.huawei.kunpeng.intellij.ui.enums.MaintenanceResponse;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
 import com.intellij.notification.NotificationType;
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
@@ -67,7 +64,6 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.jetbrains.plugins.terminal.TerminalView;
 
 /**
  * 公共的function处理器
@@ -453,13 +449,15 @@ public class CommonHandler extends FunctionHandler {
         param.put("user", param.get("username"));
         param.put("passPhrase", param.get("passphrase"));
 
+        Logger.info(param.toString());
+
         SshConfig config = DeployUtil.getConfig(param);
 
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
                 CheckConnResponse response = (CheckConnResponse) data;
-                invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"" + response.value() + "\"}");
+                invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
             }
         };
 
@@ -530,11 +528,85 @@ public class CommonHandler extends FunctionHandler {
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
-                UpgradeResponse response = (UpgradeResponse) data;
-                invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"" + response.value() + "\"}");
+                MaintenanceResponse response = (MaintenanceResponse) data;
+                if(response== MaintenanceResponse.SUCCESS){
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\" ");
+                }
+                else {
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
+                }
             }
         };
         action.newOKAction(data,actionOperate);
+//        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
+    }
+
+    /**
+     * 安装服务器
+     *
+     * @param message
+     * @param module
+     */
+    public void install(MessageBean message, String module) {
+        Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        // 增加对应键值以对应方法参数
+        param.put("ip", param.get("host"));
+        param.put("user", param.get("username"));
+        param.put("passPhrase", param.get("passphrase"));
+        param.put("displayName", InstallManageConstant.INSTALL_TITLE);
+        Map<String, Object> data = new HashMap<>();
+        data.put("param", param);
+
+        TuningInstallAction action = new TuningInstallAction();
+        Logger.info("Install begin...");
+        ActionOperate actionOperate = new ActionOperate() {
+            @Override
+            public void actionOperate(Object data) {
+                MaintenanceResponse response = (MaintenanceResponse) data;
+                if(response== MaintenanceResponse.SUCCESS){
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\" ");
+                }
+                else {
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
+                }
+            }
+        };
+        action.newOKAction(data,actionOperate);
+//        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
+    }
+
+    /**
+     * 卸载服务器
+     *
+     * @param message
+     * @param module
+     */
+    public void uninstall(MessageBean message, String module) {
+        Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        // 增加对应键值以对应方法参数
+        param.put("ip", param.get("host"));
+        param.put("user", param.get("username"));
+        param.put("passPhrase", param.get("passphrase"));
+        param.put("displayName", InstallManageConstant.INSTALL_TITLE);
+        Map<String, Object> data = new HashMap<>();
+        data.put("param", param);
+
+        TuningUninstallAction action = new TuningUninstallAction();
+        Logger.info("Uninstall begin...");
+        ActionOperate actionOperate = new ActionOperate() {
+            @Override
+            public void actionOperate(Object data) {
+                MaintenanceResponse response = (MaintenanceResponse) data;
+                if(response== MaintenanceResponse.SUCCESS){
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\" ");
+                }
+                else {
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
+                }
+            }
+        };
+        action.newOKAction(data,actionOperate);
+//        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
     }
 
     /**
@@ -559,9 +631,10 @@ public class CommonHandler extends FunctionHandler {
      */
     public void readConfig(MessageBean message, String module) {
         Logger.info("read config message");
-        Map<String, String> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
         Logger.info("cmd is: " + message.getCmd());
         Logger.info("data is " + message.getData());
+        Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
+        invokeCallback(message.getCmd(), message.getCbid(), JsonUtil.getJsonStrFromJsonObj(config));
 //        Logger.info(data.values().toString());
     }
 
@@ -579,7 +652,7 @@ public class CommonHandler extends FunctionHandler {
         Map<String, Object> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
         Logger.info("cmd is: " + message.getCmd());
         Logger.info("data is: " + message.getData());
-        if (data.get("showInfoBox").equals(Boolean.TRUE)) {
+        if (data.containsKey("showInfoBox") && data.get("showInfoBox").equals(Boolean.TRUE)) {
             // show info box
             Logger.info("show info box");
 //            IDENotificationUtil.notificationCommon(new NotificationBean("Configure Server",
@@ -609,6 +682,12 @@ public class CommonHandler extends FunctionHandler {
 //            webViewPage = (ConfigureServerEditor) webViewPage;
             ((ConfigureServerEditor) webViewPage).saveConfig(params);
             webViewPage.dispose();
+        }
+        else{
+            ConfigureServerEditor tmpEditor=new ConfigureServerEditor();
+            tmpEditor.saveConfig(params);
+            webViewPage.dispose();
+            tmpEditor.dispose();
         }
     }
 

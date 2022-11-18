@@ -27,14 +27,13 @@ import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.bean.SshConfig;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.SftpAction;
-import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.huawei.kunpeng.intellij.common.util.JsonUtil;
 import com.huawei.kunpeng.intellij.ui.action.SshAction;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.InstallUpgradeWrapDialog;
-import com.huawei.kunpeng.intellij.ui.enums.UpgradeResponse;
+import com.huawei.kunpeng.intellij.ui.enums.MaintenanceResponse;
 import com.huawei.kunpeng.intellij.ui.panel.InstallUpgradePanel;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
 
@@ -154,8 +153,8 @@ public class TuningUpgradeAction extends SshAction {
         DeployUtil.checkUpgradeLog(session, timer, dir + "upgrade_tuning.log", this::failedHandle, this::successHandle);
     }
 
-    public void newCheckStatus(Session session, Timer timer, String dir, ActionOperate actionOperate) {
-        DeployUtil.newCheckUpgradeLog(session, timer, dir + "upgrade_tuning.log", actionOperate);
+    public void newCheckStatus(Session session, Timer timer, String dir, ActionOperate actionOperate, String tabName) {
+        DeployUtil.newCheckLog(session, timer, dir + "upgrade_tuning.log", actionOperate, tabName);
     }
 
     public void newOKAction(Map params, ActionOperate actionOperate) {
@@ -163,7 +162,8 @@ public class TuningUpgradeAction extends SshAction {
         SshConfig config = DeployUtil.getConfig(param);
         Session session = DeployUtil.getSession(config);
         if (Objects.isNull(session)) {
-            actionOperate.actionOperate(UpgradeResponse.SSH_ERROR);
+            actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+            actionOperate.actionOperate(MaintenanceResponse.SSH_ERROR);
             return;
         }
         try {
@@ -171,16 +171,19 @@ public class TuningUpgradeAction extends SshAction {
             session.connect(30000);
         } catch (JSchException e) {
             Logger.error("ssh session connect error: {}", e.getMessage());
-            actionOperate.actionOperate(UpgradeResponse.SSH_ERROR);
+            actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+            actionOperate.actionOperate(MaintenanceResponse.SSH_ERROR);
             return;
         }
         String dir = TMP_PATH + new SimpleDateFormat(TMP_FORMAT).format(new Date(System.currentTimeMillis()))
                 + IDEConstant.PATH_SEPARATOR;
-        Logger.info(dir);
         // 创建dir目录
         DeployUtil.sftp(session, dir, SftpAction.MKDIR);
         // 上传脚本至dir下
         newUpload(session, dir, actionOperate);
+        if (!session.isConnected()) {
+            return;
+        }
         // 打开终端执行脚本
         openTerminal(param, dir);
         // 检查脚本执行状态
@@ -188,7 +191,7 @@ public class TuningUpgradeAction extends SshAction {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                newCheckStatus(session, timer, dir, actionOperate);
+                newCheckStatus(session, timer, dir, actionOperate, InstallManageConstant.UPGRADE_TITLE);
             }
         };
         timer.schedule(task, 0, 1000);

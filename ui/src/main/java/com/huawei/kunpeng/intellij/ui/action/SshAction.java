@@ -22,7 +22,6 @@ import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.SftpAction;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.JsonUtil;
-import com.huawei.kunpeng.intellij.ui.enums.UpgradeResponse;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
 
 import com.jcraft.jsch.JSchException;
