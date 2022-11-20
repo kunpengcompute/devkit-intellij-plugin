@@ -82,6 +82,11 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
         this.toolName = TuningIDEConstant.TOOL_NAME_TUNING;
     }
 
+    public ConfigureServerEditor() {
+        configureServerWebView = new ConfigureServerWebView();
+        this.toolName = TuningIDEConstant.TOOL_NAME_TUNING;
+    }
+
     @Override
     public AbstractWebView getWebView() {
         return configureServerWebView;

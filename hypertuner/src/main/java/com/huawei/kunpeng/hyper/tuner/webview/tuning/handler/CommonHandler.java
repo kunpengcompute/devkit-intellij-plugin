@@ -16,6 +16,8 @@
 
 package com.huawei.kunpeng.hyper.tuner.webview.tuning.handler;
 
+import com.huawei.kunpeng.hyper.tuner.action.install.TuningInstallAction;
+import com.huawei.kunpeng.hyper.tuner.action.uninstall.TuningUninstallAction;
 import com.huawei.kunpeng.hyper.tuner.action.upgrade.TuningUpgradeAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 
@@ -44,7 +46,7 @@ import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 import com.alibaba.fastjson.JSONArray;
 import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
 import com.huawei.kunpeng.intellij.ui.enums.CheckConnResponse;
-import com.huawei.kunpeng.intellij.ui.enums.UpgradeResponse;
+import com.huawei.kunpeng.intellij.ui.enums.MaintenanceResponse;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
 import com.intellij.ide.impl.ProjectUtil;
 import com.intellij.notification.NotificationType;
@@ -460,13 +462,15 @@ public class CommonHandler extends FunctionHandler {
         param.put("user", param.get("username"));
         param.put("passPhrase", param.get("passphrase"));
 
+        Logger.info(param.toString());
+
         SshConfig config = DeployUtil.getConfig(param);
 
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
                 CheckConnResponse response = (CheckConnResponse) data;
-                invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"" + response.value() + "\"}");
+                invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
             }
         };
 
@@ -537,11 +541,115 @@ public class CommonHandler extends FunctionHandler {
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
-                UpgradeResponse response = (UpgradeResponse) data;
-                invokeCallback(message.getCmd(), message.getCbid(), "{\"resp\":\"" + response.value() + "\"}");
+                if(data instanceof MaintenanceResponse) {
+                    MaintenanceResponse response = (MaintenanceResponse) data;
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
+                }
+                else{
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
+                }
             }
         };
-        action.newOKAction(data,actionOperate);
+//        action.newOKAction(data,actionOperate);
+        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
+    }
+
+    /**
+     * 安装服务器
+     *
+     * @param message
+     * @param module
+     */
+    public void install(MessageBean message, String module) {
+        Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        // 增加对应键值以对应方法参数
+        param.put("ip", param.get("host"));
+        param.put("user", param.get("username"));
+        param.put("passPhrase", param.get("passphrase"));
+        param.put("displayName", InstallManageConstant.INSTALL_TITLE);
+        Map<String, Object> data = new HashMap<>();
+        data.put("param", param);
+
+        TuningInstallAction action = new TuningInstallAction();
+        Logger.info("Install begin...");
+        ActionOperate actionOperate = new ActionOperate() {
+            @Override
+            public void actionOperate(Object data) {
+                if(data instanceof MaintenanceResponse) {
+                    MaintenanceResponse response = (MaintenanceResponse) data;
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
+                }
+                else{
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
+                }
+            }
+        };
+//        action.newOKAction(data,actionOperate);
+        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
+    }
+
+    /**
+     * 卸载服务器
+     *
+     * @param message
+     * @param module
+     */
+    public void uninstall(MessageBean message, String module) {
+        Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        // 增加对应键值以对应方法参数
+        param.put("ip", param.get("host"));
+        param.put("user", param.get("username"));
+        param.put("passPhrase", param.get("passphrase"));
+        param.put("displayName", InstallManageConstant.INSTALL_TITLE);
+        Map<String, Object> data = new HashMap<>();
+        data.put("param", param);
+
+        TuningUninstallAction action = new TuningUninstallAction();
+        Logger.info("Uninstall begin...");
+        ActionOperate actionOperate = new ActionOperate() {
+            @Override
+            public void actionOperate(Object data) {
+                if(data instanceof MaintenanceResponse) {
+                    MaintenanceResponse response = (MaintenanceResponse) data;
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
+                }
+                else{
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
+                }
+            }
+        };
+//        action.newOKAction(data,actionOperate);
+        actionOperate.actionOperate(MaintenanceResponse.SUCCESS);
+    }
+
+    public void cleanConfig(MessageBean message, String module){
+        Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
+        IDEContext.setIDEPluginStatus(TuningIDEConstant.TOOL_NAME_TUNING, IDEPluginStatus.IDE_STATUS_INIT);
+//        for (Project proj : openProjects) {
+//            // 配置服务器完成后刷新左侧树面板为配置服务器面板
+//            ToolWindow toolWindow =
+//                    ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
+//            LeftTreeConfigPanel leftTreeConfigPanel = new LeftTreeConfigPanel(toolWindow, proj);
+//            toolWindow.getContentManager().addContent(leftTreeConfigPanel.getContent());
+//            toolWindow.getContentManager().setSelectedContent(leftTreeConfigPanel.getContent());
+//        }
+        // 清空本地 ip 缓存
+        ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "", "");
+        config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
+        invokeCallback(message.getCmd(), message.getCbid(), null);
+    }
+
+    public void closeAllPanel(MessageBean message, String module){
+        Project project = CommonUtil.getDefaultProject();
+        VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
+        WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
+        if (webViewPage != null) {
+            webViewPage.dispose();
+        }
+//        Project[] openProjects = ProjectUtil.getOpenProjects();
+//        for (Project proj : openProjects) {
+//            AbstractWebFileProvider.closeAllWebViewPage();
+//        }
     }
 
     /**
@@ -566,9 +674,10 @@ public class CommonHandler extends FunctionHandler {
      */
     public void readConfig(MessageBean message, String module) {
         Logger.info("read config message");
-        Map<String, String> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
         Logger.info("cmd is: " + message.getCmd());
         Logger.info("data is " + message.getData());
+        Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
+        invokeCallback(message.getCmd(), message.getCbid(), JsonUtil.getJsonStrFromJsonObj(config));
 //        Logger.info(data.values().toString());
     }
 
@@ -577,7 +686,7 @@ public class CommonHandler extends FunctionHandler {
         Map<String, Object> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
         Logger.info("cmd is: " + message.getCmd());
         Logger.info("data is: " + message.getData());
-        if (data.get("showInfoBox").equals(Boolean.TRUE)) {
+        if (data.containsKey("showInfoBox") && data.get("showInfoBox").equals(Boolean.TRUE)) {
             // show info box
             Logger.info("show info box");
 //            IDENotificationUtil.notificationCommon(new NotificationBean("Configure Server",
@@ -601,6 +710,12 @@ public class CommonHandler extends FunctionHandler {
             // TODO save config成功后回调到webview显示立即登录弹框
             invokeCallback(message.getCmd(), message.getCbid(), "{\"type\":\"" + responseType + "\"}");
 //            webViewPage.dispose();
+        }
+        else{
+            ConfigureServerEditor tmpEditor=new ConfigureServerEditor();
+            tmpEditor.saveConfig(params);
+            webViewPage.dispose();
+            tmpEditor.dispose();
         }
     }
 

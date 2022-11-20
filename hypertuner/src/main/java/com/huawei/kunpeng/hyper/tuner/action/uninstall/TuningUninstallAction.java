@@ -21,17 +21,23 @@ import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningUninstallWrapDialog;
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
+import com.huawei.kunpeng.intellij.common.bean.SshConfig;
+import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
+import com.huawei.kunpeng.intellij.common.enums.SftpAction;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
+import com.huawei.kunpeng.intellij.common.util.JsonUtil;
 import com.huawei.kunpeng.intellij.ui.action.SshAction;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.UninstallWrapDialog;
+import com.huawei.kunpeng.intellij.ui.enums.MaintenanceResponse;
 import com.huawei.kunpeng.intellij.ui.panel.UninstallPanel;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
 import com.intellij.notification.NotificationType;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
-import java.util.Map;
-import java.util.Timer;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 安装事件处理器
@@ -59,6 +65,19 @@ public class TuningUninstallAction extends SshAction {
                 session,
                 TuningI18NServer.toLocale("plugins_hyper_tuner_shell_uninstallLog"),
                 dir + "uninstall_tuning_log.sh");
+        Logger.info("scp logShellFile success!");
+    }
+
+    public void newUpload(Session session, String dir, ActionOperate actionOperate) {
+        // 上传脚本至dir下
+        DeployUtil.newUpload(
+                session, TuningI18NServer.toLocale("plugins_hyper_tuner_shell_uninstall"),
+                dir + "uninstall_tuning.sh", actionOperate);
+        Logger.info("scp shellFile success!");
+        DeployUtil.newUpload(
+                session,
+                TuningI18NServer.toLocale("plugins_hyper_tuner_shell_uninstallLog"),
+                dir + "uninstall_tuning_log.sh", actionOperate);
         Logger.info("scp logShellFile success!");
     }
 
@@ -98,5 +117,49 @@ public class TuningUninstallAction extends SshAction {
                         InstallManageConstant.UNINSTALL_SUCCESS,
                         NotificationType.INFORMATION);
         IDENotificationUtil.notificationCommon(notificationBean);
+    }
+
+    public void newOKAction(Map params, ActionOperate actionOperate) {
+        Map<String, String> param = JsonUtil.getValueIgnoreCaseFromMap(params, "param", Map.class);
+        SshConfig config = DeployUtil.getConfig(param);
+        Session session = DeployUtil.getSession(config);
+        if (Objects.isNull(session)) {
+            actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+            actionOperate.actionOperate(MaintenanceResponse.SSH_ERROR);
+            return;
+        }
+        try {
+            DeployUtil.setUserInfo(session, config);
+            session.connect(30000);
+        } catch (JSchException e) {
+            Logger.error("ssh session connect error: {}", e.getMessage());
+            actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+            actionOperate.actionOperate(MaintenanceResponse.SSH_ERROR);
+            return;
+        }
+        String dir = TMP_PATH + new SimpleDateFormat(TMP_FORMAT).format(new Date(System.currentTimeMillis()))
+                + IDEConstant.PATH_SEPARATOR;
+        // 创建dir目录
+        DeployUtil.sftp(session, dir, SftpAction.MKDIR);
+        // 上传脚本至dir下
+        newUpload(session, dir, actionOperate);
+        if (!session.isConnected()) {
+            return;
+        }
+        // 打开终端执行脚本
+        openTerminal(param, dir);
+        // 检查脚本执行状态
+        final Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                newCheckStatus(session, timer, dir, actionOperate, InstallManageConstant.INSTALL_TITLE);
+            }
+        };
+        timer.schedule(task, 0, 1000);
+    }
+
+    public void newCheckStatus(Session session, Timer timer, String dir, ActionOperate actionOperate, String tabName) {
+        DeployUtil.newCheckLog(session, timer, dir + "uninstall_tuning.log", actionOperate, tabName);
     }
 }

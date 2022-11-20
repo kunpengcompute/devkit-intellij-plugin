@@ -45,7 +45,11 @@ public enum CMDFunction {
     OPEN_URL_IN_BROWSER("openUrlInBrowser", FunctionManager.getFunctionHandler(CommonHandler.class)),
     UPGRADE("upgrade", FunctionManager.getFunctionHandler(CommonHandler.class)),
     HIDE_TERMINAL("hideTerminal", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    LOGIN_SUCCESS("loginSuccess", FunctionManager.getFunctionHandler(CommonHandler.class));
+    LOGIN_SUCCESS("loginSuccess", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    INSTALL("install", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    UNINSTALL("uninstall", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    CLEAN_CONFIG("cleanConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    CLOSE_ALL_PANEL("closeAllPanel", FunctionManager.getFunctionHandler(CommonHandler.class));
 
     private final String functionName;
 

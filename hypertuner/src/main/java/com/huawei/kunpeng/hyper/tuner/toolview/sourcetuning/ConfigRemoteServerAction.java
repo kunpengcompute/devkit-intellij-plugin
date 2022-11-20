@@ -38,13 +38,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ConfigRemoteServerAction extends AnAction implements DumbAware {
     private static final String CONFIG_SERVER = TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_config_server");
-    private static final String CONFIG_SERVER_ICON_PATH="/assets/img/lefttree/server.svg";
 
     /**
      * 左侧树服务器配置菜单动作
      */
     public ConfigRemoteServerAction() {
-        super(CONFIG_SERVER, "", BaseIntellijIcons.load(CONFIG_SERVER_ICON_PATH));
+        super(CONFIG_SERVER, null, null);
     }
 
     /**

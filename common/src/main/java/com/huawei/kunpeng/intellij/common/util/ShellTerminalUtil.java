@@ -66,6 +66,30 @@ public class ShellTerminalUtil {
         executeCommand(terminalView, terminal, workingDirectory, tabName, command);
     }
 
+    /**
+     * 检查终端状态
+     *
+     * @param tabName tab名称
+     */
+    public static boolean checkTerminal(String tabName) {
+        Project project = CommonUtil.getDefaultProject();
+        ToolWindow terminal = ToolWindowManager.getInstance(project).getToolWindow("Terminal");
+        if (terminal == null) {
+            return false;
+        }
+        ContentManager contentManager = terminal.getContentManager();
+        Content selectedContent = contentManager.getSelectedContent();
+        if (selectedContent != null && Objects.equals(selectedContent.getTabName(), tabName)) {
+            JBTerminalWidget widget = TerminalView.getWidgetByContent(selectedContent);
+            if (!(widget instanceof ShellTerminalWidget)) {
+                return false;
+            }
+            ShellTerminalWidget shellTerminalWidget = (ShellTerminalWidget) widget;
+            return shellTerminalWidget.hasRunningCommands();
+        }
+        return true;
+    }
+
     private static void executeCommand(TerminalView terminalView, ToolWindow terminal,
                                         String workingDirectory, String tabName, String command) {
         ContentManager contentManager = terminal.getContentManager();

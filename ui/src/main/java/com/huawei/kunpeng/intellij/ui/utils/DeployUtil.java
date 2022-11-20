@@ -37,7 +37,7 @@ import com.huawei.kunpeng.intellij.ui.dialog.NewFingerTipDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.InstallUpgradeWrapDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.wrap.UninstallWrapDialog;
 import com.huawei.kunpeng.intellij.ui.enums.CheckConnResponse;
-import com.huawei.kunpeng.intellij.ui.enums.UpgradeResponse;
+import com.huawei.kunpeng.intellij.ui.enums.MaintenanceResponse;
 import com.huawei.kunpeng.intellij.ui.panel.FingerPanel;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
@@ -471,29 +471,45 @@ public class DeployUtil extends ShellTerminalUtil {
     }
 
     /**
-     * 查询服务器上临时upgrade_porting.log日志内容。
+     * 查询服务器上临时log日志内容。
      *
-     * @param session          session
-     * @param logPath          dir
+     * @param session session
+     * @param logPath dir
      */
-    public static void newCheckUpgradeLog(
-            Session session, Timer timer, String logPath, ActionOperate actionOperate) {
+    public static void newCheckLog(
+            Session session, Timer timer, String logPath, ActionOperate actionOperate, String tabName) {
         String res = sftp(session, logPath, SftpAction.READ);
-        Logger.info(logPath);
-        Logger.info("haha+"+res);
-        if (ValidateUtils.isEmptyString(res)) {
+        if (ValidateUtils.isEmptyString(res) && checkTerminal(tabName)) {
+            return;
+        } else if (ValidateUtils.isEmptyString(res) && !checkTerminal(tabName)) {
+            Logger.info("upgrade failed");
+            actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+            actionOperate.actionOperate(MaintenanceResponse.FAILED);
+            timer.cancel();
+            sftp(session, logPath, SftpAction.REMOVE);
+            closeSession(session);
             return;
         }
         if (res.contains("failed")) {
             Logger.info("upgrade failed");
-            actionOperate.actionOperate(UpgradeResponse.FAILED);
+            actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+            actionOperate.actionOperate(MaintenanceResponse.FAILED);
+            timer.cancel();
+            sftp(session, logPath, SftpAction.REMOVE);
+            closeSession(session);
         }
         if (res.contains("success")) {
             Logger.info("upgrade success");
-            actionOperate.actionOperate(UpgradeResponse.SUCCESS);
+            actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+            // 成功条件下返回日志数据，包括IP:端口
+            actionOperate.actionOperate(res);
+            timer.cancel();
+            sftp(session, logPath, SftpAction.REMOVE);
+            closeSession(session);
         }
         closeSession(session);
     }
+
 
     /**
      * 打开指纹弹窗
@@ -622,7 +638,9 @@ public class DeployUtil extends ShellTerminalUtil {
                 sftp.chmod(Integer.parseInt(SHELL_CHMOD, 8), targetPath);
             } catch (JSchException | SftpException | CharacterCodingException e) {
                 Logger.error("failed to open ssh channel. stack trace : JSchException | SftpException");
-                actionOperate.actionOperate(UpgradeResponse.UPLOAD_ERROR);
+                actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+                actionOperate.actionOperate(MaintenanceResponse.UPLOAD_ERROR);
+                closeSession(session);
             } finally {
                 if (sftp != null && sftp.isConnected()) {
                     sftp.disconnect();
