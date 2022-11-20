@@ -106,6 +106,7 @@ public class HyperTunerToolWindowFactory implements ToolWindowFactory {
         group.addSeparator();
         // 建议反馈
         group.add(new FeedBackAction(TuningI18NServer.toLocale("plugins_hyper_tuner_feedback")));
+        group.add(new TuningAboutAction());
         group.addSeparator();
         window.setAdditionalGearActions(group);
     }

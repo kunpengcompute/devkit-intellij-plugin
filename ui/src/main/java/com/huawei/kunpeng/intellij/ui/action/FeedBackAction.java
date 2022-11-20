@@ -41,7 +41,6 @@ import java.net.URLConnection;
  */
 public class FeedBackAction extends AnAction implements DumbAware {
     private static final String FEEDBACK = CommonI18NServer.toLocale("common_feedback");
-    private static final String FEEDBACK_ICON_PATH = "/assets/img/lefttree/login.svg";
     private static final int TIME_OUT = 1000 * 3;
 
     private String feedBackUrl;
@@ -50,7 +49,7 @@ public class FeedBackAction extends AnAction implements DumbAware {
      * 左侧树反馈菜单动作
      */
     public FeedBackAction(String feedBackUrl) {
-        super(FEEDBACK, "", BaseIntellijIcons.load(FEEDBACK_ICON_PATH));
+        super(FEEDBACK, null, null);
         this.feedBackUrl = feedBackUrl;
     }
 
@@ -84,9 +83,9 @@ public class FeedBackAction extends AnAction implements DumbAware {
         HttpURLConnection conn = null;
         try {
             url = new URL(urlString);
-            URLConnection co =  url.openConnection();
+            URLConnection co = url.openConnection();
             if (co instanceof HttpURLConnection) {
-                conn = (HttpURLConnection)co;
+                conn = (HttpURLConnection) co;
                 conn.setConnectTimeout(timeOutMillSeconds);
                 return conn.getResponseCode() == HttpURLConnection.HTTP_OK;
             }

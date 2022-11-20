@@ -22,6 +22,7 @@ import com.huawei.kunpeng.hyper.tuner.action.upgrade.TuningUpgradeAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
+import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
 import com.huawei.kunpeng.hyper.tuner.model.JavaPerfOperateLogBean;
 import com.huawei.kunpeng.hyper.tuner.webview.WebFileProvider;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
@@ -32,11 +33,14 @@ import com.huawei.kunpeng.intellij.common.bean.SshConfig;
 import com.huawei.kunpeng.intellij.common.constant.FileManageConstant;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
+import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
+import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.*;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
 import com.huawei.kunpeng.intellij.js2java.fileditor.IDEFileEditorManager;
+import com.huawei.kunpeng.intellij.js2java.provider.AbstractWebFileProvider;
 import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 
 import com.alibaba.fastjson.JSONArray;
@@ -44,6 +48,8 @@ import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
 import com.huawei.kunpeng.intellij.ui.enums.CheckConnResponse;
 import com.huawei.kunpeng.intellij.ui.enums.MaintenanceResponse;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
+import com.huawei.kunpeng.intellij.ui.utils.UIUtils;
+import com.intellij.ide.impl.ProjectUtil;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
@@ -528,17 +534,17 @@ public class CommonHandler extends FunctionHandler {
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
-                MaintenanceResponse response = (MaintenanceResponse) data;
-                if(response== MaintenanceResponse.SUCCESS){
-                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\" ");
-                }
-                else {
+                if(data instanceof MaintenanceResponse) {
+                    MaintenanceResponse response = (MaintenanceResponse) data;
                     invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
+                }
+                else{
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
                 }
             }
         };
-        action.newOKAction(data,actionOperate);
-//        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
+//        action.newOKAction(data,actionOperate);
+        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
     }
 
     /**
@@ -562,17 +568,17 @@ public class CommonHandler extends FunctionHandler {
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
-                MaintenanceResponse response = (MaintenanceResponse) data;
-                if(response== MaintenanceResponse.SUCCESS){
-                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\" ");
-                }
-                else {
+                if(data instanceof MaintenanceResponse) {
+                    MaintenanceResponse response = (MaintenanceResponse) data;
                     invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
+                }
+                else{
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
                 }
             }
         };
-        action.newOKAction(data,actionOperate);
-//        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
+//        action.newOKAction(data,actionOperate);
+        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
     }
 
     /**
@@ -596,17 +602,47 @@ public class CommonHandler extends FunctionHandler {
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
-                MaintenanceResponse response = (MaintenanceResponse) data;
-                if(response== MaintenanceResponse.SUCCESS){
-                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\" ");
-                }
-                else {
+                if(data instanceof MaintenanceResponse) {
+                    MaintenanceResponse response = (MaintenanceResponse) data;
                     invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
+                }
+                else{
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
                 }
             }
         };
-        action.newOKAction(data,actionOperate);
-//        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
+//        action.newOKAction(data,actionOperate);
+        actionOperate.actionOperate(MaintenanceResponse.SUCCESS);
+    }
+
+    public void cleanConfig(MessageBean message, String module){
+        Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
+        IDEContext.setIDEPluginStatus(TuningIDEConstant.TOOL_NAME_TUNING, IDEPluginStatus.IDE_STATUS_INIT);
+//        for (Project proj : openProjects) {
+//            // 配置服务器完成后刷新左侧树面板为配置服务器面板
+//            ToolWindow toolWindow =
+//                    ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
+//            LeftTreeConfigPanel leftTreeConfigPanel = new LeftTreeConfigPanel(toolWindow, proj);
+//            toolWindow.getContentManager().addContent(leftTreeConfigPanel.getContent());
+//            toolWindow.getContentManager().setSelectedContent(leftTreeConfigPanel.getContent());
+//        }
+        // 清空本地 ip 缓存
+        ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "", "");
+        config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
+        invokeCallback(message.getCmd(), message.getCbid(), null);
+    }
+
+    public void closeAllPanel(MessageBean message, String module){
+        Project project = CommonUtil.getDefaultProject();
+        VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
+        WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
+        if (webViewPage != null) {
+            webViewPage.dispose();
+        }
+//        Project[] openProjects = ProjectUtil.getOpenProjects();
+//        for (Project proj : openProjects) {
+//            AbstractWebFileProvider.closeAllWebViewPage();
+//        }
     }
 
     /**

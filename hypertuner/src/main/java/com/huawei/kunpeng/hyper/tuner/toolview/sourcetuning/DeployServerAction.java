@@ -40,13 +40,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class DeployServerAction extends AnAction implements DumbAware {
     private static final String DEPlOY_SERVER = TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_deploy_server");
-    private static final String DEPLOY_SERVER_ICON_PATH = "/assets/img/settings/download.svg";
 
     /**
      * 左侧树服务器配置菜单动作
      */
     public DeployServerAction() {
-        super(DEPlOY_SERVER, "", BaseIntellijIcons.load(DEPLOY_SERVER_ICON_PATH));
+        super(DEPlOY_SERVER, null, null);
     }
 
     /**

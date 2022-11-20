@@ -501,7 +501,8 @@ public class DeployUtil extends ShellTerminalUtil {
         if (res.contains("success")) {
             Logger.info("upgrade success");
             actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
-            actionOperate.actionOperate(MaintenanceResponse.SUCCESS);
+            // 成功条件下返回日志数据，包括IP:端口
+            actionOperate.actionOperate(res);
             timer.cancel();
             sftp(session, logPath, SftpAction.REMOVE);
             closeSession(session);

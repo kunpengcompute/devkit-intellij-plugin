@@ -32,13 +32,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class ApplyTrialAction extends AnAction implements DumbAware {
     private static final String APPLY_TRIAL = TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_apply_trial");
-    private static final String APPLY_TRIAL_ICON_PATH = "/assets/img/lefttree/login.svg";
 
     /**
      * 左侧树服务器配置菜单动作
      */
     public ApplyTrialAction() {
-        super(APPLY_TRIAL, "", BaseIntellijIcons.load(APPLY_TRIAL_ICON_PATH));
+        super(APPLY_TRIAL, null, null);
     }
 
     /**
