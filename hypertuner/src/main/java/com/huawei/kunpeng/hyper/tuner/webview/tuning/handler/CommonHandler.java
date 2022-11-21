@@ -37,6 +37,7 @@ import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
+import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.*;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
@@ -55,6 +56,7 @@ import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.vfs.VirtualFile;
 
 import java.io.File;
@@ -70,6 +72,8 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+
+import static com.huawei.kunpeng.intellij.common.util.FileUtil.readFileContent;
 
 /**
  * 公共的function处理器
@@ -396,13 +400,6 @@ public class CommonHandler extends FunctionHandler {
             case "config":
                 ConfigureServerEditor.openPage();
                 break;
-            case "login":
-                // TODO 打开新页面ui878ui809ouio8
-                Logger.info("openNewPage in intellij: login");
-                Map<String, String> serverConfig = CommonUtil.readCurIpAndPortFromConfig();
-                String localPort = NginxUtil.getLocalPort();
-                NginxUtil.updateNginxConfig(serverConfig.get("ip"), serverConfig.get("port"), localPort);
-                IDELoginEditor.openPage(localPort);
         }
     }
 
@@ -541,11 +538,10 @@ public class CommonHandler extends FunctionHandler {
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
-                if(data instanceof MaintenanceResponse) {
+                if (data instanceof MaintenanceResponse) {
                     MaintenanceResponse response = (MaintenanceResponse) data;
                     invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
-                }
-                else{
+                } else {
                     invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
                 }
             }
@@ -575,11 +571,10 @@ public class CommonHandler extends FunctionHandler {
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
-                if(data instanceof MaintenanceResponse) {
+                if (data instanceof MaintenanceResponse) {
                     MaintenanceResponse response = (MaintenanceResponse) data;
                     invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
-                }
-                else{
+                } else {
                     invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
                 }
             }
@@ -609,11 +604,10 @@ public class CommonHandler extends FunctionHandler {
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
-                if(data instanceof MaintenanceResponse) {
+                if (data instanceof MaintenanceResponse) {
                     MaintenanceResponse response = (MaintenanceResponse) data;
                     invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
-                }
-                else{
+                } else {
                     invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
                 }
             }
@@ -622,7 +616,7 @@ public class CommonHandler extends FunctionHandler {
         actionOperate.actionOperate(MaintenanceResponse.SUCCESS);
     }
 
-    public void cleanConfig(MessageBean message, String module){
+    public void cleanConfig(MessageBean message, String module) {
         Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
         IDEContext.setIDEPluginStatus(TuningIDEConstant.TOOL_NAME_TUNING, IDEPluginStatus.IDE_STATUS_INIT);
 //        for (Project proj : openProjects) {
@@ -639,7 +633,7 @@ public class CommonHandler extends FunctionHandler {
         invokeCallback(message.getCmd(), message.getCbid(), null);
     }
 
-    public void closeAllPanel(MessageBean message, String module){
+    public void closeAllPanel(MessageBean message, String module) {
         Project project = CommonUtil.getDefaultProject();
         VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
         WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
@@ -670,7 +664,7 @@ public class CommonHandler extends FunctionHandler {
      * 读取配置服务器数据
      *
      * @param message 数据
-     * @param module 模块
+     * @param module  模块
      */
     public void readConfig(MessageBean message, String module) {
         Logger.info("read config message");
@@ -695,7 +689,7 @@ public class CommonHandler extends FunctionHandler {
         }
         // 跳转到登录页面
         Map<String, String> params = new HashMap<>();
-        Map<String, String> configData = JsonUtil.getJsonObjFromJsonStr((String)data.get("data"));
+        Map<String, String> configData = JsonUtil.getJsonObjFromJsonStr((String) data.get("data"));
         Logger.info("config data is ", configData);
         params.put("ip", configData.get("ip"));
         params.put("port", configData.get("port"));
@@ -718,6 +712,24 @@ public class CommonHandler extends FunctionHandler {
             tmpEditor.dispose();
         }
     }
+
+    public void uploadPrivateKey(MessageBean message, String module) {
+        FileChooserDescriptor chooserDescriptor = new FileChooserDescriptor(true, false, false, false, false, false);
+        VirtualFile virtualFile = FileChooser.chooseFile(chooserDescriptor, CommonUtil.getDefaultProject(), null);
+        if (virtualFile != null && FileUtil.checkKey(virtualFile.getPath())) {
+//        if (virtualFile != null) {
+            Map<String, String> data = new HashMap<>();
+            data.put("localfilepath", virtualFile.getPath());
+            data.put("checkPrivateKey", "true");
+            invokeCallback(message.getCmd(), message.getCbid(), JsonUtil.getJsonStrFromJsonObj(data));
+        } else {
+            Map<String, String> data = new HashMap<>();
+            data.put("checkPrivateKey", "false");
+            invokeCallback(message.getCmd(), message.getCbid(), JsonUtil.getJsonStrFromJsonObj(data));
+        }
+
+    }
+
 
     /**
      * 登录页面登录成功

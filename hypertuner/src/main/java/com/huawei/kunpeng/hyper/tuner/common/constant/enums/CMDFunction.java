@@ -49,7 +49,8 @@ public enum CMDFunction {
     INSTALL("install", FunctionManager.getFunctionHandler(CommonHandler.class)),
     UNINSTALL("uninstall", FunctionManager.getFunctionHandler(CommonHandler.class)),
     CLEAN_CONFIG("cleanConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    CLOSE_ALL_PANEL("closeAllPanel", FunctionManager.getFunctionHandler(CommonHandler.class));
+    CLOSE_ALL_PANEL("closeAllPanel", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    UPLOAD_PRIVATE_KEY("uploadPrivateKey", FunctionManager.getFunctionHandler(CommonHandler.class));
 
     private final String functionName;
 
