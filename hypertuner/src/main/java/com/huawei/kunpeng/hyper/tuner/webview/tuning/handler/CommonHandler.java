@@ -70,6 +70,7 @@ import java.util.stream.Stream;
 
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
+import kotlinx.serialization.json.Json;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -400,6 +401,11 @@ public class CommonHandler extends FunctionHandler {
             case "config":
                 ConfigureServerEditor.openPage();
                 break;
+            case "login":
+                Map<String, String> serverConfig = CommonUtil.readCurIpAndPortFromConfig();
+                String localPort = NginxUtil.getLocalPort();
+                NginxUtil.updateNginxConfig(serverConfig.get("ip"), serverConfig.get("port"), localPort);
+                IDELoginEditor.openPage(localPort);
         }
     }
 
@@ -444,6 +450,49 @@ public class CommonHandler extends FunctionHandler {
      */
     public void loginOut(MessageBean message, String module) {
 
+    }
+
+    /**
+     * 读取指纹
+     * @param message
+     * @param module
+     */
+    public void readFinger(MessageBean message, String module) {
+        // TODO 读取指纹
+        Logger.info("reading finger!!!");
+        Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        param.put("ip", param.get("host"));
+        param.put("user", param.get("username"));
+        param.put("passPhrase", param.get("passphrase"));
+        SshConfig config = DeployUtil.getConfig(param);
+
+        ActionOperate actionOperate = new ActionOperate() {
+            @Override
+            public void actionOperate(Object data) {
+                invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
+
+            }
+        };
+        DeployUtil.readFinger(actionOperate, config);
+    }
+
+    /**
+     * 保存指纹
+     * @param message
+     * @param module
+     */
+    public void saveFinger(MessageBean message, String module) {
+        Logger.info("saving finger!!!");
+        Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        // TODO 保存指纹逻辑
+        ActionOperate actionOperate = new ActionOperate() {
+            @Override
+            public void actionOperate(Object data) {
+                invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
+            }
+        };
+
+        DeployUtil.saveFinger(actionOperate, param);
     }
 
     /**

@@ -37,9 +37,10 @@ public enum CMDFunction {
     DOWNLOAD_CERTIFICATE("downloadCertificate", FunctionManager.getFunctionHandler(CommonHandler.class)),
     READ_URL_CONFIG("readUrlConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
     CLOSE_PANEL("closePanel", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    READ_FINGER("readFinger", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    SAVE_FINGER("saveFinger", FunctionManager.getFunctionHandler(CommonHandler.class)),
     CHECK_CONN("checkConn", FunctionManager.getFunctionHandler(CommonHandler.class)),
     SHOW_INFO_BOX("showInfoBox", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    // 读取配置服务器信息
     READ_CONFIG("readConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
     SAVE_CONFIG("saveConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
     OPEN_URL_IN_BROWSER("openUrlInBrowser", FunctionManager.getFunctionHandler(CommonHandler.class)),
