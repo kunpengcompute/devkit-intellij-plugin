@@ -37,6 +37,7 @@ import com.huawei.kunpeng.intellij.common.bean.SshConfig;
 import com.huawei.kunpeng.intellij.common.constant.FileManageConstant;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
+import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
@@ -458,6 +459,7 @@ public class CommonHandler extends FunctionHandler {
 
     /**
      * 读取指纹
+     *
      * @param message
      * @param module
      */
@@ -482,6 +484,7 @@ public class CommonHandler extends FunctionHandler {
 
     /**
      * 保存指纹
+     *
      * @param message
      * @param module
      */
@@ -635,10 +638,11 @@ public class CommonHandler extends FunctionHandler {
                 }
             }
         };
-//        action.newOKAction(data, actionOperate);
-        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
+        action.newOKAction(data, actionOperate);
 //        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+//        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
 //        actionOperate.actionOperate(MaintenanceResponse.UPLOAD_ERROR);
+//        actionOperate.actionOperate(MaintenanceResponse.FAILED);
     }
 
     /**
@@ -653,7 +657,7 @@ public class CommonHandler extends FunctionHandler {
         param.put("ip", param.get("host"));
         param.put("user", param.get("username"));
         param.put("passPhrase", param.get("passphrase"));
-        param.put("displayName", InstallManageConstant.INSTALL_TITLE);
+        param.put("displayName", InstallManageConstant.UNINSTALL_TITLE);
         Map<String, Object> data = new HashMap<>();
         data.put("param", param);
 
@@ -671,42 +675,60 @@ public class CommonHandler extends FunctionHandler {
             }
         };
 //        action.newOKAction(data,actionOperate);
-//        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
-//        actionOperate.actionOperate(MaintenanceResponse.SUCCESS);
         actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
-        actionOperate.actionOperate(MaintenanceResponse.FAILED);
+        actionOperate.actionOperate(MaintenanceResponse.SUCCESS);
+//        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+//        actionOperate.actionOperate(MaintenanceResponse.FAILED);
     }
 
     public void cleanConfig(MessageBean message, String module) {
+        Map<String, Object> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        Map<String, String> configData = JsonUtil.getJsonObjFromJsonStr((String) data.get("data"));
         Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
-        IDEContext.setIDEPluginStatus(TuningIDEConstant.TOOL_NAME_TUNING, IDEPluginStatus.IDE_STATUS_INIT);
-//        Project[] openProjects = ProjectUtil.getOpenProjects();
-//        for (Project proj : openProjects) {
-//            // 配置服务器完成后刷新左侧树面板为配置服务器面板
-//            ToolWindow toolWindow =
-//                    ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
-//            TuningServerConfigPanel leftTreeConfigPanel = new TuningServerConfigPanel(toolWindow, proj);
-//            toolWindow.getContentManager().addContent(leftTreeConfigPanel.getContent());
-//            toolWindow.getContentManager().setSelectedContent(leftTreeConfigPanel.getContent());
-//        }
-        // 清空本地 ip 缓存
-        ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "", "");
-        config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
-        invokeCallback(message.getCmd(), message.getCbid(), null);
+        boolean closeAll = false;
+        if (config.get(ConfigProperty.PORT_CONFIG.vaLue()) instanceof List) {
+            List configList = (List) config.get(ConfigProperty.PORT_CONFIG.vaLue());
+            if (configList.get(0) instanceof Map) {
+                Map configDef = (Map) configList.get(0);
+                if (Objects.equals(configData.get("ip"), configDef.get("ip").toString())) {
+                    closeAll = true;
+                    IDEContext.setIDEPluginStatus(TuningIDEConstant.TOOL_NAME_TUNING, IDEPluginStatus.IDE_STATUS_INIT);
+                    Project[] openProjects = ProjectUtil.getOpenProjects();
+                    for (Project proj : openProjects) {
+                        // 配置服务器完成后刷新左侧树面板为配置服务器面板
+                        ToolWindow toolWindow =
+                                ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
+                        TuningServerConfigPanel leftTreeConfigPanel = new TuningServerConfigPanel(toolWindow, proj);
+                        toolWindow.getContentManager().removeAllContents(true);
+                        toolWindow.getContentManager().addContent(leftTreeConfigPanel.getContent());
+                        toolWindow.getContentManager().setSelectedContent(leftTreeConfigPanel.getContent());
+                        // 清空本地 ip 缓存
+                        ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "", "");
+                    }
+                }
+            }
+        }
+        invokeCallback(message.getCmd(), message.getCbid(), String.valueOf(closeAll));
     }
 
     public void closeAllPanel(MessageBean message, String module) {
-        Project project = CommonUtil.getDefaultProject();
-        VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
-        WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
-        if (webViewPage != null) {
-            webViewPage.dispose();
+        Map<String, Object> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        Logger.info(data.toString());
+        if (data.containsKey("closeAll") && data.get("closeAll").equals(Boolean.TRUE)) {
+            Project[] openProjects = ProjectUtil.getOpenProjects();
+            for (Project proj : openProjects) {
+                AbstractWebFileProvider.closeAllWebViewPage();
+            }
+        } else {
+            Project project = CommonUtil.getDefaultProject();
+            VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
+            WebFileEditor webViewPage = WebFileProvider.getWebViewPage(project, file);
+            if (webViewPage != null) {
+                webViewPage.dispose();
+            }
         }
-//        Project[] openProjects = ProjectUtil.getOpenProjects();
-//        for (Project proj : openProjects) {
-//            AbstractWebFileProvider.closeAllWebViewPage();
-//        }
     }
+
 
     /**
      * 隐藏终端

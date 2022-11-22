@@ -38,5 +38,7 @@
     "sysInstall_openFAQ4": "https://kunpeng-repo.obs.cn-north-4.myhuaweicloud.com/Hyper%20Tuner/Hyper%20Tuner%202.5.RC1.1/Hyper-tuner_2.5.RC1.1_linux.tar.gz",
     "sysInstall_openFAQ5": "https://download.huawei.com/edownload/e/download.do?actionFlag=download&mid=SUPE_SERTOOL_VERSION&nid=TV1100000147&partNo=2005",
     "uninstall_openFAQ1": "https://www.hikunpeng.com/document/detail/zh/kunpengdevps/vscode/usermanual/kunpengidevscode_10_0007.html",
-    "uninstall_openFAQ2": "https://www.hikunpeng.com/document/detail/zh/kunpengdevps/vscode/usermanual/kunpengidevscode_10_0044.html"
+    "uninstall_openFAQ2": "https://www.hikunpeng.com/document/detail/zh/kunpengdevps/vscode/usermanual/kunpengidevscode_10_0044.html",
+    "faqFiveZn": "https://www.hikunpeng.com/document/detail/zh/kunpengdevps/vscode/usermanual/kunpengidevscode_10_0060.html",
+    "faqFiveEn": "https://www.hikunpeng.com/document/detail/en/kunpengdevps/vscode/usermanual/kunpengidevscode_10_0060.html"
 }
