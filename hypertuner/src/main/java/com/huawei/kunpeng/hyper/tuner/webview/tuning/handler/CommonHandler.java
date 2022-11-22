@@ -680,15 +680,15 @@ public class CommonHandler extends FunctionHandler {
     public void cleanConfig(MessageBean message, String module) {
         Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
         IDEContext.setIDEPluginStatus(TuningIDEConstant.TOOL_NAME_TUNING, IDEPluginStatus.IDE_STATUS_INIT);
-        Project[] openProjects = ProjectUtil.getOpenProjects();
-        for (Project proj : openProjects) {
-            // 配置服务器完成后刷新左侧树面板为配置服务器面板
-            ToolWindow toolWindow =
-                    ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
-            TuningServerConfigPanel leftTreeConfigPanel = new TuningServerConfigPanel(toolWindow, proj);
-            toolWindow.getContentManager().addContent(leftTreeConfigPanel.getContent());
-            toolWindow.getContentManager().setSelectedContent(leftTreeConfigPanel.getContent());
-        }
+//        Project[] openProjects = ProjectUtil.getOpenProjects();
+//        for (Project proj : openProjects) {
+//            // 配置服务器完成后刷新左侧树面板为配置服务器面板
+//            ToolWindow toolWindow =
+//                    ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
+//            TuningServerConfigPanel leftTreeConfigPanel = new TuningServerConfigPanel(toolWindow, proj);
+//            toolWindow.getContentManager().addContent(leftTreeConfigPanel.getContent());
+//            toolWindow.getContentManager().setSelectedContent(leftTreeConfigPanel.getContent());
+//        }
         // 清空本地 ip 缓存
         ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "", "");
         config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
