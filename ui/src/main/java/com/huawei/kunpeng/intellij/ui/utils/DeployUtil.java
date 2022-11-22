@@ -59,11 +59,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Timer;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -723,6 +719,31 @@ public class DeployUtil extends ShellTerminalUtil {
         config.setIdentity(param.get("privateKey"));
         config.setPassPhrase(param.get("passPhrase"));
         return config;
+    }
+
+    /**
+     * 读取指纹
+     * @param actionOperate 自定义操作
+     * @param config        配置信息参数
+     */
+    public static void readFinger(ActionOperate actionOperate, SshConfig config) {
+        // TODO 读取指纹，返回读取结果
+        String finger = newReadFingerprint(config, actionOperate);
+        String res;
+        if (ValidateUtils.isNotEmptyString(finger)) {
+            res = finger;
+        } else {
+            res = "ERROR";
+        }
+        actionOperate.actionOperate(res);
+
+    }
+
+    public static void saveFinger(ActionOperate actionOperate, Map<String, String> param) {
+        // TODO 保存指纹
+        String ip = param.get("ip");
+        String finger = param.get("finger");
+        actionOperate.actionOperate("SUCCESS");
     }
 
     /**
