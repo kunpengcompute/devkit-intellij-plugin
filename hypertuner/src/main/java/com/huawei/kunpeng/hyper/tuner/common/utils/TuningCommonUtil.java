@@ -47,6 +47,7 @@ public class TuningCommonUtil extends CommonUtil {
             ToolWindow toolWindow =
                     ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
             TuningServerConfigPanel tuningServerConfigPanel = new TuningServerConfigPanel(toolWindow, proj);
+            toolWindow.getContentManager().removeAllContents(true);
             toolWindow.getContentManager().addContent(tuningServerConfigPanel.getContent());
             toolWindow.getContentManager().setSelectedContent(tuningServerConfigPanel.getContent());
             AbstractWebFileProvider.closeAllWebViewPage();
@@ -63,6 +64,7 @@ public class TuningCommonUtil extends CommonUtil {
             ToolWindow toolWindow =
                     ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
             TuningConfigSuccessPanel tuningConfigSuccessPanel = new TuningConfigSuccessPanel(toolWindow, proj);
+            toolWindow.getContentManager().removeAllContents(true);
             toolWindow.getContentManager().addContent(tuningConfigSuccessPanel.getContent());
             toolWindow.getContentManager().setSelectedContent(tuningConfigSuccessPanel.getContent());
             AbstractWebFileProvider.closeAllWebViewPage();

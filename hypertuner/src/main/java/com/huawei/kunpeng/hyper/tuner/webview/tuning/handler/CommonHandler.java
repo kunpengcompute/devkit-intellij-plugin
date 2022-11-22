@@ -798,6 +798,7 @@ public class CommonHandler extends FunctionHandler {
                         ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
                 TuningLoginSuccessPanel tuningLoginSuccessPanel = new TuningLoginSuccessPanel(toolWindow, proj);
                 if (toolWindow != null) {
+                    toolWindow.getContentManager().removeAllContents(true);
                     toolWindow.getContentManager().addContent(tuningLoginSuccessPanel.getContent());
                     toolWindow.getContentManager().setSelectedContent(tuningLoginSuccessPanel.getContent());
                 }

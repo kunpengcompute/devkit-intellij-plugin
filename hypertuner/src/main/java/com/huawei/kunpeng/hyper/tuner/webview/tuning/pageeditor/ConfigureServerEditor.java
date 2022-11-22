@@ -246,6 +246,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
                 ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
         TuningConfigSuccessPanel tuningConfigSuccessPanel = new TuningConfigSuccessPanel(toolWindow, proj);
         if (toolWindow != null) {
+            toolWindow.getContentManager().removeAllContents(true);
             toolWindow.getContentManager().addContent(tuningConfigSuccessPanel.getContent());
             toolWindow.getContentManager().setSelectedContent(tuningConfigSuccessPanel.getContent());
         }
