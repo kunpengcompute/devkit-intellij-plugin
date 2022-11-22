@@ -17,6 +17,7 @@
 package com.huawei.kunpeng.hyper.tuner.webview.tuning.handler;
 
 import com.huawei.kunpeng.hyper.tuner.action.install.TuningInstallAction;
+import com.huawei.kunpeng.hyper.tuner.action.serverconfig.TuningServerConfigAction;
 import com.huawei.kunpeng.hyper.tuner.action.uninstall.TuningUninstallAction;
 import com.huawei.kunpeng.hyper.tuner.action.upgrade.TuningUpgradeAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
@@ -25,6 +26,7 @@ import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
 import com.huawei.kunpeng.hyper.tuner.model.JavaPerfOperateLogBean;
 import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningLoginSuccessPanel;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
 import com.huawei.kunpeng.hyper.tuner.webview.WebFileProvider;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.IDELoginEditor;
@@ -42,6 +44,7 @@ import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.*;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
 import com.huawei.kunpeng.intellij.js2java.fileditor.IDEFileEditorManager;
+import com.huawei.kunpeng.intellij.js2java.provider.AbstractWebFileProvider;
 import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 
 import com.alibaba.fastjson.JSONArray;
@@ -400,6 +403,12 @@ public class CommonHandler extends FunctionHandler {
             case "config":
                 ConfigureServerEditor.openPage();
                 break;
+            case "login":
+                Map<String, String> serverConfig = CommonUtil.readCurIpAndPortFromConfig();
+                String localPort = NginxUtil.getLocalPort();
+                NginxUtil.updateNginxConfig(serverConfig.get("ip"), serverConfig.get("port"), localPort);
+                IDELoginEditor.openPage(localPort);
+                break;
         }
     }
 
@@ -547,7 +556,10 @@ public class CommonHandler extends FunctionHandler {
             }
         };
 //        action.newOKAction(data,actionOperate);
+        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
         actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
+//        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+//        actionOperate.actionOperate(MaintenanceResponse.UPLOAD_ERROR);
     }
 
     /**
@@ -579,8 +591,10 @@ public class CommonHandler extends FunctionHandler {
                 }
             }
         };
-//        action.newOKAction(data,actionOperate);
+//        action.newOKAction(data, actionOperate);
         actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
+//        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+//        actionOperate.actionOperate(MaintenanceResponse.UPLOAD_ERROR);
     }
 
     /**
@@ -613,20 +627,24 @@ public class CommonHandler extends FunctionHandler {
             }
         };
 //        action.newOKAction(data,actionOperate);
-        actionOperate.actionOperate(MaintenanceResponse.SUCCESS);
+//        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+//        actionOperate.actionOperate(MaintenanceResponse.SUCCESS);
+        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+        actionOperate.actionOperate(MaintenanceResponse.FAILED);
     }
 
     public void cleanConfig(MessageBean message, String module) {
         Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
         IDEContext.setIDEPluginStatus(TuningIDEConstant.TOOL_NAME_TUNING, IDEPluginStatus.IDE_STATUS_INIT);
-//        for (Project proj : openProjects) {
-//            // 配置服务器完成后刷新左侧树面板为配置服务器面板
-//            ToolWindow toolWindow =
-//                    ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
-//            LeftTreeConfigPanel leftTreeConfigPanel = new LeftTreeConfigPanel(toolWindow, proj);
-//            toolWindow.getContentManager().addContent(leftTreeConfigPanel.getContent());
-//            toolWindow.getContentManager().setSelectedContent(leftTreeConfigPanel.getContent());
-//        }
+        Project[] openProjects = ProjectUtil.getOpenProjects();
+        for (Project proj : openProjects) {
+            // 配置服务器完成后刷新左侧树面板为配置服务器面板
+            ToolWindow toolWindow =
+                    ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
+            TuningServerConfigPanel leftTreeConfigPanel = new TuningServerConfigPanel(toolWindow, proj);
+            toolWindow.getContentManager().addContent(leftTreeConfigPanel.getContent());
+            toolWindow.getContentManager().setSelectedContent(leftTreeConfigPanel.getContent());
+        }
         // 清空本地 ip 缓存
         ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "", "");
         config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
@@ -693,6 +711,9 @@ public class CommonHandler extends FunctionHandler {
         Logger.info("config data is ", configData);
         params.put("ip", configData.get("ip"));
         params.put("port", configData.get("port"));
+        if (data.containsKey("openLogin") && data.get("openLogin").equals(Boolean.TRUE)) {
+            params.put("openLogin", "true");
+        }
         params.put("localPort", NginxUtil.getLocalPort());
 
         Project project = CommonUtil.getDefaultProject();
@@ -704,9 +725,8 @@ public class CommonHandler extends FunctionHandler {
             // TODO save config成功后回调到webview显示立即登录弹框
             invokeCallback(message.getCmd(), message.getCbid(), "{\"type\":\"" + responseType + "\"}");
 //            webViewPage.dispose();
-        }
-        else{
-            ConfigureServerEditor tmpEditor=new ConfigureServerEditor();
+        } else {
+            ConfigureServerEditor tmpEditor = new ConfigureServerEditor();
             tmpEditor.saveConfig(params);
             webViewPage.dispose();
             tmpEditor.dispose();
@@ -717,7 +737,6 @@ public class CommonHandler extends FunctionHandler {
         FileChooserDescriptor chooserDescriptor = new FileChooserDescriptor(true, false, false, false, false, false);
         VirtualFile virtualFile = FileChooser.chooseFile(chooserDescriptor, CommonUtil.getDefaultProject(), null);
         if (virtualFile != null && FileUtil.checkKey(virtualFile.getPath())) {
-//        if (virtualFile != null) {
             Map<String, String> data = new HashMap<>();
             data.put("localfilepath", virtualFile.getPath());
             data.put("checkPrivateKey", "true");
@@ -733,6 +752,7 @@ public class CommonHandler extends FunctionHandler {
 
     /**
      * 登录页面登录成功
+     *
      * @param message
      * @param module
      */

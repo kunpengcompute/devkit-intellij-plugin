@@ -42,6 +42,7 @@ import javax.swing.*;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ConfigureServerEditor extends TuningWebFileEditor {
 
@@ -139,13 +140,10 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
             if (isCompatible) {
                 // 仅在版本适配的情况下打开 web view 页面，允许用户使用
                 System.out.println("is compatible!!");
-//                ApplicationManager.getApplication().invokeLater(() -> {
-//                    NginxUtil.updateNginxConfig(params.get("ip"), params.get("port"), params.get("localPort"));
-//                    // 打开web首页
-//                    IDELoginEditor.openPage(params.get("localPort"));
-//                });
-//                NginxUtil.updateNginxConfig(params.get("ip"), params.get("port"), params.get("localPort"));
-//                IDELoginEditor.openPage(params.get("localPort"));
+                if (params.containsKey("openLogin") && Objects.equals(params.get("openLogin"), "true")) {
+                    NginxUtil.updateNginxConfig(params.get("ip"), params.get("port"), params.get("localPort"));
+                    IDELoginEditor.openPage(params.get("localPort"));
+                }
                 return SaveConfigResponse.SUCCESS.value();
             }
             return SaveConfigResponse.VERSION_MISMATCH.value();
