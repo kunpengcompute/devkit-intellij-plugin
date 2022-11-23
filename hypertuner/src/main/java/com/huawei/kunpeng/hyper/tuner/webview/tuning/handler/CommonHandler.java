@@ -75,6 +75,7 @@ import java.util.stream.Stream;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import kotlinx.serialization.json.Json;
+import kotlinx.serialization.json.JsonArray;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -432,21 +433,6 @@ public class CommonHandler extends FunctionHandler {
         Logger.info("closePanel end.");
     }
 
-//    /**
-//     * webview显示右下角提示消息处理
-//     *
-//     * @param message 数据
-//     * @param module  模块
-//     */
-//    public void readConfig(MessageBean message, String module) {
-//        Map<String, Object> context = IDEContext.getValueFromGlobalContext(null, "tuning");
-//        String ip = Optional.ofNullable(context.get(BaseCacheVal.IP.vaLue()))
-//                .map(Object::toString).orElse(null);
-//        String config = "{\"sysPerfConfig\":[{\"port\":\"8086\",\"ip\":\"" + ip + "\"}]}";
-//        // 回调
-//        invokeCallback(message.getCmd(), message.getCbid(), config);
-//    }
-
     /**
      * 登出操作
      *
@@ -752,11 +738,8 @@ public class CommonHandler extends FunctionHandler {
      */
     public void readConfig(MessageBean message, String module) {
         Logger.info("read config message");
-        Logger.info("cmd is: " + message.getCmd());
-        Logger.info("data is " + message.getData());
         Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
         invokeCallback(message.getCmd(), message.getCbid(), JsonUtil.getJsonStrFromJsonObj(config));
-//        Logger.info(data.values().toString());
     }
 
     public void saveConfig(MessageBean message, String module) {
@@ -764,23 +747,22 @@ public class CommonHandler extends FunctionHandler {
         Map<String, Object> data = JsonUtil.getJsonObjFromJsonStr(message.getData());
         Logger.info("cmd is: " + message.getCmd());
         Logger.info("data is: " + message.getData());
-        if (data.containsKey("showInfoBox") && data.get("showInfoBox").equals(Boolean.TRUE)) {
-            // show info box
-            Logger.info("show info box");
-//            IDENotificationUtil.notificationCommon(new NotificationBean("Configure Server",
-//                    "Server is configured successfully!", NotificationType.INFORMATION));
-//            TuningCommonUtil.showNotification();
-        }
         // 跳转到登录页面
         Map<String, String> params = new HashMap<>();
-        Map<String, String> configData = JsonUtil.getJsonObjFromJsonStr((String) data.get("data"));
-        Logger.info("config data is ", configData);
-        params.put("ip", configData.get("ip"));
-        params.put("port", configData.get("port"));
+        Map configData = JsonUtil.getJsonObjFromJsonStr((String) data.get("data"));
+        if (configData.get(ConfigProperty.PORT_CONFIG.vaLue()) instanceof List) {
+            List configList = (List) configData.get(ConfigProperty.PORT_CONFIG.vaLue());
+            if (configList.get(0) instanceof Map) {
+                Map configDef = (Map) configList.get(0);
+                params.put("ip", (String) configDef.get("ip"));
+                params.put("port", (String) configDef.get("port"));
+            }
+        }
         if (data.containsKey("openLogin") && data.get("openLogin").equals(Boolean.TRUE)) {
             params.put("openLogin", "true");
         }
         params.put("localPort", NginxUtil.getLocalPort());
+        Logger.info("params: ", params.keySet().toString(), params.values().toString());
 
         Project project = CommonUtil.getDefaultProject();
         VirtualFile file = IDEFileEditorManager.getInstance(project).getSelectFile();
@@ -788,9 +770,7 @@ public class CommonHandler extends FunctionHandler {
         if (webViewPage instanceof ConfigureServerEditor) {
             String responseType = ((ConfigureServerEditor) webViewPage).saveConfig(params);
             Logger.info("response Type: " + responseType);
-            // TODO save config成功后回调到webview显示立即登录弹框
             invokeCallback(message.getCmd(), message.getCbid(), "{\"type\":\"" + responseType + "\"}");
-//            webViewPage.dispose();
         } else {
             ConfigureServerEditor tmpEditor = new ConfigureServerEditor();
             tmpEditor.saveConfig(params);
