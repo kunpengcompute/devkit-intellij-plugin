@@ -29,6 +29,7 @@ import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningLoginSuccessPane
 import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
 import com.huawei.kunpeng.hyper.tuner.webview.WebFileProvider;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.DeployServerEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.IDELoginEditor;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
@@ -412,6 +413,8 @@ public class CommonHandler extends FunctionHandler {
                 NginxUtil.updateNginxConfig(serverConfig.get("ip"), serverConfig.get("port"), localPort);
                 IDELoginEditor.openPage(localPort);
                 break;
+            case "install":
+                DeployServerEditor.openPage();
         }
     }
 
@@ -624,11 +627,11 @@ public class CommonHandler extends FunctionHandler {
                 }
             }
         };
-        action.newOKAction(data, actionOperate);
+//        action.newOKAction(data, actionOperate);
 //        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
 //        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
-//        actionOperate.actionOperate(MaintenanceResponse.UPLOAD_ERROR);
-//        actionOperate.actionOperate(MaintenanceResponse.FAILED);
+        actionOperate.actionOperate(MaintenanceResponse.UPLOAD_ERROR);
+        actionOperate.actionOperate(MaintenanceResponse.FAILED);
     }
 
     /**
