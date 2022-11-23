@@ -123,7 +123,6 @@ public class NginxUtil {
     }
     /**
      * nginx相关文件写入
-     * TODO
      */
     public static void writeToFile(String content) {
         FileWriter fileWriter = null;
