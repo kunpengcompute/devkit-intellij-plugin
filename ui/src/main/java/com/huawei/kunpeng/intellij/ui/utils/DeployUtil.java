@@ -729,18 +729,16 @@ public class DeployUtil extends ShellTerminalUtil {
     public static void readFinger(ActionOperate actionOperate, SshConfig config) {
         // TODO 读取指纹，返回读取结果
         String finger = newReadFingerprint(config, actionOperate);
-        String res;
         if (ValidateUtils.isNotEmptyString(finger)) {
-            res = finger;
+            actionOperate.actionOperate(finger);
         } else {
-            res = "ERROR";
+            Logger.warn("reading finger gets some error");
+            actionOperate.actionOperate(CheckConnResponse.FINGERPRINT_FAILURE);
         }
-        actionOperate.actionOperate(res);
-
     }
 
     public static void saveFinger(ActionOperate actionOperate, Map<String, String> param) {
-        // TODO 保存指纹
+        // TODO 保存指纹，（假保存）
         String ip = param.get("ip");
         String finger = param.get("finger");
         actionOperate.actionOperate("SUCCESS");
@@ -765,6 +763,15 @@ public class DeployUtil extends ShellTerminalUtil {
             Logger.warn("Finger have some problem.");
             actionOperate.actionOperate(CheckConnResponse.FINGERPRINT_FAILURE);
         }
+    }
+
+    /**
+     * 指纹弹框修改后，新检测连接
+     */
+    public static void realTestConn(ActionOperate actionOperate, SshConfig config) {
+        // 直接执行连接
+        Logger.info("this is real test config");
+        newExecuteOnPoolTestConn(config, actionOperate);
     }
 
     /**

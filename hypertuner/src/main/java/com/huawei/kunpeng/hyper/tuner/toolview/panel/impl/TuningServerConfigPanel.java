@@ -18,6 +18,7 @@ package com.huawei.kunpeng.hyper.tuner.toolview.panel.impl;
 
 import com.huawei.kunpeng.hyper.tuner.common.constant.enums.PanelType;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigGuideEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.FreeTrialEditor;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
@@ -105,7 +106,9 @@ public class TuningServerConfigPanel extends IDEBasePanel {
         MouseAdapter configMouseAdapter = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                ConfigureServerEditor.openPage();
+                // 未配置服务器时点击配置按钮打开配置指引页面
+                ConfigGuideEditor.openPage();
+//                ConfigureServerEditor.openPage();
             }
         };
         MouseAdapter freeTrialMouseAdapter = new MouseAdapter() {

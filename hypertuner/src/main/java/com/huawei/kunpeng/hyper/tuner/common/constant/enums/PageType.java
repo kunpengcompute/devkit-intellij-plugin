@@ -93,6 +93,16 @@ public enum PageType {
         public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
             return Optional.of(new ConfigureServerEditor(file));
         }
+    },
+
+    /**
+     * 配置指引页面
+     */
+    CONFIGURE_GUIDE("configure_guide") {
+        @Override
+        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
+            return Optional.of(new ConfigGuideEditor(file));
+        }
     };
 
     private final String type;
