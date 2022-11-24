@@ -86,7 +86,7 @@ public abstract class AboutDialog extends DialogWrapper {
         centerPanel.add(titlePanel, BorderLayout.NORTH);
 
         // 添加主面板
-        centerPanel.add(new BaseAboutPanel(getProductVersion(), getProductReleaseTime()).getComponent());
+        centerPanel.add(new BaseAboutPanel(getProductVersion(), getProductServerVersion()).getComponent());
         return centerPanel;
     }
 
@@ -127,5 +127,5 @@ public abstract class AboutDialog extends DialogWrapper {
      *
      * @return string 发布时间
      */
-    protected abstract String getProductReleaseTime();
+    protected abstract String getProductServerVersion();
 }
