@@ -737,13 +737,6 @@ public class DeployUtil extends ShellTerminalUtil {
         }
     }
 
-    public static void saveFinger(ActionOperate actionOperate, Map<String, String> param) {
-        // TODO 保存指纹，（假保存）
-        String ip = param.get("ip");
-        String finger = param.get("finger");
-        actionOperate.actionOperate("SUCCESS");
-    }
-
     /**
      * 检测连接
      *
