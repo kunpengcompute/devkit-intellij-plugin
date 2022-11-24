@@ -453,7 +453,6 @@ public class CommonHandler extends FunctionHandler {
      * @param module
      */
     public void readFinger(MessageBean message, String module) {
-        // TODO 读取指纹
         Logger.info("reading finger!!!");
         Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
         param.put("ip", param.get("host"));
@@ -480,7 +479,7 @@ public class CommonHandler extends FunctionHandler {
     public void saveFinger(MessageBean message, String module) {
         Logger.info("saving finger!!!");
         Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
-        // TODO 保存指纹逻辑
+        // TODO idea处理逻辑不需要保存指纹，该方法可以直接默认返回SUCCESS？
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
@@ -497,6 +496,29 @@ public class CommonHandler extends FunctionHandler {
      * @param message 数据
      * @param module  模块
      */
+//    public void checkConn(MessageBean message, String module) {
+//        Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
+//        // 增加对应键值以对应方法参数
+//        param.put("ip", param.get("host"));
+//        param.put("user", param.get("username"));
+//        param.put("passPhrase", param.get("passphrase"));
+//
+//        Logger.info(param.toString());
+//
+//        SshConfig config = DeployUtil.getConfig(param);
+//
+//        ActionOperate actionOperate = new ActionOperate() {
+//            @Override
+//            public void actionOperate(Object data) {
+//                CheckConnResponse response = (CheckConnResponse) data;
+//                invokeCallback(message.getCmd(), message.getCbid(), "\"" + response.value() + "\"");
+//            }
+//        };
+//
+//        DeployUtil.newTestConn(actionOperate, config);
+//    }
+
+    // 修改指纹弹框后的checkConn
     public void checkConn(MessageBean message, String module) {
         Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
         // 增加对应键值以对应方法参数
@@ -507,6 +529,10 @@ public class CommonHandler extends FunctionHandler {
         Logger.info(param.toString());
 
         SshConfig config = DeployUtil.getConfig(param);
+        // TODO 如果finger不为noFirst，需要设置指纹
+        if (param.containsKey("finger") && !param.get("finger").equals("noFirst")) {
+            config.setFingerprint(param.get("finger"));
+        }
 
         ActionOperate actionOperate = new ActionOperate() {
             @Override
@@ -516,7 +542,8 @@ public class CommonHandler extends FunctionHandler {
             }
         };
 
-        DeployUtil.newTestConn(actionOperate, config);
+//        DeployUtil.newTestConn(actionOperate, config);
+        DeployUtil.realTestConn(actionOperate, config);
     }
 
     /**
