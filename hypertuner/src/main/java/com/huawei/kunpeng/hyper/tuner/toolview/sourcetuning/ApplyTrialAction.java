@@ -18,11 +18,14 @@ package com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning;
 
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.FreeTrialEditor;
+import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAware;
 import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
 
 /**
  * The class of DeployServerAction: 部署服务器
@@ -33,11 +36,12 @@ import org.jetbrains.annotations.NotNull;
 public class ApplyTrialAction extends AnAction implements DumbAware {
     private static final String APPLY_TRIAL = TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_apply_trial");
 
+    private static final Icon icon = BaseIntellijIcons.load(IDEConstant.MENU_ICONS_PATH + IDEConstant.MENU_APPLY_LAB_ICON);
     /**
      * 左侧树服务器配置菜单动作
      */
     public ApplyTrialAction() {
-        super(APPLY_TRIAL, null, null);
+        super(APPLY_TRIAL, null, icon);
     }
 
     /**

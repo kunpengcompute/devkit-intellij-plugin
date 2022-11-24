@@ -153,7 +153,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
     /**
      * 保存服务器配置
      *
-     * @param params ip port certFile证书文件 useCertFlag是否使用证书
+     * @param params ip port localPort
      * @return true:保存服务器配置成功
      */
     private boolean save(Map<String, String> params) {
@@ -161,17 +161,10 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
         String port = params.get("port");
         String localPort = params.get("localPort");
         ConfigUtils.fillIp2JsonFile(toolName, host, port, localPort);
-        // 将plugin设置为配置服务器状态
-        IDEContext.setIDEPluginStatus(toolName, IDEPluginStatus.IDE_STATUS_SERVER_DEPLOY);
         // check connection is ok
         ResponseBean response = getServiceConfigResponse();
         if (response != null &&
                 (SUCCESS_CODE.equals(response.getCode()) || SUCCESS_CODE.equals(response.getStatus()))) {
-//            if (!HttpsServer.isCertConfirm && Boolean.parseBoolean(params.get("useCertFlag"))) {
-//                serverCertConfirmFailed(toolName, host);
-//                return false;
-//            }
-//            showNotification();
             // update global Context
             updateIDEContext(host);
             // clear userConfig when config server again

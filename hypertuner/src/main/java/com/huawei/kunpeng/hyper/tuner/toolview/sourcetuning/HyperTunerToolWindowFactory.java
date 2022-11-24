@@ -16,9 +16,15 @@
 
 package com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning;
 
+import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
+import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningLoginSuccessPanel;
 import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
+import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.log.Logger;
+import com.huawei.kunpeng.intellij.common.util.CommonUtil;
+import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.js2java.provider.AbstractWebFileProvider;
 import com.huawei.kunpeng.intellij.ui.action.FeedBackAction;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
@@ -68,6 +74,7 @@ public class HyperTunerToolWindowFactory implements ToolWindowFactory {
             toolWin.getContentManager().addContent(mainPanel.getContent());
             // toolWindow 弹出
             toolWin.show();
+            toolWin.setAutoHide(false);
         }
     }
 
@@ -78,8 +85,17 @@ public class HyperTunerToolWindowFactory implements ToolWindowFactory {
      */
     private void showCorrectPanel(@NotNull ToolWindow toolWindow) {
         // 启动插件之后先关闭所有WebView页面
-        AbstractWebFileProvider.closeAllWebViewPage();
-        mainPanel = new TuningServerConfigPanel(toolWindow, project);
+        int curStatus = TuningIDEContext.getTuningIDEPluginStatus().value();
+        if (StringUtil.stringIsEmpty(CommonUtil.readCurIpFromConfig())) {
+            // 未配置服务器
+            mainPanel = new TuningServerConfigPanel(toolWindow, project);
+        } else if (curStatus >= IDEPluginStatus.IDE_STATUS_LOGIN.value()) {
+            // 已登录
+            mainPanel = new TuningLoginSuccessPanel(toolWindow, project);
+        } else if (curStatus >= IDEPluginStatus.IDE_STATUS_SERVER_DEPLOY.value()) {
+            // 已配置服务器未登录
+            mainPanel = new TuningServerConfigPanel(toolWindow, project);
+        }
     }
 
     /**

@@ -20,6 +20,7 @@ import com.huawei.kunpeng.hyper.tuner.action.serverconfig.TuningIDEServerConfigA
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
+import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
@@ -31,6 +32,8 @@ import com.intellij.openapi.project.DumbAware;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
+
 /**
  * The class ConfigRemoteServerAction: 配置远端服务器
  *
@@ -39,11 +42,12 @@ import org.jetbrains.annotations.NotNull;
 public class ConfigRemoteServerAction extends AnAction implements DumbAware {
     private static final String CONFIG_SERVER = TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_config_server");
 
+    private static final Icon icon = BaseIntellijIcons.load(IDEConstant.MENU_ICONS_PATH + IDEConstant.MENU_CONFIG_SERVER_ICON);
     /**
      * 左侧树服务器配置菜单动作
      */
     public ConfigRemoteServerAction() {
-        super(CONFIG_SERVER, null, null);
+        super(CONFIG_SERVER, null, icon);
     }
 
     /**
