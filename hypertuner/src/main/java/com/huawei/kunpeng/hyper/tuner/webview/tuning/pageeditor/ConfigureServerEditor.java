@@ -123,15 +123,9 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
      * 配置服务器信息回传后
      */
     public String saveConfig(Map<String, String> params) {
-        preSaveConfig();
         if (!save(params)) {
             // 配置服务器失败
             System.out.println("saving config failed!!!");
-            IDENotificationUtil.notificationCommon(new NotificationBean(
-                    UserManageConstant.CONFIG_TITLE,
-                    TuningI18NServer.toLocale("plugins_common_message_responseError_messagePrefix"),
-                    NotificationType.ERROR
-            ));
             return SaveConfigResponse.FAIL.value();
         } else {
             // 配置服务器成功
@@ -153,37 +147,26 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
     /**
      * 保存服务器配置
      *
-     * @param params ip port certFile证书文件 useCertFlag是否使用证书
+     * @param params ip port localPort
      * @return true:保存服务器配置成功
      */
     private boolean save(Map<String, String> params) {
         String host = params.get("ip");
         String port = params.get("port");
         String localPort = params.get("localPort");
-        ConfigUtils.fillIp2JsonFile(toolName, host, port, localPort);
-        // 将plugin设置为配置服务器状态
-        IDEContext.setIDEPluginStatus(toolName, IDEPluginStatus.IDE_STATUS_SERVER_DEPLOY);
         // check connection is ok
-        ResponseBean response = getServiceConfigResponse();
+        ResponseBean response = getServiceConfigResponse(host, port);
         if (response != null &&
                 (SUCCESS_CODE.equals(response.getCode()) || SUCCESS_CODE.equals(response.getStatus()))) {
-//            if (!HttpsServer.isCertConfirm && Boolean.parseBoolean(params.get("useCertFlag"))) {
-//                serverCertConfirmFailed(toolName, host);
-//                return false;
-//            }
-//            showNotification();
+            Logger.info("connect to remote server success!");
             // update global Context
             updateIDEContext(host);
-            // clear userConfig when config server again
-            ConfigUtils.fillIp2JsonFile(toolName, params.get("ip"), params.get("port"), params.get("localPort"));
+            // save server config info into config.json
+            ConfigUtils.fillIp2JsonFile(toolName, host, port, localPort);
             ConfigUtils.updateUserConfig(ConfigProperty.AUTO_LOGIN_CONFIG.vaLue(), " ", false, false);
             synchronizedLeftTree();
             return true;
         }
-        // 将plugin设置为初始状态
-        IDEContext.setIDEPluginStatus(toolName, IDEPluginStatus.IDE_STATUS_INIT);
-        // 清空本地 ip 缓存
-        ConfigUtils.fillIp2JsonFile(toolName, "", "", "");
         return false;
     }
 
@@ -212,14 +195,15 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
     }
 
     /**
-     * 首次登录时判断修改的IP和端口是否可正常访问
-     *
+     * 判断修改的IP和端口是否可正常访问
+     * @param ip 服务器ip
+     * @param port 服务器端口
      * @return ResponseBean 响应实体
      */
-    protected ResponseBean getServiceConfigResponse() {
+    protected ResponseBean getServiceConfigResponse(String ip, String port) {
         RequestDataBean message = new RequestDataBean(TuningIDEConstant.TOOL_NAME_TUNING, SERVER_STATUS_URL,
                 HttpMethod.GET.vaLue(), false);
-        return TuningHttpsServer.INSTANCE.requestData(message);
+        return TuningHttpsServer.INSTANCE.requestDataWithIpAndPort(message, ip, port);
     }
 
     /**
@@ -248,12 +232,6 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
             toolWindow.getContentManager().addContent(tuningConfigSuccessPanel.getContent());
             toolWindow.getContentManager().setSelectedContent(tuningConfigSuccessPanel.getContent());
         }
-    }
-
-    protected void preSaveConfig() {
-        // 左侧树面板加载loading，loadingText为系统默认
-        UIUtils.changeToolWindowToLoadingPanel(CommonUtil.getDefaultProject(), null,
-                TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
     }
 
     /**

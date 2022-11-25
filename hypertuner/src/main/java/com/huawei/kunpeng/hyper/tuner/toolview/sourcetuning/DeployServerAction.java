@@ -16,21 +16,16 @@
 
 package com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning;
 
-import com.huawei.kunpeng.hyper.tuner.action.serverconfig.TuningIDEServerConfigAction;
-import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
-import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
-import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.InstallDisclaimerDialog;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.DeployServerEditor;
-import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
+import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
-import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-import com.huawei.kunpeng.intellij.common.util.StringUtil;
-import com.huawei.kunpeng.intellij.ui.dialog.IDEBaseDialog;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAware;
 import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
 
 /**
  * The class of DeployServerAction: 部署服务器
@@ -41,11 +36,13 @@ import org.jetbrains.annotations.NotNull;
 public class DeployServerAction extends AnAction implements DumbAware {
     private static final String DEPlOY_SERVER = TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_deploy_server");
 
+    private static final Icon icon = BaseIntellijIcons.load(IDEConstant.MENU_ICONS_PATH + IDEConstant.MENU_DEPLOY_SERVER_ICON);
+
     /**
      * 左侧树服务器配置菜单动作
      */
     public DeployServerAction() {
-        super(DEPlOY_SERVER, null, null);
+        super(DEPlOY_SERVER, null, icon);
     }
 
     /**

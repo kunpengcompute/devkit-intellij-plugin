@@ -83,7 +83,7 @@ public abstract class HttpsServer {
     public static boolean isCertConfirm = true;
 
     /**
-     * http对外服务接口
+     * http对外服务接口，从全局context中读取ip和port
      *
      * @param message 自定义请求传入数据
      * @return ResponseBean
@@ -98,6 +98,42 @@ public abstract class HttpsServer {
             if (ip == null && port == null) {
                 IDENotificationUtil.notificationCommon(new NotificationBean
                         ("", I18NServer.toLocale("plugins_common_message_configServer"), NotificationType.WARNING));
+                throw new IDEException();
+            }
+            // 组装完整的url
+            String url = IDEConstant.URL_PREFIX +
+                    ip +
+                    ":" +
+                    port +
+                    context.get(BaseCacheVal.BASE_URL.vaLue()) +
+                    message.getUrl();
+            message.setUrl(url);
+            // 对需要token的接口设置token
+            if (message.isNeedToken()) {
+                String token = Optional.ofNullable(context.get(BaseCacheVal.TOKEN.vaLue()))
+                        .map(Object::toString).orElse(null);
+                message.setToken(token);
+            }
+            // 获取后端请求数据
+            response = this.requestWebData(message).orElse(null);
+        }
+        return response;
+    }
+
+    /**
+     * http对外服务接口，传入ip和port参数
+     *
+     * @param message 自定义请求传入数据
+     * @param ip 服务器ip地址
+     * @param port 服务器端口
+     * @return ResponseBean
+     */
+    public ResponseBean requestDataWithIpAndPort(RequestDataBean message, String ip, String port) {
+        ResponseBean response = null;
+        Object ctxObj = IDEContext.getValueFromGlobalContext(null, message.getModule());
+        if (ctxObj instanceof Map) {
+            Map<String, Object> context = (Map<String, Object>) ctxObj;
+            if (ip == null && port == null) {
                 throw new IDEException();
             }
             // 组装完整的url

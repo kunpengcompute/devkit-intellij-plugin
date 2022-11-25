@@ -16,6 +16,7 @@
 
 package com.huawei.kunpeng.intellij.ui.action;
 
+import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
@@ -29,6 +30,7 @@ import com.intellij.openapi.project.DumbAware;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -43,13 +45,15 @@ public class FeedBackAction extends AnAction implements DumbAware {
     private static final String FEEDBACK = CommonI18NServer.toLocale("common_feedback");
     private static final int TIME_OUT = 1000 * 3;
 
+    private static final Icon icon = BaseIntellijIcons.load(IDEConstant.MENU_ICONS_PATH + IDEConstant.MENU_FEEDBACK_ICON);
+
     private String feedBackUrl;
 
     /**
      * 左侧树反馈菜单动作
      */
     public FeedBackAction(String feedBackUrl) {
-        super(FEEDBACK, null, null);
+        super(FEEDBACK, null, icon);
         this.feedBackUrl = feedBackUrl;
     }
 

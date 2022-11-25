@@ -478,16 +478,8 @@ public class CommonHandler extends FunctionHandler {
      */
     public void saveFinger(MessageBean message, String module) {
         Logger.info("saving finger!!!");
-        Map<String, String> param = JsonUtil.getJsonObjFromJsonStr(message.getData());
-        // TODO idea处理逻辑不需要保存指纹，该方法可以直接默认返回SUCCESS？
-        ActionOperate actionOperate = new ActionOperate() {
-            @Override
-            public void actionOperate(Object data) {
-                invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
-            }
-        };
-
-        DeployUtil.saveFinger(actionOperate, param);
+        // idea处理逻辑不需要保存指纹，该方法可以直接默认返回SUCCESS？
+        invokeCallback(message.getCmd(), message.getCbid(), "\"" + "SUCCESS" + "\"");
     }
 
     /**
