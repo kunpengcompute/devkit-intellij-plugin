@@ -123,15 +123,9 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
      * 配置服务器信息回传后
      */
     public String saveConfig(Map<String, String> params) {
-        preSaveConfig();
         if (!save(params)) {
             // 配置服务器失败
             System.out.println("saving config failed!!!");
-            IDENotificationUtil.notificationCommon(new NotificationBean(
-                    UserManageConstant.CONFIG_TITLE,
-                    TuningI18NServer.toLocale("plugins_common_message_responseError_messagePrefix"),
-                    NotificationType.ERROR
-            ));
             return SaveConfigResponse.FAIL.value();
         } else {
             // 配置服务器成功
@@ -165,6 +159,7 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
         ResponseBean response = getServiceConfigResponse();
         if (response != null &&
                 (SUCCESS_CODE.equals(response.getCode()) || SUCCESS_CODE.equals(response.getStatus()))) {
+            Logger.info("connect to remote server success!");
             // update global Context
             updateIDEContext(host);
             // clear userConfig when config server again
@@ -173,10 +168,11 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
             synchronizedLeftTree();
             return true;
         }
+        Logger.info("connect to remote server fail!");
         // 将plugin设置为初始状态
-        IDEContext.setIDEPluginStatus(toolName, IDEPluginStatus.IDE_STATUS_INIT);
+//        IDEContext.setIDEPluginStatus(toolName, IDEPluginStatus.IDE_STATUS_INIT);
         // 清空本地 ip 缓存
-        ConfigUtils.fillIp2JsonFile(toolName, "", "", "");
+//        ConfigUtils.fillIp2JsonFile(toolName, "", "", "");
         return false;
     }
 
@@ -241,12 +237,6 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
             toolWindow.getContentManager().addContent(tuningConfigSuccessPanel.getContent());
             toolWindow.getContentManager().setSelectedContent(tuningConfigSuccessPanel.getContent());
         }
-    }
-
-    protected void preSaveConfig() {
-        // 左侧树面板加载loading，loadingText为系统默认
-        UIUtils.changeToolWindowToLoadingPanel(CommonUtil.getDefaultProject(), null,
-                TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
     }
 
     /**
