@@ -103,6 +103,16 @@ public enum PageType {
         public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
             return Optional.of(new ConfigGuideEditor(file));
         }
+    },
+
+    /**
+     * 错误指示页面
+     */
+    ERROR_INSTRUCTION("error_instruction") {
+        @Override
+        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
+            return Optional.of(new ErrorInstructionEditor(file));
+        }
     };
 
     private final String type;

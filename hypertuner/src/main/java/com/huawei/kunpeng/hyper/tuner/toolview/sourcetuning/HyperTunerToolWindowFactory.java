@@ -19,6 +19,7 @@ package com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningConfigSuccessPanel;
 import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningLoginSuccessPanel;
 import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
@@ -92,9 +93,9 @@ public class HyperTunerToolWindowFactory implements ToolWindowFactory {
         } else if (curStatus >= IDEPluginStatus.IDE_STATUS_LOGIN.value()) {
             // 已登录
             mainPanel = new TuningLoginSuccessPanel(toolWindow, project);
-        } else if (curStatus >= IDEPluginStatus.IDE_STATUS_SERVER_DEPLOY.value()) {
+        } else {
             // 已配置服务器未登录
-            mainPanel = new TuningServerConfigPanel(toolWindow, project);
+            mainPanel = new TuningConfigSuccessPanel(toolWindow, project);
         }
     }
 

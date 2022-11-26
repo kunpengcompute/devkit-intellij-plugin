@@ -415,6 +415,10 @@ public class CommonHandler extends FunctionHandler {
                 break;
             case "install":
                 DeployServerEditor.openPage();
+            case "errorInstruction":
+                Map<String, String> pageParams = (Map<String, String>) messageData.get("message");
+                Logger.info("queryParam is", messageData.get("message"));
+                ErrorInstructionEditor.openPage(pageParams);
         }
     }
 
