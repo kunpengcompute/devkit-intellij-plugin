@@ -170,19 +170,6 @@ public class ConfigureServerEditor extends TuningWebFileEditor {
         return false;
     }
 
-    /**
-     * 配置服务器成功后提示携带登录跳转
-     */
-    private void showNotification() {
-        Project project = CommonUtil.getDefaultProject();
-        String content = CommonI18NServer.toLocale("common_config_success");
-        NotificationBean notificationBean = new NotificationBean(CommonI18NServer.toLocale(
-                "common_config_title"), content, NotificationType.INFORMATION);
-        notificationBean.setProject(project);
-//        IDENotificationUtil.notificationForHyperlink(notificationBean, data -> notificationForHyperlinkAction());
-        IDENotificationUtil.notificationCommon(notificationBean);
-    }
-//
     private void synchronizedLeftTree() {
         // 如果打开多个project， 同步每一个project左侧树状态
         Project[] openProjects = ProjectUtil.getOpenProjects();

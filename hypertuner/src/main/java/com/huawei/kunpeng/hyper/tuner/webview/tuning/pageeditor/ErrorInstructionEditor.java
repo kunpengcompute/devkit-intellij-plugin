@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.util.Map;
 
 public class ErrorInstructionEditor extends TuningWebFileEditor {
-    private ErrorInstructionWebView errorInstructionWebView;
+    private final ErrorInstructionWebView errorInstructionWebView;
     private static Map<String, String> pageParams;
 
     public ErrorInstructionEditor(VirtualFile file) {
@@ -33,6 +33,7 @@ public class ErrorInstructionEditor extends TuningWebFileEditor {
 
     @Override
     public void dispose() {
+        super.dispose();
         errorInstructionWebView.dispose();
     }
 

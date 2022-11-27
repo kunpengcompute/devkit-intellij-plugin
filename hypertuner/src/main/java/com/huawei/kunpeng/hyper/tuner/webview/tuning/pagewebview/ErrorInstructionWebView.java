@@ -25,14 +25,6 @@ public class ErrorInstructionWebView extends WebView {
                 BaseCacheVal.LIGHT_THEME.vaLue());
         String currentTheme = isLightThemeInContext ? "light" : "dark";
         pageParams.put("currentTheme", currentTheme);
-//        queryParams: { ip: serverIP, port: servicePort, deployIP }
-//        String ip = "";
-//        String port = "";
-//        queryParams.put("ip", ip);
-//        queryParams.put("port", port);
-//        queryParams.put("deployIp", deployIp);
-        System.out.println("error ip: " + queryParams.get("ip"));
-        System.out.println("error port: " + queryParams.get("port"));
         pageParams.put("queryParams", queryParams);
 
         NavigatorPageBean navigatorPage =
