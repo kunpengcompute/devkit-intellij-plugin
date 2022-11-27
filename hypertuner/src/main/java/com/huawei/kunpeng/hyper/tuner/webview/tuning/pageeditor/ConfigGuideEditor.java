@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 public class ConfigGuideEditor extends TuningWebFileEditor {
-    private ConfigGuideWebView configGuideWebView;
+    private final ConfigGuideWebView configGuideWebView;
 
     public ConfigGuideEditor(VirtualFile file) {
         currentFile = file;
@@ -36,6 +36,7 @@ public class ConfigGuideEditor extends TuningWebFileEditor {
 
     @Override
     public void dispose() {
+        super.dispose();
         configGuideWebView.dispose();
     }
 
