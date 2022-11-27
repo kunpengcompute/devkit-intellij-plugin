@@ -24,6 +24,7 @@ public class ErrorInstructionWebView extends WebView {
         boolean isLightThemeInContext = IDEContext.getValueFromGlobalContext(CommonUtil.getProjectName(),
                 BaseCacheVal.LIGHT_THEME.vaLue());
         String currentTheme = isLightThemeInContext ? "light" : "dark";
+        queryParams.put("intellijFlag", "true");
         pageParams.put("currentTheme", currentTheme);
         pageParams.put("queryParams", queryParams);
 

@@ -727,7 +727,7 @@ public class DeployUtil extends ShellTerminalUtil {
      * @param config        配置信息参数
      */
     public static void readFinger(ActionOperate actionOperate, SshConfig config) {
-        // TODO 读取指纹，返回读取结果
+        // 读取指纹，返回读取结果
         String finger = newReadFingerprint(config, actionOperate);
         if (ValidateUtils.isNotEmptyString(finger)) {
             actionOperate.actionOperate(finger);

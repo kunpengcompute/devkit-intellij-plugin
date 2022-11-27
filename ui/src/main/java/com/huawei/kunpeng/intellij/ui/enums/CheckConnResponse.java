@@ -4,7 +4,7 @@ public enum CheckConnResponse {
     SUCCESS("SUCCESS"),
     USERAUTH_FAILURE("USERAUTH_FAILURE"),
     FINGERPRINT_FAILURE("host fingerprint verification failed"),
-    TIME_OUT("Timed out while waiting for handshake"),
+    TIME_OUT("TIMEOUT"),
     PASSPHRASE_FAILURE("Cannot parse privateKey"),
     CANCEL("Cancel");
 

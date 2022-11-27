@@ -467,8 +467,11 @@ public class CommonHandler extends FunctionHandler {
         ActionOperate actionOperate = new ActionOperate() {
             @Override
             public void actionOperate(Object data) {
-                invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
-
+                if (data instanceof CheckConnResponse) {
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + ((CheckConnResponse) data).value() + "\"");
+                } else {
+                    invokeCallback(message.getCmd(), message.getCbid(), "\"" + data.toString() + "\"");
+                }
             }
         };
         DeployUtil.readFinger(actionOperate, config);
@@ -525,7 +528,7 @@ public class CommonHandler extends FunctionHandler {
         Logger.info(param.toString());
 
         SshConfig config = DeployUtil.getConfig(param);
-        // TODO 如果finger不为noFirst，需要设置指纹
+        // 如果finger不为noFirst，需要设置指纹
         if (param.containsKey("finger") && !param.get("finger").equals("noFirst")) {
             config.setFingerprint(param.get("finger"));
         }
