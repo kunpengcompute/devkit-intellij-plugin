@@ -27,10 +27,7 @@ import com.huawei.kunpeng.hyper.tuner.model.JavaPerfOperateLogBean;
 import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningLoginSuccessPanel;
 import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
 import com.huawei.kunpeng.hyper.tuner.webview.WebFileProvider;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.DeployServerEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ErrorInstructionEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.IDELoginEditor;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.*;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
@@ -410,6 +407,9 @@ public class CommonHandler extends FunctionHandler {
                 break;
             case "install":
                 DeployServerEditor.openPage();
+                break;
+            case "freeTrialProcessEnvironment":
+                FreeTrialEditor.openPage();
                 break;
             case "errorInstruction":
                 Map<String, String> pageParams = (Map<String, String>) messageData.get("message");
