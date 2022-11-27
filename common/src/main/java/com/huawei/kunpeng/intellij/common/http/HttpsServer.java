@@ -219,7 +219,8 @@ public abstract class HttpsServer {
             }
         } catch (ConnectException | SocketTimeoutException e) {
             Logger.error("invoke HttpUtils.sendSSLRequest ConnectException | SocketTimeoutException!!!");
-            return displayServerAbnormalPanel();
+//            return displayServerAbnormalPanel();
+            return Optional.of("");
         } catch (IOException | KeyManagementException | NoSuchAlgorithmException e) {
             Logger.error("invoke HttpUtils.sendSSLRequest IOException|KeyManagementException" + "|NoSuchAlgorithmException!!");
         } finally {
@@ -298,7 +299,8 @@ public abstract class HttpsServer {
                 }
                 default:
                     // 错误处理状态码 500系列
-                    return displayServerAbnormalPanel();
+//                    return displayServerAbnormalPanel();
+                    return Optional.of("");
             }
             if (rspCode != HttpURLConnection.HTTP_OK && rspCode != HttpURLConnection.HTTP_UNAUTHORIZED
                     && rspCode != HttpURLConnection.HTTP_BAD_REQUEST

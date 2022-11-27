@@ -102,7 +102,8 @@ public class TuningHttpsServer extends HttpsServer {
                 }
                 default:
                     // 错误处理状态码 500系列
-                    return displayServerAbnormalPanel();
+//                    return displayServerAbnormalPanel();
+                    return Optional.of("");
             }
             if (rspCode != HttpURLConnection.HTTP_OK && rspCode != HttpURLConnection.HTTP_UNAUTHORIZED
                     && rspCode != HttpURLConnection.HTTP_BAD_REQUEST && rspCode != HttpStatus.HTTP_423_LOCKED.value()) {
@@ -217,7 +218,8 @@ public class TuningHttpsServer extends HttpsServer {
         if (request.isNeedUploadFile()) {
             return handlerUploadFailed(request);
         }
-        return displayServerAbnormalPanel();
+//        return displayServerAbnormalPanel();
+        return Optional.ofNullable("");
     }
 
     /**
