@@ -17,7 +17,6 @@
 package com.huawei.kunpeng.hyper.tuner.webview.tuning.handler;
 
 import com.huawei.kunpeng.hyper.tuner.action.install.TuningInstallAction;
-import com.huawei.kunpeng.hyper.tuner.action.serverconfig.TuningServerConfigAction;
 import com.huawei.kunpeng.hyper.tuner.action.uninstall.TuningUninstallAction;
 import com.huawei.kunpeng.hyper.tuner.action.upgrade.TuningUpgradeAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
@@ -42,7 +41,6 @@ import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.enums.SystemOS;
-import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.*;
 import com.huawei.kunpeng.intellij.js2java.bean.MessageBean;
@@ -62,7 +60,6 @@ import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.vfs.VirtualFile;
 
 import java.io.File;
@@ -76,12 +73,8 @@ import java.util.stream.Stream;
 
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
-import kotlinx.serialization.json.Json;
-import kotlinx.serialization.json.JsonArray;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-
-import static com.huawei.kunpeng.intellij.common.util.FileUtil.readFileContent;
 
 /**
  * 公共的function处理器
@@ -391,8 +384,9 @@ public class CommonHandler extends FunctionHandler {
      * @param module  模块
      */
     public void openNewPage(MessageBean message, String module) {
-        Map<String, String> messageData = JsonUtil.getJsonObjFromJsonStr(message.getData());
-        String page = messageData.get("router");
+        Map<String, Object> messageData = JsonUtil.getJsonObjFromJsonStr(message.getData());
+        Logger.info("open new page with data: ", message.getData());
+        String page = (String) messageData.get("router");
         boolean closePage = Optional.of(Objects.equals(messageData.get("closePage"), "true")).orElse(false);
 
         if (closePage) {
@@ -416,10 +410,12 @@ public class CommonHandler extends FunctionHandler {
                 break;
             case "install":
                 DeployServerEditor.openPage();
+                break;
             case "errorInstruction":
                 Map<String, String> pageParams = (Map<String, String>) messageData.get("message");
                 Logger.info("queryParam is", messageData.get("message"));
                 ErrorInstructionEditor.openPage(pageParams);
+                break;
         }
     }
 
@@ -618,9 +614,9 @@ public class CommonHandler extends FunctionHandler {
                 }
             }
         };
-//        action.newOKAction(data,actionOperate);
-        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
-        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
+        action.newOKAction(data,actionOperate);
+//        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+//        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
 //        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
 //        actionOperate.actionOperate(MaintenanceResponse.UPLOAD_ERROR);
     }
@@ -654,11 +650,11 @@ public class CommonHandler extends FunctionHandler {
                 }
             }
         };
-//        action.newOKAction(data, actionOperate);
+        action.newOKAction(data, actionOperate);
 //        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
 //        actionOperate.actionOperate(MaintenanceResponse.FAKE_SUCCESS);
-        actionOperate.actionOperate(MaintenanceResponse.UPLOAD_ERROR);
-        actionOperate.actionOperate(MaintenanceResponse.FAILED);
+//        actionOperate.actionOperate(MaintenanceResponse.UPLOAD_ERROR);
+//        actionOperate.actionOperate(MaintenanceResponse.FAILED);
     }
 
     /**
@@ -690,9 +686,9 @@ public class CommonHandler extends FunctionHandler {
                 }
             }
         };
-//        action.newOKAction(data,actionOperate);
-        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
-        actionOperate.actionOperate(MaintenanceResponse.SUCCESS);
+        action.newOKAction(data,actionOperate);
+//        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
+//        actionOperate.actionOperate(MaintenanceResponse.SUCCESS);
 //        actionOperate.actionOperate(MaintenanceResponse.CLOSE_LOADING);
 //        actionOperate.actionOperate(MaintenanceResponse.FAILED);
     }
