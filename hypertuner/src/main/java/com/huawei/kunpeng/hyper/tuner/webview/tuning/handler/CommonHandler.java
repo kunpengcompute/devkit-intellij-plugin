@@ -30,6 +30,7 @@ import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPane
 import com.huawei.kunpeng.hyper.tuner.webview.WebFileProvider;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.DeployServerEditor;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ErrorInstructionEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.IDELoginEditor;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
