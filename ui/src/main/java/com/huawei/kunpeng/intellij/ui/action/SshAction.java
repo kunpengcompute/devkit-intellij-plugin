@@ -89,6 +89,7 @@ public abstract class SshAction extends IDEPanelBaseAction {
         timer.schedule(task, 0, 1000);
     }
 
+
     /**
      * 上传脚本至dir下
      *

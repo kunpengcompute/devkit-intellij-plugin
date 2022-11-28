@@ -18,7 +18,6 @@ package com.huawei.kunpeng.intellij.ui.dialog.wrap;
 
 import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
-import com.huawei.kunpeng.intellij.common.util.I18NServer;
 import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
 import com.huawei.kunpeng.intellij.ui.action.SshAction;
 import com.huawei.kunpeng.intellij.ui.dialog.IdeaDialog;
@@ -26,12 +25,10 @@ import com.huawei.kunpeng.intellij.ui.enums.Dialogs;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.panel.InstallUpgradePanel;
 import com.huawei.kunpeng.intellij.ui.panel.LeftTreeLoadingPanel;
-
 import com.intellij.openapi.ui.DialogEarthquakeShaker;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.util.ui.UIUtil;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,9 +64,9 @@ public abstract class InstallUpgradeWrapDialog extends IdeaDialog implements Act
      */
     public static JLabel gifLabel;
 
-    private static final String HELP_URL = I18NServer.toLocale("plugins_ui_common_install_help_url");
+    private static final String HELP_URL = CommonI18NServer.toLocale("plugins_ui_common_install_help_url");
 
-    private static final String UPGRADE_HELP_URL = I18NServer.toLocale("plugins_ui_common_upgrade_help_url");
+    private static final String UPGRADE_HELP_URL = CommonI18NServer.toLocale("plugins_ui_common_upgrade_help_url");
 
     private JButton check;
 
@@ -112,7 +109,7 @@ public abstract class InstallUpgradeWrapDialog extends IdeaDialog implements Act
                         CommonI18NServer.toLocale("plugins_common_button_cancel"),
                         CommonI18NServer.toLocale("plugins_common_button_connect"));
                 // 设置帮助
-                setHelp(I18NServer.toLocale("plugins_ui_common_install_help"), HELP_URL);
+                setHelp(CommonI18NServer.toLocale("plugins_ui_common_install_help"), HELP_URL);
             }
         }
         // 初始化弹框内容
@@ -193,7 +190,7 @@ public abstract class InstallUpgradeWrapDialog extends IdeaDialog implements Act
         check.setText(CommonI18NServer.toLocale("plugins_common_button_connect"));
         check.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent event) {
                 doCheckClickAction(installUpgradePanel);
             }
         });
@@ -233,7 +230,6 @@ public abstract class InstallUpgradeWrapDialog extends IdeaDialog implements Act
      */
     private boolean validateAllParam(InstallUpgradePanel installUpgradePanel) {
         List<ValidationInfo> infoList = installUpgradePanel.doValidateAll();
-        boolean isTrue = true;
         if (ValidateUtils.isNotEmptyCollection(infoList)) {
             ValidationInfo info = infoList.get(0);
             if (info.component != null && info.component.isVisible()) {
@@ -244,14 +240,15 @@ public abstract class InstallUpgradeWrapDialog extends IdeaDialog implements Act
             }
             startTrackingValidation();
             if (infoList.stream().anyMatch(info1 -> !info1.okEnabled)) {
-                isTrue = false;
+                return false;
             }
             if (nextVerify()) {
                 close(NEXT_USER_EXIT_CODE);
+                return true;
             }
         }
         after();
-        return isTrue;
+        return true;
     }
 
     /**
@@ -286,6 +283,7 @@ public abstract class InstallUpgradeWrapDialog extends IdeaDialog implements Act
      *
      * @return 异常集合
      */
+    @NotNull
     protected List<ValidationInfo> doValidateAll() {
         return this.mainPanel.doValidateAll();
     }

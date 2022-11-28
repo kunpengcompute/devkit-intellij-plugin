@@ -23,14 +23,11 @@ import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.bean.SshConfig;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.I18NServer;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
 
 import com.intellij.notification.NotificationType;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -43,6 +40,7 @@ import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Objects;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
@@ -61,17 +59,12 @@ public class AccountTipsDialog extends IdeaDialog {
     /**
      * root用户链接
      */
-    private static final String ROOT_FAQ = I18NServer.toLocale("plugins_ui_common_root_faq_url");
+    private static final String ROOT_FAQ = CommonI18NServer.toLocale("plugins_ui_common_root_faq_url");
 
     /**
      * 普通用户链接
      */
-    private static final String OTHER_FAQ = I18NServer.toLocale("plugins_ui_common_other_faq_url");
-
-    /**
-     * 提示图片
-     */
-    private static final String DISCLAIMER_INFO_PNG = "/assets/img/settings/disclaimer_dialog.png";
+    private static final String OTHER_FAQ = CommonI18NServer.toLocale("plugins_ui_common_other_faq_url");
 
     private Map<String, String> params;
 
@@ -218,8 +211,10 @@ public class AccountTipsDialog extends IdeaDialog {
         jPanel.add(icon, BorderLayout.WEST);
         jPanel.add(jEditorPane, BorderLayout.SOUTH);
         icon.setIcon(ICON_INFO_ICON);
-        icon.setHorizontalTextPosition(SwingConstants.RIGHT); // 水平方向文本在图片右边
-        icon.setVerticalTextPosition(SwingConstants.CENTER); // 垂直方向文本在图片中心
+        // 水平方向文本在图片右边
+        icon.setHorizontalTextPosition(SwingConstants.RIGHT);
+        // 垂直方向文本在图片中心
+        icon.setVerticalTextPosition(SwingConstants.CENTER);
         return jPanel;
     }
 }

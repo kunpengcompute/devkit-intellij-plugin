@@ -16,66 +16,68 @@
 
 package com.huawei.kunpeng.hyper.tuner.common.utils;
 
+import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
-import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
+import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.TuningConfigSaveConfirmDialog;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningConfigSuccessPanel;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
-
-import com.intellij.openapi.application.PathManager;
-import com.intellij.openapi.wm.ex.StatusBarEx;
-import com.intellij.openapi.wm.impl.ProjectFrameHelper;
-
-import java.awt.Window;
-import java.util.concurrent.atomic.AtomicBoolean;
+import com.huawei.kunpeng.intellij.js2java.provider.AbstractWebFileProvider;
+import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
+import com.huawei.kunpeng.intellij.ui.panel.SaveConfirmPanel;
+import com.intellij.ide.impl.ProjectUtil;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
 
 /**
- * porting common util extends CommonUtil
+ * Tuning common util extends CommonUtil
  *
- * @since 2.3.T10
+ * @since 2022-06-28
  */
 public class TuningCommonUtil extends CommonUtil {
     /**
-     * 判断当前窗口是否有正在进行的任务
-     *
-     * @param titleStr 任务标题
-     * @return 是否有正在信息的任务
+     * 刷新左侧树面板为配置服务器面板
      */
-    public static boolean isTaskRunning(String titleStr) {
-        Window window = CommonUtil.getDefaultWindow();
-        AtomicBoolean isRunning = new AtomicBoolean(false);
-        ProjectFrameHelper frame = ProjectFrameHelper
-                .getFrameHelper(window);
-        if (frame == null) {
-            return isRunning.get();
+    public static void refreshServerConfigPanel() {
+        // 如果打开多个project， 同步每一个project左侧树状态
+        Project[] openProjects = ProjectUtil.getOpenProjects();
+        for (Project proj : openProjects) {
+            // 配置服务器完成后刷新左侧树面板为配置服务器面板
+            ToolWindow toolWindow =
+                    ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
+            TuningServerConfigPanel tuningServerConfigPanel = new TuningServerConfigPanel(toolWindow, proj);
+            toolWindow.getContentManager().removeAllContents(true);
+            toolWindow.getContentManager().addContent(tuningServerConfigPanel.getContent());
+            toolWindow.getContentManager().setSelectedContent(tuningServerConfigPanel.getContent());
+            AbstractWebFileProvider.closeAllWebViewPage();
         }
-        StatusBarEx statusBar = frame.getStatusBar();
-        if (statusBar != null) {
-            statusBar.getBackgroundProcesses().forEach(pair -> {
-                if (pair.getFirst().getTitle().equals(titleStr)) {
-                    isRunning.set(true);
-                    return;
-                }
-            });
-        }
-        return isRunning.get();
     }
 
     /**
-     * 获取插件安装目录
-     *
-     * @return string 安装目录
+     * 刷新左侧树面板为配置服务器成功面板
      */
-    public static String getPluginInstalledPath() {
-        String pluginPath = PathManager.getPluginsPath();
-        return pluginPath + IDEConstant.PATH_SEPARATOR + TuningIDEConstant.PLUGIN_NAME;
+    public static void refreshServerConfigSuccessPanel() {
+        Project[] openProjects = ProjectUtil.getOpenProjects();
+        for (Project proj : openProjects) {
+            // 配置服务器完成后刷新左侧树面板为配置服务器面板
+            ToolWindow toolWindow =
+                    ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
+            TuningConfigSuccessPanel tuningConfigSuccessPanel = new TuningConfigSuccessPanel(toolWindow, proj);
+            toolWindow.getContentManager().removeAllContents(true);
+            toolWindow.getContentManager().addContent(tuningConfigSuccessPanel.getContent());
+            toolWindow.getContentManager().setSelectedContent(tuningConfigSuccessPanel.getContent());
+            AbstractWebFileProvider.closeAllWebViewPage();
+        }
     }
 
     /**
-     * 获取安装目录下具体位置文件
-     *
-     * @param filePath 文件位置
-     * @return string 文件
+     * 展示切换服务器确认弹框
      */
-    public static String getPluginInstalledPathFile(String filePath) {
-        return getPluginInstalledPath() + IDEConstant.PATH_SEPARATOR + filePath;
+    public static void showConfigSaveConfirmDialog() {
+        IDEBasePanel createConfirmPanel = new SaveConfirmPanel(null);
+        TuningConfigSaveConfirmDialog dialog = new TuningConfigSaveConfirmDialog(
+                InstallManageConstant.CONFIG_SAVE_CONFIRM_TITLE, createConfirmPanel);
+        dialog.displayPanel();
     }
 }

@@ -20,8 +20,9 @@ import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.bean.RequestDataBean;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
+import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.task.impl.UploadFileProcess;
+import com.huawei.kunpeng.intellij.common.task.UploadFileProcess;
 
 import com.intellij.notification.NotificationType;
 
@@ -204,8 +205,8 @@ public class HttpCommonUtil {
             Logger.error("downComFile HttpUtils.sendSSLRequest IOException");
             isDeleteFile = true;
             NotificationBean notificationBean = new NotificationBean(
-                    I18NServer.toLocale("plugins_porting_download_bc_files_title"),
-                    filePath + I18NServer.toLocale("plugins_porting_download_files_fail"),
+                    CommonI18NServer.toLocale("plugins_common_download_bc_files_title"),
+                    filePath + CommonI18NServer.toLocale("plugins_common_download_files_fail"),
                     NotificationType.ERROR);
             IDENotificationUtil.notificationCommon(notificationBean);
         }

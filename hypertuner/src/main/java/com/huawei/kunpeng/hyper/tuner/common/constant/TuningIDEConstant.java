@@ -16,7 +16,6 @@
 
 package com.huawei.kunpeng.hyper.tuner.common.constant;
 
-import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 
 /**
@@ -36,16 +35,6 @@ public class TuningIDEConstant<T> extends IDEConstant {
     public static final String TOOL_NAME_TUNING = "tuning";
 
     /**
-     * 工具名称
-     */
-    public static final String SYS = "sys";
-
-    /**
-     * 工具名称
-     */
-    public static final String JAVA = "java";
-
-    /**
      * 请求成功返回
      */
     public static final String SUCCESS_CODE = "UserManage.Success";
@@ -56,52 +45,59 @@ public class TuningIDEConstant<T> extends IDEConstant {
     public static final String HYPER_TUNER_TOOL_WINDOW_ID = "Hyper Tuner";
 
     /**
-     * url文件urlConfig.json路径
-     */
-    public static final String URL_CONFIG_PATH = "/assets/urlConfig.json";
-
-    /**
      * tuning插件webview页面地址
      */
     public static final String TUNING_WEB_VIEW_PATH = "webview";
 
     /**
-     * tuning插件webview页面地址
+     * tuning插件集成nginx目录
      */
-    public static final String TUNING_WEB_VIEW_INDEX_HTML = "index.html";
+    public static final String TUNING_NGINX_PATH = "nginx";
 
     /**
-     * tuning页面包地址
+     * 工具名称
      */
-    public static final String TUNING_PLUGIN_NAME = "/webview/tuning.zip";
+    public static final String SYS = "sys";
 
     /**
-     * tuning插件webview页面地址
+     * 工具名称
      */
-    public static final String JAVA_WEB_VIEW_INDEX_HTML = "java.index.html";
+    public static final String JAVA = "java";
 
     /**
-     * tuning页面包地址
+     * tuning插件登录页面webview页面地址
      */
-    public static final String JAVA_PLUGIN_NAME = "/webview/javaPerf.zip";
+    public static final String TUNING_LOGIN_WEB_VIEW_INDEX_HTML = "/webview/index.html";
+
+    /**
+     * tuning插件静态webview代理html文件地址
+     */
+    public static final String WEB_VIEW_INDEX_HTML = "/webview/tuning/sys/index.html";
+
+    /**
+     * nginx 资源包地址
+     */
+    public static final String NGINX_PLUGIN_NAME = "/nginx/nginx-1.18.0.zip";
+
+    /**
+     * nginx mac资源包地址
+     */
+    public static final String NGINX_MAC_PLUGIN_NAME = "/nginx/nginx-mac.zip";
+
 
     /**
      * 插件名称
      */
     public static final String TUNING_NAME = "Kunpeng-DevKit-IDE-hyper-tuner-plugin";
 
-    /**
-     * tuning插件webview页面地址
-     */
-    public static final String JAVA_WEB_VIEW_GLOBLE_STATE = "javaWebViewGlobleState";
 
     /**
-     * 系统性能分析
+     * tuning页面包地址
      */
-    public static final String SYSTEM_PROFILER = TuningI18NServer.toLocale("plugins_hyper_tuner_sysperf_system");
+    public static final String TUNING_PLUGIN_NAME= "/webview/tuning.zip";
 
     /**
-     * java性能分析
+     * url文件urlConfig.json路径
      */
-    public static final String JAVA_PROFILER = TuningI18NServer.toLocale("plugins_hyper_tuner_sysperf_javaperf");
+    public static final String URL_CONFIG_PATH = "/assets/urlConfig.json";
 }

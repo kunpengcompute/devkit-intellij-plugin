@@ -25,17 +25,18 @@ import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * 自定义webview文件Provider
+ * 自定义WebView文件Provider
  *
  * @since 2020-10-23
  */
 public class WebFileProvider extends AbstractWebFileProvider {
     @Override
     public boolean accept(@NotNull Project project, @NotNull VirtualFile file) {
-        if (file.getCanonicalPath().contains(TuningIDEConstant.TUNING_NAME)) {
+        if (Objects.requireNonNull(file.getCanonicalPath()).contains(TuningIDEConstant.TUNING_NAME)) {
             return file.getFileType().getDefaultExtension().equals(TuningWebFileType.EXTENSION);
         }
         return false;
@@ -44,6 +45,7 @@ public class WebFileProvider extends AbstractWebFileProvider {
     @Override
     public WebFileEditor getWebFileEditor(@NotNull VirtualFile file, String[] paths, String[] pathsAfter) {
         WebFileEditor webFileEditor = new DefaultEditor(file);
+        webFileEditor = PageType.getStatusByValue(pathsAfter[0]).getWebFileEditor(file).orElse(webFileEditor);
         if (IDEContext.checkLogin(TuningIDEConstant.TOOL_NAME_TUNING)) {
             webFileEditor = PageType.getStatusByValue(pathsAfter[0]).getWebFileEditor(file).orElse(webFileEditor);
         }
@@ -52,7 +54,7 @@ public class WebFileProvider extends AbstractWebFileProvider {
 
     @Override
     public boolean validateFilePathAndType(VirtualFile file) {
-        if (file.getCanonicalPath().contains(TuningIDEConstant.TUNING_NAME)) {
+        if (Objects.requireNonNull(file.getCanonicalPath()).contains(TuningIDEConstant.TUNING_NAME)) {
             return file.getFileType().getDefaultExtension().equals(TuningWebFileType.EXTENSION);
         }
         return false;

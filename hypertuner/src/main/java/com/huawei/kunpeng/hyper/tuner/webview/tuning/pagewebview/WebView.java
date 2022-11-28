@@ -62,10 +62,17 @@ public abstract class WebView extends AbstractWebView {
         }
 
         // 执行具体处理方法
-        ApplicationManager.getApplication().invokeLater(() -> {
-            CMDFunction.getStatusByValue(messageBean.getCmd())
-                    .functionHandler()
-                    .executeFunction(messageBean.getCmd(), messageBean, TuningIDEConstant.TOOL_NAME_TUNING);
-        });
+        ApplicationManager.getApplication().invokeLater(() -> CMDFunction.getStatusByValue(messageBean.getCmd())
+                .functionHandler()
+                .executeFunction(messageBean.getCmd(), messageBean, TuningIDEConstant.TOOL_NAME_TUNING));
+    }
+
+    /**
+     * indexHtmlKey使用tuning插件特定值
+     * @return tuning插件静态webview代理html位置
+     */
+    @Override
+    public String getIndexHtmlKey() {
+        return TuningIDEConstant.WEB_VIEW_INDEX_HTML;
     }
 }

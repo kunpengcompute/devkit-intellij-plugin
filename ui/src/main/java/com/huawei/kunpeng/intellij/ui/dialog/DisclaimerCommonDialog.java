@@ -20,10 +20,9 @@ import com.huawei.kunpeng.intellij.common.util.I18NServer;
 
 import com.intellij.openapi.ui.DialogWrapper;
 
+import java.awt.event.ActionEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
 import javax.swing.JCheckBox;
@@ -96,6 +95,7 @@ public class DisclaimerCommonDialog extends IdeaDialog {
     /**
      * 点×方法重写
      */
+    @Override
     public void doCancelAction() {
         if (!isDoEvent || okVerify()) {
             super.doCancelAction();
@@ -127,12 +127,7 @@ public class DisclaimerCommonDialog extends IdeaDialog {
                             }
 
                             private void doEvent(JCheckBox checkBoxObj) {
-                                JCheckBox checkBox = checkBoxObj;
-                                if (checkBox.isSelected()) {
-                                    getOKAction().setEnabled(true);
-                                } else {
-                                    getOKAction().setEnabled(false);
-                                }
+                                getOKAction().setEnabled(checkBoxObj.isSelected());
                             }
                         });
     }

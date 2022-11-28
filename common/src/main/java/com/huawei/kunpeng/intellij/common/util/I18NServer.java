@@ -62,7 +62,6 @@ public class I18NServer {
         // 更新工具语言国际化标签
         updateTitleDisplay();
         Logger.info("=====update current Locale successful=====");
-
         return locale;
     }
 
@@ -73,10 +72,9 @@ public class I18NServer {
      */
     @NotNull
     protected static Locale getLocale() {
-        Locale locale = ("File".equals(ActionManager.getInstance().getAction("FileMenu").getTemplateText()))
+        return ("File".equals(ActionManager.getInstance().getAction("FileMenu").getTemplateText()))
                 ? new Locale( "en",  "US")
                 : new Locale( "zh",  "CN");
-        return locale;
     }
 
     /**

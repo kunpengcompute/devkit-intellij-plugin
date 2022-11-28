@@ -37,13 +37,28 @@ public class CheckedUtils {
     public static final String USER_NAME_REG_EXP = "^[a-zA-Z][a-zA-Z0-9_-]{5,31}$";
 
     /**
-     * 校验端口合法性
+     * 校验端口合法性1-65535
      *
      * @param port port
      * @return ture or false
      */
     public static boolean checkPort(String port) {
         String regex = "([1-9]|[1-9]\\d{1,3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])";
+        String tempStr = Normalizer.normalize(port, Normalizer.Form.NFKC);
+        if (ValidateUtils.isNotEmptyString(tempStr)) {
+            return tempStr.matches(regex);
+        }
+        return false;
+    }
+
+    /**
+     * 校验端口合法性1024-65535
+     *
+     * @param port port
+     * @return ture or false
+     */
+    public static boolean checkConfigPort(String port) {
+        String regex = "^(1(02[4-9]|0[3-9][0-9]|[1-9][0-9]{2})|[2-9][0-9]{3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$";
         String tempStr = Normalizer.normalize(port, Normalizer.Form.NFKC);
         if (ValidateUtils.isNotEmptyString(tempStr)) {
             return tempStr.matches(regex);

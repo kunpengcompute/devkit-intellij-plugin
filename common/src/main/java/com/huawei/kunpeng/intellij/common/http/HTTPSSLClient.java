@@ -22,16 +22,6 @@ import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
 
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,6 +33,15 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -59,9 +58,15 @@ public class HTTPSSLClient {
 
     private static SSLConnectionSocketFactory sslConnectionSocketFactory = null;
 
-    private static PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = null; // 连接池管理类
+    /**
+     * 连接池管理类
+     */
+    private static PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = null;
 
-    private static SSLContext sslContext = null; // 管理Https连接的上下文类
+    /**
+     * 管理Https连接的上下文类
+     */
+    private static SSLContext sslContext = null;
 
     static {
         try {
@@ -87,13 +92,11 @@ public class HTTPSSLClient {
      * 获取连接
      *
      * @return CloseableHttpClient
-     * @throws Exception  Exception
      */
-    public static CloseableHttpClient getHttpClinet() {
-        CloseableHttpClient httpClient = HttpClients.custom()
+    public static CloseableHttpClient getHttpClient() {
+        return HttpClients.custom()
                 .setConnectionManager(poolingHttpClientConnectionManager)
                 .build();
-        return httpClient;
     }
 
     private static TrustManager[] getTrustManagers() {

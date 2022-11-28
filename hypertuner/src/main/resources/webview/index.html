@@ -1,0 +1,372 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>KunPeng Hyper Tuner</title>
+    <base href="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style type="text/css">
+  	html,body {
+		margin: 0!important;
+		padding: 0!important;
+		width: 100%;
+		height: 100%;
+	}
+	.iframeDiv {
+		width: 100%;
+		height: 100%;
+	}
+	#myFrame{
+	    opacity: 0
+	}
+
+	@-webkit-keyframes ball-spin-fade-loader {
+        50% {
+            opacity: 0.3;
+            -webkit-transform: scale(0.4);
+            transform: scale(0.4);
+        }
+        100% {
+            opacity: 1;
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+    }
+
+    @keyframes ball-spin-fade-loader {
+        50% {
+            opacity: 0.3;
+            -webkit-transform: scale(0.4);
+            transform: scale(0.4);
+        }
+        100% {
+            opacity: 1;
+            -webkit-transform: scale(1);
+            transform: scale(1);
+        }
+    }
+
+    .maskBox {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        flex-direction:column;
+    }
+    .maskBox > .containerBox {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+   .maskBox > .containerBox > .circleBox {
+        position: relative;
+        width: 56px;
+        height: 56px;
+    }
+   .maskBox > .containerBox > .circleBox > .circleItem > .circle {
+        width: 100%;
+        height: 100%;
+        animation-fill-mode: both;
+        background-color: #0067ff;
+        border-radius: 50%;
+    }
+    .maskBox .text { margin-top: 20px;font-size: 15px;color: #999;letter-spacing: 2px;}
+    #maskBox{
+        width:100%;
+        height:100%;
+        background:rgb(43,43,43);
+    }
+    </style>
+    <script>
+    self.navigatorPage;
+    self.webviewSession = self.webviewSession || {
+        setItem: function (key, value) {
+            self.webviewSession[key] = value;
+        },
+        getItem: function (key) {
+            return self.webviewSession[key];
+        },
+        removeItem: function (key) {
+            delete self.webviewSession[key];
+        }
+    }
+
+    const webSession = ((self.navigatorPage || {}).data || {}).webSession;
+
+    /**
+     * webview向vscode发送消息公共接口
+     *
+     * @param message 消息体
+     * @param callback 回调方法
+     */
+    function postMessage(message, callback) {
+        const callbackId = new Date().getTime() * 100000 + window.crypto.getRandomValues(new Uint32Array(1))[0]
+            + '#' + window.self.document.title;
+        const messageReq = {
+            cbid: callbackId,
+            cmd: message.cmd ? message.cmd : 'getData',
+            module: 'tuning',
+            data: message.data
+        };
+        // 如果有回调函数，则添加回调函数
+        if (callback) {
+            this.callbacks[callbackId] = callback;
+        }
+        window.sendMessageToJava({
+            request: JSON.stringify(messageReq),
+            persistent: false,
+            onSuccess: (response) => { },
+            onFailure: (errorCode, errorMessage) => { }
+        });
+    }
+
+    /**
+     * 切换主题
+     * @param msg 当前主题
+     */
+    function switchTheme(msg) {
+        var darkMessage = {
+            intellijDark: "intellij-dark"
+        }
+        var lightMessage = {
+            intellijLight : "intellij-light"
+        }
+    }
+    window.addEventListener('message', (e)=>{
+        if(e.data.messageType){
+            if(e.data.messageType==="downloadFile"){
+                postMessage({
+                    cmd:"downloadCertificate",
+                    data:{
+                        data: e.data
+                    }
+                }, null)
+            } else if(e.data.messageType==='openUrl'){
+                console.log("iframe: open url");
+                postMessage({
+                    cmd:"openHyperlinks",
+                    data:{
+                        hyperlinks: e.data.ideUrl
+                    }
+                }, null)
+            } else if (e.data.messageType === 'receivedSuccess') {
+                clearInterval(time)
+            } else if (e.data.messageType === 'downloadBase64Png') {
+                postMessage({
+                    cmd:"downloadBase64Png",
+                    data:{
+                        fileName: e.data.fileName,
+                        fileContent: e.data.fileContent
+                    }
+                }, null)
+            }  else if (e.data.messageType === 'downloadFileByBlob') {
+               const reader = new FileReader();
+               reader.readAsDataURL(e.data.fileContent);
+               reader.onload = function(data) {
+                window.parent.postMessage({
+                    cmd:"downloadBase64Png",
+                    data:{
+                        fileName: e.data.fileName,
+                        fileContent: data.target.result
+                    }
+                }, null)
+               }
+            } else if (e.data.messageType === 'downloadFileByJson') {
+                postMessage({
+                    cmd:"downloadFileByJson",
+                    data:{
+                        fileName: e.data.fileName,
+                        fileContent: e.data.fileContent
+                    }
+                }, null)
+            } else if (e.data.messageType === 'downloadJavaOperLog') {
+                postMessage({
+                    cmd:"downloadJavaOperLog",
+                    data:{
+                        fileName: e.data.fileName,
+                        fileContent: e.data.fileContent
+                    }
+                }, null)
+            } else if (e.data.messageType === 'login') {
+                // 登录成功
+                // change sidebar
+                let myFrame = document.getElementById("myFrame");
+                var hostMessage = {
+                    serverAddr : self.navigatorPage.data.pageParams.ip,
+                    serverPort : self.navigatorPage.data.pageParams.port,
+                    ideAddress: receiveUrl,
+                    ideType: 'isIntellij'
+                }
+                myFrame1.contentWindow.postMessage(JSON.stringify(hostMessage), '*');
+                postMessage({
+                    cmd:"loginSuccess",
+                    data:{
+                        // data: e.data
+                        // TODO should get login info
+                    }
+                }, null);
+            }
+        }
+    })
+
+     window.onload= function (){
+        let currentTheme = self.navigatorPage.data.pageParams.currentTheme;
+        var mask = document.getElementById("maskBox");
+        if(currentTheme === 'dark'){
+            mask.style.background = 'rgb(43,43,43)';
+        }else{
+            mask.style.background = '#FFF';
+        }
+
+        var currLang = self.navigatorPage.data.webSession.language
+        var loadingEl = document.querySelector(".text")
+        loadingEl.innerText = 'Loading...'
+        let myFrame = document.getElementById("myFrame");
+        var url ="http://127.0.0.1:"+ self.navigatorPage.data.pageParams.localPort+"/";
+        myFrame.src =url;
+        // 监听加载iframe 加载完成之后，关闭loading遮罩层
+        myFrame.onload = (()=>{
+            var mask = document.getElementById("maskBox");
+            mask.style.display = "none"
+            myFrame.style.opacity = 1
+        })
+    }
+    </script>
+</head>
+<body id="intellijBody">
+<div class="maskBox"  id="maskBox">
+    <div class="containerBox">
+        <div class="circleBox" style="width: 100px; height: 100px">
+            <div class="circleItem" style="
+                    width: 25px;
+                    height: 25px;
+                    position: absolute;
+                    top: 37.5px;
+                    left: 37.5px;
+                    transform: rotate(0deg) translate(37.5px)
+                ">
+                <div class="circle" style="
+                    -webkit-animation: ball-spin-fade-loader 1s -1s infinite linear;
+                    animation: ball-spin-fade-loader 1s -1s infinite linear
+                "></div>
+            </div>
+            <div class="circleItem" style="
+                    width: 25px;
+                    height: 25px;
+                    position: absolute;
+                    top: 37.5px;
+                    left: 37.5px;
+                    transform: rotate(45deg) translate(37.5px)
+                ">
+                <div class="circle" style="
+                    -webkit-animation: ball-spin-fade-loader 1s  -0.875s infinite linear;
+                    animation: ball-spin-fade-loader 1s  -0.875s infinite linear
+                "></div>
+            </div>
+
+            <div class="circleItem" style="
+                    width: 25px;
+                    height: 25px;
+                    position: absolute;
+                    top: 37.5px;
+                    left: 37.5px;
+                    transform: rotate(90deg) translate(37.5px)
+                ">
+                <div class="circle" style="
+                    -webkit-animation: ball-spin-fade-loader 1s -0.75s infinite linear;
+                    animation: ball-spin-fade-loader 1s -0.75s infinite linear
+                "></div>
+            </div>
+
+            <div class="circleItem" style="
+                    width: 25px;
+                    height: 25px;
+                    position: absolute;
+                    top: 37.5px;
+                    left: 37.5px;
+                    transform: rotate(135deg) translate(37.5px)
+                ">
+                <div class="circle" style=";
+                    -webkit-animation: ball-spin-fade-loader 1s -0.625s infinite linear;
+                    animation: ball-spin-fade-loader 1s -0.625s infinite linear
+                "></div>
+            </div>
+
+            <div class="circleItem" style="
+                    width: 25px;
+                    height: 25px;
+                    position: absolute;
+                    top: 37.5px;
+                    left: 37.5px;
+                    transform: rotate(180deg) translate(37.5px)
+                ">
+                <div class="circle" style="
+                    -webkit-animation: ball-spin-fade-loader 1s  -0.5s infinite linear;
+                    animation: ball-spin-fade-loader 1s  -0.5s infinite linear
+                "></div>
+            </div>
+
+            <div class="circleItem" style="
+                    width: 25px;
+                    height: 25px;
+                    position: absolute;
+                    top: 37.5px;
+                    left: 37.5px;
+                    transform: rotate(225deg) translate(37.5px)
+                ">
+                <div class="circle" style="
+                    -webkit-animation: ball-spin-fade-loader 1s -0.375s infinite linear;
+                    animation: ball-spin-fade-loader 1s -0.375s infinite linear
+                "></div>
+            </div>
+
+            <div class="circleItem" style="
+                    width: 25px;
+                    height: 25px;
+                    position: absolute;
+                    top: 37.5px;
+                    left: 37.5px;
+                    transform: rotate(270deg) translate(37.5px)
+                ">
+                <div class="circle" style="
+                    -webkit-animation: ball-spin-fade-loader 1s -0.25s infinite linear;
+                    animation: ball-spin-fade-loader 1s -0.25s infinite linear
+                "></div>
+            </div>
+
+            <div class="circleItem" style="
+                    width: 25px;
+                    height: 25px;
+                    position: absolute;
+                    top: 37.5px;
+                    left: 37.5px;
+                    transform: rotate(315deg) translate(37.5px)
+                ">
+                <div class="circle" style="
+                    -webkit-animation: ball-spin-fade-loader 1s -0.125s infinite linear;
+                    animation: ball-spin-fade-loader 1s -0.125s infinite linear
+                "></div>
+            </div>
+        </div>
+    </div>
+    <div class="text">页面加载中...</div>
+</div>
+<iframe id="myFrame" width="100%" height="100%" src="" frameborder="0"></iframe>
+</body>
+<script>
+   let time = '';
+   var receiveUrl = "http://127.0.0.1:"+ self.navigatorPage.data.pageParams.localPort;
+   let myFrame1 = document.getElementById("myFrame");
+    var hostMessage = {
+        serverAddr : self.navigatorPage.data.pageParams.ip,
+        serverPort : self.navigatorPage.data.pageParams.port,
+        ideAddress: receiveUrl,
+        ideType: 'isIntellij'
+    }
+    time = setInterval(() => {
+     myFrame1.contentWindow.postMessage(JSON.stringify(hostMessage), '*');
+    }, 500);
+</script>
+</html>

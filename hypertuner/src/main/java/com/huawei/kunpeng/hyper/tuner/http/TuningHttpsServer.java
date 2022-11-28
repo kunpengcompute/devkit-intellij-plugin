@@ -16,17 +16,10 @@
 
 package com.huawei.kunpeng.hyper.tuner.http;
 
-import com.huawei.kunpeng.hyper.tuner.action.serverconfig.TuningServerConfigAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.constant.enums.RespondStatus;
-import com.huawei.kunpeng.hyper.tuner.common.constant.sysperf.AgentCertContent;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
-import com.huawei.kunpeng.hyper.tuner.common.utils.TuningLoginUtils;
-import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.ErrorWrapDialog;
-import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.ErrorPanel;
-import com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning.LeftTreeUtil;
 import com.huawei.kunpeng.intellij.common.UserInfoContext;
-import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.bean.RequestDataBean;
 import com.huawei.kunpeng.intellij.common.bean.ResponseBean;
@@ -38,15 +31,7 @@ import com.huawei.kunpeng.intellij.common.util.FileUtil;
 import com.huawei.kunpeng.intellij.common.util.I18NServer;
 import com.huawei.kunpeng.intellij.common.util.IDENotificationUtil;
 import com.huawei.kunpeng.intellij.common.util.JsonUtil;
-import com.huawei.kunpeng.intellij.ui.dialog.IDEBaseDialog;
-import com.huawei.kunpeng.intellij.ui.dialog.wrap.LoginWrapDialog;
-import com.huawei.kunpeng.intellij.ui.enums.Dialogs;
-import com.huawei.kunpeng.intellij.ui.enums.Panels;
-import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
-
 import com.intellij.notification.NotificationType;
-import com.intellij.openapi.application.ApplicationManager;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
@@ -74,15 +59,6 @@ public class TuningHttpsServer extends HttpsServer {
     private TuningHttpsServer() {
     }
 
-    /**
-     * 密钥更换失败处理
-     */
-    public static void handleCert() {
-        IDENotificationUtil.notificationCommon(
-                new NotificationBean(AgentCertContent.WORK_KRY_CHANGE_TITLE,
-                        AgentCertContent.WORK_KRY_CHANGE_FAILD_INFO,
-                        NotificationType.ERROR));
-    }
 
     /**
      * 获取请求响应数据
@@ -113,12 +89,8 @@ public class TuningHttpsServer extends HttpsServer {
                 case HTTP_404_NOT_FOUND:
                     message = HttpStatus.HTTP_404_NOT_FOUND.name();
                     break;
-                case HTTP_423_LOCKED: {
-                    handleIPLocked();
-                    break;
-                }
                 case HTTP_412_PRECONDITION_FAILED:
-                    handleCert();
+                    message = HttpStatus.HTTP_412_PRECONDITION_FAILED.name();
                     break;
                 case HTTP_406_NOT_ACCEPTABLE: {
                     br = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8));
@@ -130,7 +102,8 @@ public class TuningHttpsServer extends HttpsServer {
                 }
                 default:
                     // 错误处理状态码 500系列
-                    return displayServerAbnormalPanel();
+//                    return displayServerAbnormalPanel();
+                    return Optional.of("");
             }
             if (rspCode != HttpURLConnection.HTTP_OK && rspCode != HttpURLConnection.HTTP_UNAUTHORIZED
                     && rspCode != HttpURLConnection.HTTP_BAD_REQUEST && rspCode != HttpStatus.HTTP_423_LOCKED.value()) {
@@ -157,23 +130,14 @@ public class TuningHttpsServer extends HttpsServer {
     }
 
     private Optional<String> handlerUploadFailed(RequestDataBean request) {
-        StringBuffer detail = new StringBuffer(I18NServer.toLocale("plugins_hyper_tuner_tip_file_upload_failed"));
-        detail.append(request.getFile()[0].getName());
+        String detail = I18NServer.toLocale("plugins_hyper_tuner_tip_file_upload_failed")
+                + request.getFile()[0].getName();
         errorTipInfo(detail);
         return Optional.ofNullable("");
     }
 
-    private void errorTipInfo(StringBuffer detail) {
-        IDENotificationUtil.notificationForHyperlink(
-                new NotificationBean("", detail.toString(), NotificationType.ERROR),
-                new ActionOperate() {
-                    @Override
-                    public void actionOperate(Object data) {
-                        IDEBasePanel panel = new ErrorPanel(null, Panels.ERROR_GUIDE.panelName(), false, true);
-                        IDEBaseDialog dialog = new ErrorWrapDialog(Dialogs.ERROR_GUIDE.dialogName(), panel);
-                        dialog.displayPanel();
-                    }
-                });
+    private void errorTipInfo(String detail) {
+        IDENotificationUtil.notificationCommon(new NotificationBean("", detail, NotificationType.ERROR));
     }
 
     @Override
@@ -211,7 +175,6 @@ public class TuningHttpsServer extends HttpsServer {
     @Override
     public void dealUnAuthorized(HttpURLConnection conn) {
         // 左侧树面板还原到登录面板状态,
-        TuningLoginUtils.refreshLogin();
         if (!TuningIDEContext.getTuningIDEPluginStatus().equals(IDEPluginStatus.IDE_STATUS_SERVER_CONFIG)) {
             UserInfoContext.getInstance().clearUserInfo();
             BufferedReader br = null;
@@ -238,7 +201,7 @@ public class TuningHttpsServer extends HttpsServer {
                 }
                 // update global IDEPluginStatus
                 TuningIDEContext.setTuningIDEPluginStatus(IDEPluginStatus.IDE_STATUS_SERVER_CONFIG);
-                TuningLoginUtils.gotoLogin();
+
             } catch (IOException e) {
                 Logger.error("An exception occurred when processing dealUnAuthorized.");
             } finally {
@@ -250,15 +213,13 @@ public class TuningHttpsServer extends HttpsServer {
     @Override
     public Optional<String> dealServerUnResponse(RequestDataBean request) {
         isTimer = request.getUrl().contains("auto-flag") || request.getUrl().contains("java-perf/api/guardians") ||
-                request.getUrl().contains("java-perf/api/records") || request.getUrl().contains("java-perf/guardians");
+                request.getUrl().contains("java-perf/api/records") || request.getUrl().contains("java-perf/guardians")||
+                request.getUrl().contains("/version");
         if (request.isNeedUploadFile()) {
             return handlerUploadFailed(request);
         }
-        if (!request.getUrl().endsWith(TuningServerConfigAction.SERVER_STATUS_URL) && !isTimer) {
-            // 左侧树面板刷新到登录面板
-            ApplicationManager.getApplication().invokeLater(LeftTreeUtil::refresh2LoginPanel);
-        }
-        return displayServerAbnormalPanel();
+//        return displayServerAbnormalPanel();
+        return Optional.ofNullable("");
     }
 
     /**
@@ -268,10 +229,9 @@ public class TuningHttpsServer extends HttpsServer {
      */
     @Override
     public Optional<String> displayServerAbnormalPanel() {
-        StringBuffer detail = new StringBuffer();
-        detail.append(TuningI18NServer.toLocale("plugins_common_message_responseError_messagePrefix"))
-                .append(TuningI18NServer.toLocale("plugins_common_message_responseError_viewDetail"))
-                .append(TuningI18NServer.toLocale("plugins_common_message_responseError_messageSuffix"));
+        String detail = TuningI18NServer.toLocale("plugins_common_message_responseError_messagePrefix")
+                + TuningI18NServer.toLocale("plugins_common_message_responseError_viewDetail")
+                + TuningI18NServer.toLocale("plugins_common_message_responseError_messageSuffix");
         if (!isTimer) {
             errorTipInfo(detail);
         } else {
@@ -287,10 +247,9 @@ public class TuningHttpsServer extends HttpsServer {
      */
     @Override
     public void handleResponseStatus(ResponseBean responseBean) {
-        final HashSet<String> specialCode = new HashSet<>() {{
-            add(RespondStatus.LOGIN_FIRST_SUCCESS.value());
-            add(RespondStatus.LOGIN_SUCCESS_PWD_EXPIRED.value());
-        }};
+        final HashSet<String> specialCode = new HashSet<>();
+        specialCode.add(RespondStatus.LOGIN_FIRST_SUCCESS.value());
+        specialCode.add(RespondStatus.LOGIN_SUCCESS_PWD_EXPIRED.value());
         String status = responseBean.getStatus();
         Map<String, Object> response = JsonUtil.getJsonObjectFromJsonStr(responseBean.getResponseJsonStr());
         if (response != null && response.size() == 0) {
@@ -313,18 +272,5 @@ public class TuningHttpsServer extends HttpsServer {
             }
         }
         responseBean.setResponseJsonStr(JsonUtil.getJsonStrFromJsonObj(response));
-    }
-
-    /**
-     * IP锁定处理
-     */
-    @Override
-    public void handleIPLocked() {
-        IDENotificationUtil.notificationCommon(
-                new NotificationBean("", I18NServer.toLocale("plugins_hyper_tuner_ip_locked"), NotificationType.ERROR));
-        if (TuningIDEContext.getTuningIDEPluginStatus().equals(IDEPluginStatus.IDE_STATUS_LOGIN)) {
-            TuningLoginUtils.clearStatus();
-            LoginWrapDialog.closeIntellijSettingsDialog();
-        }
     }
 }

@@ -131,10 +131,10 @@ public class JcefDevToolsUtil {
                     /**
                      * windowClosed
                      *
-                     * @param e WindowEvent
+                     * @param event WindowEvent
                      */
                     @Override
-                    public void windowClosed(WindowEvent e) {
+                    public void windowClosed(WindowEvent event) {
                         myDevtoolsFrame = null;
                         devTools.doClose();
                     }

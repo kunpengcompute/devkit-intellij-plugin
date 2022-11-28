@@ -27,7 +27,6 @@ import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.enums.HttpStatus;
 import com.huawei.kunpeng.intellij.common.exception.IDEException;
 import com.huawei.kunpeng.intellij.common.http.method.HttpMethodRequest;
-import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
@@ -39,8 +38,6 @@ import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
 
 import com.alibaba.fastjson.JSONException;
 import com.intellij.notification.NotificationType;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -65,6 +62,7 @@ import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -84,16 +82,8 @@ public abstract class HttpsServer {
      */
     public static boolean isCertConfirm = true;
 
-    private static void invalidCertTip() {
-        FileUtil.removeCertConfig();
-        NotificationBean notification = new NotificationBean(
-                CommonI18NServer.toLocale("common_setting_cert_error_title"),
-                CommonI18NServer.toLocale("common_setting_cert_error_content"), NotificationType.ERROR);
-        IDENotificationUtil.notificationCommon(notification);
-    }
-
     /**
-     * http对外服务接口
+     * http对外服务接口，从全局context中读取ip和port
      *
      * @param message 自定义请求传入数据
      * @return ResponseBean
@@ -103,15 +93,48 @@ public abstract class HttpsServer {
         Object ctxObj = IDEContext.getValueFromGlobalContext(null, message.getModule());
         if (ctxObj instanceof Map) {
             Map<String, Object> context = (Map<String, Object>) ctxObj;
-            String ip = Optional.ofNullable(context.get(BaseCacheVal.IP.vaLue()))
-                    .map(Object::toString).orElse(null);
-            String port = Optional.ofNullable(context.get(BaseCacheVal.PORT.vaLue()))
-                    .map(Object::toString).orElse(null);
+            String ip = Optional.ofNullable(context.get(BaseCacheVal.IP.vaLue())).map(Object::toString).orElse(null);
+            String port = Optional.ofNullable(context.get(BaseCacheVal.PORT.vaLue())).map(Object::toString).orElse(null);
             if (ip == null && port == null) {
-                IDENotificationUtil.notificationCommon(
-                        new NotificationBean("", I18NServer.toLocale("plugins_common_message_configServer"),
-                                NotificationType.WARNING));
-                    throw new IDEException();
+                IDENotificationUtil.notificationCommon(new NotificationBean
+                        ("", I18NServer.toLocale("plugins_common_message_configServer"), NotificationType.WARNING));
+                throw new IDEException();
+            }
+            // 组装完整的url
+            String url = IDEConstant.URL_PREFIX +
+                    ip +
+                    ":" +
+                    port +
+                    context.get(BaseCacheVal.BASE_URL.vaLue()) +
+                    message.getUrl();
+            message.setUrl(url);
+            // 对需要token的接口设置token
+            if (message.isNeedToken()) {
+                String token = Optional.ofNullable(context.get(BaseCacheVal.TOKEN.vaLue()))
+                        .map(Object::toString).orElse(null);
+                message.setToken(token);
+            }
+            // 获取后端请求数据
+            response = this.requestWebData(message).orElse(null);
+        }
+        return response;
+    }
+
+    /**
+     * http对外服务接口，传入ip和port参数
+     *
+     * @param message 自定义请求传入数据
+     * @param ip 服务器ip地址
+     * @param port 服务器端口
+     * @return ResponseBean
+     */
+    public ResponseBean requestDataWithIpAndPort(RequestDataBean message, String ip, String port) {
+        ResponseBean response = null;
+        Object ctxObj = IDEContext.getValueFromGlobalContext(null, message.getModule());
+        if (ctxObj instanceof Map) {
+            Map<String, Object> context = (Map<String, Object>) ctxObj;
+            if (ip == null && port == null) {
+                throw new IDEException();
             }
             // 组装完整的url
             String url = IDEConstant.URL_PREFIX +
@@ -144,9 +167,8 @@ public abstract class HttpsServer {
         try {
             // 预留异常标记
             String rep = sendSSLRequest(request).get();
-            response = JsonUtil.jsonToDataModel(
-                    StringUtil.getStrFromDiffCharset(rep, IDEConstant.CHARSET_UTF8, IDEConstant.CHARSET_UTF8),
-                    ResponseBean.class);
+            response = JsonUtil.jsonToDataModel(StringUtil.getStrFromDiffCharset(rep, IDEConstant.CHARSET_UTF8,
+                    IDEConstant.CHARSET_UTF8), ResponseBean.class);
             if (response == null) {
                 return Optional.empty();
             }
@@ -177,8 +199,8 @@ public abstract class HttpsServer {
             // 创建https连接
             SSLContext sc = SSLContext.getInstance("TLSv1.2");
             sc.init(null, trustManagers, new java.security.SecureRandom());
-            URL console = new URL(CommonUtil.encodeForURL(StringUtil.getStrCharsetByOSToServer(
-                    StringUtil.getUrlIncludeParams(request.getUrl(), request.getUrlParams()))));
+            URL console = new URL(CommonUtil.encodeForURL(StringUtil.getStrCharsetByOSToServer(StringUtil
+                    .getUrlIncludeParams(request.getUrl(), request.getUrlParams()))));
             URLConnection urlConnection = console.openConnection();
             if (urlConnection instanceof HttpsURLConnection) {
                 conn = (HttpsURLConnection) urlConnection;
@@ -197,10 +219,10 @@ public abstract class HttpsServer {
             }
         } catch (ConnectException | SocketTimeoutException e) {
             Logger.error("invoke HttpUtils.sendSSLRequest ConnectException | SocketTimeoutException!!!");
-            return displayServerAbnormalPanel();
+//            return displayServerAbnormalPanel();
+            return Optional.of("");
         } catch (IOException | KeyManagementException | NoSuchAlgorithmException e) {
-            Logger.error("invoke HttpUtils.sendSSLRequest IOException|KeyManagementException" +
-                    "|NoSuchAlgorithmException!!");
+            Logger.error("invoke HttpUtils.sendSSLRequest IOException|KeyManagementException" + "|NoSuchAlgorithmException!!");
         } finally {
             HttpsURLConnection finalConn = conn;
             FileUtil.closeStreams(null, () -> {
@@ -271,23 +293,19 @@ public abstract class HttpsServer {
                 case HTTP_409_CONFLICT:
                     dealUnAuthorized409(conn);
                     break;
-                case HTTP_423_LOCKED: {
-                    handleIPLocked();
-                    break;
-                }
                 case HTTP_406_NOT_ACCEPTABLE: {
                     br = new BufferedReader(new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8));
                     return handleErr(br);
                 }
                 default:
                     // 错误处理状态码 500系列
-                    return displayServerAbnormalPanel();
+//                    return displayServerAbnormalPanel();
+                    return Optional.of("");
             }
             if (rspCode != HttpURLConnection.HTTP_OK && rspCode != HttpURLConnection.HTTP_UNAUTHORIZED
                     && rspCode != HttpURLConnection.HTTP_BAD_REQUEST
                     && rspCode != HttpStatus.HTTP_423_LOCKED.value()) {
-                Logger.error("Detail message is {} and response message is {}", message,
-                        "Request Error.");
+                Logger.error("Detail message is {} and response message is {}", message, "Request Error.");
             }
         } catch (IOException e) {
             Logger.error("Failed call the api.IOException");
@@ -305,9 +323,8 @@ public abstract class HttpsServer {
      * @return Optional<String>
      */
     protected Optional<String> generateResponse(String responseStr, HttpURLConnection conn) {
-        ResponseBean response = JsonUtil.jsonToDataModel(
-                StringUtil.getStrFromDiffCharset(responseStr, IDEConstant.CHARSET_UTF8, IDEConstant.CHARSET_UTF8),
-                ResponseBean.class);
+        ResponseBean response = JsonUtil.jsonToDataModel(StringUtil.getStrFromDiffCharset(responseStr,
+                IDEConstant.CHARSET_UTF8, IDEConstant.CHARSET_UTF8), ResponseBean.class);
         if (response == null) {
             return Optional.empty();
         }
@@ -355,8 +372,8 @@ public abstract class HttpsServer {
     protected void handleFinally(HttpURLConnection conn, BufferedReader br) throws IOException {
         FileUtil.closeStreams(br, null);
         // 406,423为非标自定义返回码，InputStream不会有任何内容，报IOException异常
-        if (HttpStatus.getHttpStatusByValue(conn.getResponseCode()) != HttpStatus.HTTP_406_NOT_ACCEPTABLE &&
-                HttpStatus.getHttpStatusByValue(conn.getResponseCode()) != HttpStatus.HTTP_423_LOCKED) {
+        if (HttpStatus.getHttpStatusByValue(conn.getResponseCode()) != HttpStatus.HTTP_406_NOT_ACCEPTABLE
+                && HttpStatus.getHttpStatusByValue(conn.getResponseCode()) != HttpStatus.HTTP_423_LOCKED) {
             FileUtil.closeStreams(conn.getInputStream(), null);
         }
         FileUtil.closeStreams(conn.getErrorStream(), null);
@@ -406,11 +423,6 @@ public abstract class HttpsServer {
      * @param responseBean 响应数据
      */
     public abstract void handleResponseStatus(ResponseBean responseBean);
-
-    /**
-     * IP锁定处理
-     */
-    public abstract void handleIPLocked();
 
     /**
      * ssl校验设置
@@ -514,8 +526,7 @@ public abstract class HttpsServer {
          * @throws CertificateException certificateException
          */
         @Override
-        public void checkServerTrusted(X509Certificate[] x509Certificates, String authType)
-                throws CertificateException {
+        public void checkServerTrusted(X509Certificate[] x509Certificates, String authType) throws CertificateException {
             try {
                 for (X509Certificate cert : x509Certificates) {
                     cert.checkValidity();

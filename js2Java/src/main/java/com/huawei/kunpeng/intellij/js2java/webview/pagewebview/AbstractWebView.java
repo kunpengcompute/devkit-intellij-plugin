@@ -154,21 +154,21 @@ public abstract class AbstractWebView {
         router.addHandler(new CefMessageRouterHandler() {
             @Override
             public boolean onQuery(CefBrowser browser, CefFrame cefFrame, long requestNo, String queryName,
-                boolean persistent, CefQueryCallback cefQueryCallback) {
+                                   boolean persistent, CefQueryCallback cefQueryCallback) {
                 handlerAction.handlerAction(queryName);
                 return true;
             }
 
             @Override
-            public void onQueryCanceled(CefBrowser cefBrowser, CefFrame cefFrame, long l) {
+            public void onQueryCanceled(CefBrowser cefBrowser, CefFrame cefFrame, long longVar) {
             }
 
             @Override
-            public void setNativeRef(String s, long l) {
+            public void setNativeRef(String str, long longVar) {
             }
 
             @Override
-            public long getNativeRef(String s) {
+            public long getNativeRef(String str) {
                 return 0;
             }
         }, true);
@@ -261,7 +261,7 @@ public abstract class AbstractWebView {
                 message = "light";
             }
             // 给页面发送消息
-            cefBrowser.executeJavaScript("window.switchTheme('" + message + "')", null, 0);
+            cefBrowser.executeJavaScript("switchTheme('" + message + "')", null, 0);
         };
         // 给webview的component注册监听
         cefBrowser.getUIComponent().addPropertyChangeListener("background", propertyChangeListener);
@@ -402,13 +402,14 @@ public abstract class AbstractWebView {
             for (String str : list) {
                 str = Matcher.quoteReplacement(str);
                 if (list.size() == 1) {
-                    indexHtml = indexHtml.replaceFirst("top\\.navigatorPage",
-                            "top\\.navigatorPage = " + str);
+                    System.out.println("list size is 1!!!");
+                    indexHtml = indexHtml.replaceFirst("self\\.navigatorPage",
+                            "self\\.navigatorPage = " + str);
                     break;
                 }
                 if (i == 0) {
-                    indexHtml = indexHtml.replaceFirst("top\\.navigatorPage",
-                            "top\\.navigatorPage = " + str + "IntellIJStr");
+                    indexHtml = indexHtml.replaceFirst("self\\.navigatorPage",
+                            "self\\.navigatorPage = " + str + "IntellIJStr");
                     i++;
                 } else {
                     indexHtml = indexHtml.replace("IntellIJStr", str + "IntellIJStr");
@@ -450,8 +451,8 @@ public abstract class AbstractWebView {
         AtomicBoolean status = new AtomicBoolean(true);
         return StreamSupport.stream(Splitter.on("\n").split(indexHtml).spliterator(), false)
                 .map(lineStr -> {
-                    if (status.get() && lineStr.contains("top\\.navigatorPage")) {
-                        String newLineStr = lineStr.replaceFirst("top\\.navigatorPage = ",
+                    if (status.get() && lineStr.contains("self\\.navigatorPage")) {
+                        String newLineStr = lineStr.replaceFirst("self\\.navigatorPage = ",
                                 new Gson().toJson(navigatorPage));
                         status.set(false);
                         return newLineStr;
@@ -473,7 +474,7 @@ public abstract class AbstractWebView {
         while (true) {
             if (str.length() > 10000) {
                 list.add(str.substring(0, 10000));
-                str = str.substring(10000, str.length());
+                str = str.substring(10000);
             } else {
                 list.add(str);
                 break;

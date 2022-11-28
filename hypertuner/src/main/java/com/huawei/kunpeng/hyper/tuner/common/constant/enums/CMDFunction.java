@@ -17,7 +17,6 @@
 package com.huawei.kunpeng.hyper.tuner.common.constant.enums;
 
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.handler.CommonHandler;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.handler.JavaPerfHandler;
 import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionHandler;
 import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionManager;
 
@@ -29,37 +28,31 @@ import com.huawei.kunpeng.intellij.js2java.webview.handler.FunctionManager;
 public enum CMDFunction {
     NULL("null", null),
     GET_DATA("getData", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    CHECK_UPLOAD_FILE("checkUploadFileIntellij", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    UPLOAD_FILE("uploadFileIntellij", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    SHOW_INFO_BOX("showInfoBox", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    NAVIGATE_TO_PANEL("navigateToPanel", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    READ_URL_CONFIG("readURLConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    CLOSE_PANEL("closePanel", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    CLOSE_PAGE("closePage", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    INTELLIJ_EXECUTES_UPLOAD("intellijExcuteUpload", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    OPEN_FILE_INFO("intellijDepPackage", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    OPEN_SOME_NODE("openSomeNode", FunctionManager.getFunctionHandler(CommonHandler.class)),
     OPEN_NEW_PAGE("openNewPage", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    GET_GLOBLE_STATE("getGlobleState", FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    SET_GLOBLE_STATE("setGlobleState", FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    READ_CONFIG("readConfig", FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    CHECK_THREAD_DUMP_REPORT_THRESHOLD("checkThreaddumpReportThreshold",
-            FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    CHECK_HEAPDUMP_REPORT_THRESHOLD("checkHeapdumpReportThreshold",
-            FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    CHECK_GC_LOG_REPORT_THRESHOLD("checkGclogReportThreshold",
-            FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    STOP_PROFILING_INTELLIJ("stopProfilingIntellij", FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    STOP_PROFILING("stopProfiling", FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    CHECK_PROFILING_CURRENT_STATA("checkProfilingCurrentStata",
-            FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    EXPORT_PROFILING_INTELLIJ("exportProfilingIntellij", FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    EXPORT_PROFILING("exportProfiling", FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    SHOW_JAVAINFO_BOX("showJavaPerfInfoBox", FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    UPDATE_REPORT_CONFIG("updateReportConfig", FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
-    OPEN_JAVA_PROFILING_PAGE("openJavaProfilingPage", FunctionManager.getFunctionHandler(JavaPerfHandler.class)),
     OPEN_HYPERLINKS("openHyperlinks", FunctionManager.getFunctionHandler(CommonHandler.class)),
-    DOWNLOAD_FILE("downloadFile", FunctionManager.getFunctionHandler(JavaPerfHandler.class));
+    DOWNLOAD_BASE64_PNG("downloadBase64Png", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    DOWNLOAD_FILE_BY_BLOB("downloadFileByBlob", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    DOWNLOAD_FILE_BY_JSON("downloadFileByJson", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    DOWNLOAD_JAVA_OPER_LOG("downloadJavaOperLog", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    DOWNLOAD_CERTIFICATE("downloadCertificate", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    READ_URL_CONFIG("readUrlConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    CLOSE_PANEL("closePanel", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    READ_FINGER("readFinger", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    SAVE_FINGER("saveFinger", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    CHECK_CONN("checkConn", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    SHOW_INFO_BOX("showInfoBox", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    READ_CONFIG("readConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    SAVE_CONFIG("saveConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    OPEN_URL_IN_BROWSER("openUrlInBrowser", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    UPGRADE("upgrade", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    HIDE_TERMINAL("hideTerminal", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    LOGIN_SUCCESS("loginSuccess", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    INSTALL("install", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    UNINSTALL("uninstall", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    CLEAN_CONFIG("cleanConfig", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    CLOSE_ALL_PANEL("closeAllPanel", FunctionManager.getFunctionHandler(CommonHandler.class)),
+    UPLOAD_PRIVATE_KEY("uploadPrivateKey", FunctionManager.getFunctionHandler(CommonHandler.class));
+
     private final String functionName;
 
     private final FunctionHandler functionHandler;

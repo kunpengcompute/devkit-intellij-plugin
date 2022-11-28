@@ -44,18 +44,6 @@ public class BaseIntellijIcons {
      */
     public static final class Settings {
         /**
-         * 未登录时 小人图片
-         */
-        @NotNull
-        public static final Icon LOGIN = load("/assets/img/lefttree/login.svg");
-
-        /**
-         * server 图片
-         */
-        @NotNull
-        public static final Icon SERVER = load("/assets/img/lefttree/server.svg");
-
-        /**
          * cert tip images
          */
         @NotNull

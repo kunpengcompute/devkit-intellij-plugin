@@ -16,14 +16,9 @@
 
 package com.huawei.kunpeng.hyper.tuner.common.i18n;
 
-import com.huawei.kunpeng.hyper.tuner.common.constant.enums.I18NTitle;
 import com.huawei.kunpeng.intellij.common.IDEContext;
 import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
-import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.I18NServer;
-
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.wm.ToolWindowManager;
 
 import java.util.Locale;
 
@@ -42,36 +37,6 @@ public class TuningI18NServer extends I18NServer {
         Locale locale = getLocale();
         // 更新缓存
         IDEContext.setValueForGlobalContext(null, BaseCacheVal.CURRENT_LOCALE.vaLue(), locale);
-
-        // 更新工具语言国际化标签
-        updateTitleDisplay(I18NTitle.values());
-
         return locale;
-    }
-
-    /**
-     * 更新工具栏的国际化标签
-     *
-     * @param values I18NTitle
-     */
-    public static void updateTitleDisplay(I18NTitle[] values) {
-        for (I18NTitle title : values) {
-            switch (title.titleType()) {
-                case ACTION:
-                    ActionManager.getInstance()
-                            .getAction(title.titleId())
-                            .getTemplatePresentation()
-                            .setText(toLocale(title.i18nKey()));
-                    break;
-                case TOOL_WINDOW:
-                    ToolWindowManager instance = ToolWindowManager.getInstance(CommonUtil.getDefaultProject());
-                    if (instance != null) {
-                        instance.getToolWindow(title.titleId()).setTitle(toLocale(title.i18nKey()));
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 }

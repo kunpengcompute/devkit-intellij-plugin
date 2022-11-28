@@ -16,10 +16,12 @@
 
 package com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning;
 
-import com.huawei.kunpeng.hyper.tuner.action.uninstall.IDEUninstallAction;
-import com.huawei.kunpeng.hyper.tuner.action.upgrade.IDEUpgradeAction;
+import com.huawei.kunpeng.hyper.tuner.action.uninstall.TuningIDEUninstallAction;
+import com.huawei.kunpeng.hyper.tuner.action.upgrade.TuningIDEUpgradeAction;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.UninstallEditor;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.UpgradeServerEditor;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAwareAction;
 
@@ -54,8 +56,8 @@ public final class ToolMaintenanceAction extends DumbAwareAction {
      * @since v1.0
      */
     public enum Action {
-        UNINSTALL,
-        UPGRADE;
+        UPGRADE,
+        UNINSTALL;
 
         @Override
         public String toString() {
@@ -76,10 +78,12 @@ public final class ToolMaintenanceAction extends DumbAwareAction {
         public void applyTo(AnActionEvent event) {
             switch (this) {
                 case UNINSTALL:
-                    new IDEUninstallAction().actionPerformed(event);
+//                    new TuningIDEUninstallAction().actionPerformed(event);
+                    UninstallEditor.openPage();
                     break;
                 case UPGRADE:
-                    new IDEUpgradeAction().actionPerformed(event);
+//                    new TuningIDEUpgradeAction().actionPerformed(event);
+                    UpgradeServerEditor.openPage();
                     break;
             }
         }

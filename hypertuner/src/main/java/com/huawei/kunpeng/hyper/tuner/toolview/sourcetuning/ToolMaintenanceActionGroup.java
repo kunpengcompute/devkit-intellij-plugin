@@ -24,7 +24,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The class ToolMaintenanceActionGroup: Porting 软件功能：Uninstall & Upgrade
+ * The class ToolMaintenanceActionGroup: Tuning 软件功能：Uninstall & Upgrade
  *
  * @since v1.0
  */

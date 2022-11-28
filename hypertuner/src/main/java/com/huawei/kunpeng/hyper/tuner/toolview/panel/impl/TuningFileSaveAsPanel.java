@@ -18,7 +18,6 @@ package com.huawei.kunpeng.hyper.tuner.toolview.panel.impl;
 
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
-import com.huawei.kunpeng.intellij.ui.panel.FileSaveAsPanel;
 
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.wm.ToolWindow;

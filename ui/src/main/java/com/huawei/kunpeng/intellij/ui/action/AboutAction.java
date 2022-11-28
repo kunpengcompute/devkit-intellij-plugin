@@ -16,13 +16,17 @@
 
 package com.huawei.kunpeng.intellij.ui.action;
 
+import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 
+import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAware;
 
 import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
 
 /**
  * The class AboutAction
@@ -30,11 +34,12 @@ import org.jetbrains.annotations.NotNull;
  * @since v1.0
  */
 public abstract class AboutAction extends AnAction implements DumbAware {
+    private static final Icon icon = BaseIntellijIcons.load(IDEConstant.MENU_ICONS_PATH + IDEConstant.MENU_ABOUT_ICON);
     /**
      * 左侧树关于菜单项动作
      */
     public AboutAction() {
-        super(CommonI18NServer.toLocale("common_about"), "", null);
+        super(CommonI18NServer.toLocale("common_about"), "", icon);
     }
 
     /**

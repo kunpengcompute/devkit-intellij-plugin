@@ -16,22 +16,7 @@
 
 package com.huawei.kunpeng.hyper.tuner.common.constant.enums;
 
-import com.huawei.kunpeng.hyper.tuner.webview.java.pageeditor.AddTargetEnvironmentEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.java.pageeditor.ProfilingTaskEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.java.pageeditor.ShowGcLogEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.java.pageeditor.ShowGuardianProcessEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.java.pageeditor.ShowMemoryDumpEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.java.pageeditor.ShowSamplingTaskEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.java.pageeditor.ShowThreadDumpEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.CreateProjectEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.CreateTaskEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ImportTaskEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ModifyProjectEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.OpenNewPageEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ReanalyzeTaskEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ShowNodeEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ShowProjectEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.UpdataTaskEditor;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.*;
 import com.huawei.kunpeng.intellij.js2java.webview.pageditor.WebFileEditor;
 
 import com.intellij.openapi.vfs.VirtualFile;
@@ -54,274 +39,79 @@ public enum PageType {
     },
 
     /**
-     * 创建工程
+     * 代理首页
      */
-    CREATE_PROJECT("create_project") {
+    PROXY_INDEX("proxy_index") {
         @Override
         public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new CreateProjectEditor(file));
-        }
-    },
-    CREATE_PROJECT_REPORT("create_project_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
+            return Optional.of(new IDELoginEditor(file));
         }
     },
 
     /**
-     * 修改工程
+     * 免费试用
      */
-    MODIFY_PROJECT("modify_project") {
+    FREE_TRIAL("free_trial"){
         @Override
         public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new ModifyProjectEditor(file));
+            return Optional.of(new FreeTrialEditor(file));
         }
     },
-    MODIFY_PROJECT_REPORT("modify_project_report") {
+
+    DEPLOY_SERVER("deploy_server"){
         @Override
         public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
+            return Optional.of(new DeployServerEditor(file));
         }
     },
 
     /**
-     * 展示工程
+     * 卸载工具
      */
-    SHOW_PROJECT("show_project") {
+    UNINSTALL_HYPER_TUNER("uninstall_hyper_tuner") {
         @Override
         public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new ShowProjectEditor(file));
-        }
-    },
-    SHOW_PROJECT_REPORT("show_project_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
+            return Optional.of(new UninstallEditor(file));
         }
     },
 
     /**
-     * 展示工程
+     * 升级服务器
      */
-    SHOW_NODE("show_node") {
+    UPGRADE_SERVER("upgrade_server"){
         @Override
         public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new ShowNodeEditor(file));
-        }
-    },
-    SHOW_NODE_REPORT("show_node_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
+            return Optional.of(new UpgradeServerEditor(file));
         }
     },
 
     /**
-     * 创建任务
+     * 配置服务器页面
      */
-    CREATE_TASK("create_task") {
+     CONFIGURE_SERVER("configure_server") {
         @Override
         public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new CreateTaskEditor(file));
-        }
-    },
-    CREATE_TASK_REPORT("modify_task_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
+            return Optional.of(new ConfigureServerEditor(file));
         }
     },
 
     /**
-     * 修改任务
+     * 配置指引页面
      */
-    MODIFY_TASK("modify_task") {
+    CONFIGURE_GUIDE("configure_guide") {
         @Override
         public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new UpdataTaskEditor(file));
-        }
-    },
-    MODIFY_TASK_REPORT("modify_task_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
+            return Optional.of(new ConfigGuideEditor(file));
         }
     },
 
     /**
-     * 重新分析任务
+     * 错误指示页面
      */
-    REANALYZE_TASK("reanalyze_task") {
+    ERROR_INSTRUCTION("error_instruction") {
         @Override
         public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new ReanalyzeTaskEditor(file));
-        }
-    },
-    REANALYZE_TASK_REPORT("reanalyze_task_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
-        }
-    },
-
-    /**
-     * 导入任务
-     */
-    IMPORT_TASK("import_task") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new ImportTaskEditor(file));
-        }
-    },
-    IMPORT_TASK_REPORT("import_task_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
-        }
-    },
-
-    /**
-     * 导出任务
-     */
-    EXPORT_TASK("export_task") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
-        }
-    },
-    EXPORT_TASK_REPORT("MODIFY_PROJECT_REPORT") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
-        }
-    },
-
-    /**
-     * 函数详细信息
-     */
-    FUNCTION_INFO("Function_Info") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new OpenNewPageEditor(file));
-        }
-    },
-    FUNCTION_INFO_REPORT("Function_Info_REPORT") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
-        }
-    },
-
-    /**
-     * 展示目标环境进程
-     */
-    SHOW_GUARDIAN_PROCESS("show_guardian_process") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new ShowGuardianProcessEditor(file));
-        }
-    },
-    SHOW_GUARDIAN_PROCESS_REPORT("show_guardian_process_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
-        }
-    },
-
-    /**
-     * 展示采样分析任务结果
-     */
-    SHOW_SAMPLING_TASK("show_sampling_task") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new ShowSamplingTaskEditor(file));
-        }
-    },
-    SHOW_SAMPLING_TASK_REPORT("show_sampling_task_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
-        }
-    },
-
-    /**
-     * 展示采样分析任务结果
-     */
-    SHOW_PROFILING_TASK("show_profiling_task") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new ProfilingTaskEditor(file));
-        }
-    },
-    SHOW_PROFILING_TASK_REPORT("show_profiling_task_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
-        }
-    },
-
-    /**
-     * 展示内存转储
-     */
-    SHOW_MEMORY_DUMP("show_memory_dump") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new ShowMemoryDumpEditor(file));
-        }
-    },
-    SHOW_MEMORY_DUMP_REPORT("show_memory_dump_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
-        }
-    },
-
-    /**
-     * 展示GC LOG
-     */
-    SHOW_GC_LOG("show_gc_log") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new ShowGcLogEditor(file));
-        }
-    },
-    SHOW_GC_LOG_REPORT("show_gc_log_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
-        }
-    },
-
-    /**
-     * 展示线程转储
-     */
-    SHOW_THREAD_DUMP("show_thread_dump") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new ShowThreadDumpEditor(file));
-        }
-    },
-    SHOW_THREAD_DUMP_REPORT("show_thread_dump_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
-        }
-    },
-
-    /**
-     * 添加目标环境
-     */
-    ADD_TARGET_ENVIRONMENT("add_target_environment") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.of(new AddTargetEnvironmentEditor(file));
-        }
-    },
-    ADD_TARGET_ENVIRONMENT_REPORT("add_target_environment_report") {
-        @Override
-        public Optional<WebFileEditor> getWebFileEditor(@NotNull VirtualFile file) {
-            return Optional.empty();
+            return Optional.of(new ErrorInstructionEditor(file));
         }
     };
 

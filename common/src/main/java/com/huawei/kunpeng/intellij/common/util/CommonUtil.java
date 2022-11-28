@@ -86,7 +86,7 @@ public class CommonUtil {
     }
 
     /**
-     *  getCurUserCryptRootPath
+     * getCurUserCryptRootPath
      *
      * @return String
      */
@@ -312,10 +312,10 @@ public class CommonUtil {
         StringBuilder stringBuilder = new StringBuilder("");
         for (int i = 0; i < bytes.length; i++) {
             // 转成16进制数
-            int v = bytes[i] & 0xFF;
+            int xff = bytes[i] & 0xFF;
 
             // 16进制数转换成字符
-            hv = Integer.toHexString(v);
+            hv = Integer.toHexString(xff);
             if (hv.length() == 1) {
                 hv = "0" + hv;
             }
@@ -416,7 +416,7 @@ public class CommonUtil {
     }
 
     /**
-     * 从配置文件中读取 ip
+     * 从配置文件中读取 ip和port
      *
      * @return string ip
      */
@@ -433,10 +433,23 @@ public class CommonUtil {
         return ip;
     }
 
+    public static Map readCurIpAndPortFromConfig() {
+        Map<String, String> info = null;
+        Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
+        List serverConfig = JsonUtil.getValueIgnoreCaseFromMap(config, ConfigProperty.PORT_CONFIG.vaLue(), List.class);
+        if (!ValidateUtils.isEmptyCollection(serverConfig)) {
+            if (serverConfig.get(0) instanceof Map) {
+                info = (Map) serverConfig.get(0);
+                return info;
+            }
+        }
+        return info;
+    }
+
     /**
      * 设置Window-BackGround Tasks-Show是否选中
      *
-     * @param isOpen   true表示选中，show processes弹框; false表示取消选中，hide processes弹框。
+     * @param isOpen true表示选中，show processes弹框; false表示取消选中，hide processes弹框。
      * @param window 发起任务的window
      */
     public static void setBackGroundProcessWindowOpen(boolean isOpen, Window window) {
@@ -469,7 +482,7 @@ public class CommonUtil {
         if (list == null) {
             return count;
         }
-        for (Pair<TaskInfo, ProgressIndicator> pair :list) {
+        for (Pair<TaskInfo, ProgressIndicator> pair : list) {
             TaskInfo taskInfo = pair.getFirst();
             if (taskInfo == null) {
                 continue;

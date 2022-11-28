@@ -25,6 +25,7 @@ public enum  BaseCacheVal {
     LIGHT_THEME("LightTheme"),
     IP("ip"),
     PORT("port"),
+    LOCAL_PORT("localPort"), // 本地nginx 代理端口
     TOKEN("token"),
     BASE_URL("baseUrl"),
     SYSTEM_OS("systemOS"),
@@ -35,8 +36,8 @@ public enum  BaseCacheVal {
     JCEF_DLL_EVN_PATH("JcefDllEvnPath"),
     PORTING_ZH_PATH_UNICODE_STR("porting_zh_path_unicode_str"),
     PORTING_WEB_VIEW_INDEX("PortingWebViewIndex"),
-    SYS_WEB_VIEW_INDEX("SysWebViewIndex"),
-    JAVA_WEB_VIEW_INDEX("JavaWebViewIndex"),
+    TUNING_WEB_VIEW_INDEX("TuningWebViewIndex"),
+    FREE_TRIAL_WEB_VIEW_INDEX("FreeTrialWebViewIndex"),
     PORTING_SESSION("portingSession"),
     MIGRATION_TIP("migrationTip"),
     SERVER_VERSION("serverVersion"),

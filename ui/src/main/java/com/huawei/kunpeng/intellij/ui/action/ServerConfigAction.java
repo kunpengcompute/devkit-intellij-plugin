@@ -22,7 +22,8 @@ import com.huawei.kunpeng.intellij.common.action.ActionOperate;
 import com.huawei.kunpeng.intellij.common.bean.NotificationBean;
 import com.huawei.kunpeng.intellij.common.bean.ResponseBean;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
-import com.huawei.kunpeng.intellij.common.constant.WeakPwdConstant;
+import com.huawei.kunpeng.intellij.common.constant.InstallConstant;
+import com.huawei.kunpeng.intellij.common.constant.UserManageConstant;
 import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.http.HttpsServer;
@@ -53,7 +54,7 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
     /**
      * 工具名
      */
-    private String toolName;
+    protected String toolName;
 
     public ServerConfigAction(String toolName) {
         this.toolName = toolName;
@@ -66,10 +67,11 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
      * @return true:保存服务器配置成功
      */
     public boolean save(Map<String, String> params) {
-        String ip = params.get("ip");
+        String host = params.get("ip");
         String port = params.get("port");
+        String localPort = params.get("localPort");
         String certFile = params.get("certFile");
-        ConfigUtils.fillIp2JsonFile(toolName, ip, port, certFile);
+//        ConfigUtils.fillIp2JsonFile(toolName, host, port, localPort, certFile);
         // handle cert
         verifyOrTrustCert(params);
         // 将plugin设置为配置服务器状态
@@ -79,12 +81,12 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
         if (response != null &&
                 (successCode().equals(response.getCode()) || successCode().equals(response.getStatus()))) {
             if (!HttpsServer.isCertConfirm && Boolean.parseBoolean(params.get("useCertFlag"))) {
-                serverCertConfirmFailed(toolName, ip);
+                serverCertConfirmFailed(toolName, host);
                 return false;
             }
             showNotification();
             // update global Context
-            updateIDEContext(ip);
+            updateIDEContext(host);
             // clear userConfig when config server again
             ConfigUtils.updateUserConfig(ConfigProperty.AUTO_LOGIN_CONFIG.vaLue(), " ", false, false);
             synchronizedLeftTree();
@@ -93,7 +95,7 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
         // 将plugin设置为初始状态
         IDEContext.setIDEPluginStatus(toolName, IDEPluginStatus.IDE_STATUS_INIT);
         // 清空本地 ip 缓存
-        ConfigUtils.fillIp2JsonFile(toolName, "", "", "");
+//        ConfigUtils.fillIp2JsonFile(toolName, "", "", "", "");
         return false;
     }
 
@@ -102,17 +104,11 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
      */
     public void showNotification() {
         Project project = CommonUtil.getDefaultProject();
-        String content = CommonI18NServer.toLocale("common_config_savaInfoPrefix") + CommonI18NServer.toLocale(
-                "common_config_savaInfoLink") + CommonI18NServer.toLocale("common_config_savaInfoSuffix");
+        String content = CommonI18NServer.toLocale("common_config_success");
         NotificationBean notificationBean = new NotificationBean(CommonI18NServer.toLocale(
                 "common_config_title"), content, NotificationType.INFORMATION);
         notificationBean.setProject(project);
-        IDENotificationUtil.notificationForHyperlink(notificationBean, new ActionOperate() {
-            @Override
-            public void actionOperate(Object data) {
-                notificationForHyperlinkAction();
-            }
-        });
+        IDENotificationUtil.notificationForHyperlink(notificationBean, data -> notificationForHyperlinkAction());
     }
 
     private void synchronizedLeftTree() {
@@ -137,8 +133,7 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
             Logger.error("certificate verify failed");
             FileUtil.removeCertConfig();
             NotificationBean notification = new NotificationBean(
-                    CommonI18NServer.toLocale("common_setting_cert_error_title"),
-                    CommonI18NServer.toLocale("common_setting_cert_error_content"), NotificationType.ERROR);
+                    UserManageConstant.CERT_ERROR_TITLE, UserManageConstant.CERT_ERROR_CONTENT, NotificationType.ERROR);
             IDENotificationUtil.notificationCommon(notification);
             return;
         }
@@ -185,11 +180,11 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
      * @param params        配置服务器信息参数
      * @param actionOperate 自定义操作
      */
-    public void onOKAction(Map params, ActionOperate actionOperate) {
+    protected void onOKAction(Map params, ActionOperate actionOperate) {
         Map<String, String> param = JsonUtil.getValueIgnoreCaseFromMap(params, "param", Map.class);
         if (IDEContext.checkLogin(toolName)) {
             Map<String, Object> mapInfo = new HashMap<String, Object>();
-            mapInfo.put("name", WeakPwdConstant.CONFIG_SAVE_CONFIRM_TITLE);
+            mapInfo.put("name", InstallConstant.CONFIG_SAVE_CONFIRM_TITLE);
             showConfigSaveConfirmDialog(mapInfo, param);
         } else {
             // ServerConfigWrapDialog 保存服务器配置之前操作
@@ -228,6 +223,13 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
     protected abstract ResponseBean getServiceConfigResponse();
 
     /**
+     * 通过调用接口获取服务端版本，判断是否当前版本插件是否支持
+     *
+     * @return boolean true：兼容当前服务端版本，false：不兼容当前服务端版本，并在右下角提示弹窗
+     */
+    protected abstract boolean checkServiceVersionCompatible();
+
+    /**
      * 保存服务器配置信息前
      */
     protected void preSaveConfig() {
@@ -243,7 +245,7 @@ public abstract class ServerConfigAction extends IDEPanelBaseAction {
      * 配置服务器证书失败处理
      *
      * @param toolName 工具名称
-     * @param ip 配置IP
+     * @param ip       配置IP
      */
     public abstract void serverCertConfirmFailed(String toolName, String ip);
 }

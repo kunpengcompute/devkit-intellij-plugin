@@ -20,6 +20,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.io.File;
 import java.util.Map;
@@ -31,6 +32,7 @@ import java.util.Map;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(of = {"module","url", "method", "urlParams", "bodyData", "headers", "token"})
 public class RequestDataBean extends DataBean {
     /**
      * 设置模块
@@ -279,16 +281,6 @@ public class RequestDataBean extends DataBean {
      */
     public boolean isNeedBackground() {
         return isNeedBackground;
-    }
-
-    /**
-     * 重写toString
-     *
-     * @return String
-     */
-    @Override
-    public String toString() {
-        return "RequestData is not null";
     }
 
     /**

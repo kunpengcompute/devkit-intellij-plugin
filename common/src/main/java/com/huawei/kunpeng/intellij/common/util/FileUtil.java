@@ -24,6 +24,10 @@ import com.huawei.kunpeng.intellij.common.enums.SystemOS;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 
 import com.intellij.notification.NotificationType;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -32,10 +36,8 @@ import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,6 +47,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.text.Normalizer;
@@ -54,13 +57,11 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
 /**
  * 文件操作工具类
@@ -87,28 +88,6 @@ public class FileUtil {
      * 解析配置文件工具
      */
     public static class ConfigParser {
-        /**
-         * 解析Properties文件
-         *
-         * @param propFilePath Properties路径
-         * @return map propFile文件读取为map
-         */
-        public static Map<String, String> parseProperties(String propFilePath) {
-            if (StringUtil.stringIsEmpty(propFilePath)) {
-                throw new IllegalArgumentException("property file cannot be empty");
-            }
-            if (!propFilePath.toLowerCase(Locale.ROOT).endsWith("properties")) {
-                throw new IllegalArgumentException("the file should be end with .properties");
-            }
-            final Map<String, String> map = new HashMap<>();
-            try (InputStream propIn = CommonUtil.getPluginInstalledFile(propFilePath)) {
-                propIsNotNull(propFilePath, map, propIn);
-            } catch (IOException e) {
-                Logger.error("get stream from {} failed", propFilePath, e);
-            }
-            return map;
-        }
-
         /**
          * 读取json文件， 返回字符串
          *
@@ -159,31 +138,9 @@ public class FileUtil {
         }
 
         /**
-         * 将json文件内容转换为Map
-         *
-         * @param jsonFilePath path of file
-         * @return Map
-         */
-        public static Map parseJsonFile2Map(String jsonFilePath) {
-            Map result = new HashMap();
-            if (!validateFilePath(jsonFilePath)) {
-                return result;
-            }
-            try {
-                if (!StringUtil.stringIsEmpty(jsonFilePath) || jsonFilePath.toLowerCase(Locale.ROOT).endsWith("json")) {
-                    String jsonString = readJsonFile(new FileInputStream(new File(jsonFilePath)));
-                    result = JsonUtil.getJsonObjFromJsonStr(jsonString);
-                }
-            } catch (FileNotFoundException e) {
-                Logger.error("it is IOException when parse Json Config failed!!");
-            }
-            return result;
-        }
-
-        /**
          * 保存Json字符串数据到json文件中
          *
-         * @param jsonString Json字符串
+         * @param jsonString   Json字符串
          * @param jsonFilePath 配置路径/resources下Json文件路径
          */
         public static void saveJsonConfigToFile(String jsonString, String jsonFilePath) {
@@ -201,26 +158,10 @@ public class FileUtil {
         }
     }
 
-    private static void propIsNotNull(String propFilePath, Map<String, String> map, InputStream propIn) {
-        Optional.ofNullable(propIn).ifPresent(inputStream -> {
-            Properties properties = new Properties();
-            try {
-                properties.load(inputStream);
-                properties.forEach((key, value) -> {
-                    if (key instanceof String && value instanceof String) {
-                        map.put((String) key, (String) value);
-                    }
-                });
-            } catch (IOException e) {
-                Logger.error("can't parse {}", propFilePath, e);
-            }
-        });
-    }
-
     /**
      * 关闭资源流操作
      *
-     * @param stream 需要关闭的流
+     * @param stream        需要关闭的流
      * @param streamsOption 自定义关闭流操作
      */
     public static void closeStreams(Closeable stream, StreamOption streamsOption) {
@@ -243,7 +184,7 @@ public class FileUtil {
      * 获取文件， inExistentIsNew为true时，文件不存在则新建
      *
      * @param fileCompletePath 文件完整路径
-     * @param inExistentIsNew 不存在是否新建
+     * @param inExistentIsNew  不存在是否新建
      * @return File file
      */
     public static Optional<File> getFile(String fileCompletePath, boolean inExistentIsNew) {
@@ -271,43 +212,10 @@ public class FileUtil {
     }
 
     /**
-     * 压缩成ZIP
-     *
-     * @param file 需要压缩的文件或文件夹
-     * @return out 压缩文件输出流
-     * @throws RuntimeException 压缩失败会抛出运行时异常
-     */
-    public static File fileToZip(File file) {
-        if (file == null || file.isFile()) {
-            return file;
-        }
-        if (!FileUtil.validateFileName(file.getName())) {
-            Logger.error("validateFileName error!!!");
-            return file;
-        }
-        // 创建压缩文件
-        Optional<File> fileOptional = getFile(CommonUtil.getPluginInstalledPathFile(
-                IDEConstant.PORTING_WORKSPACE_TEMP + IDEConstant.PATH_SEPARATOR + file.getName()) + ".zip", true);
-        File outFile = null;
-        if (!fileOptional.isPresent()) {
-            return outFile;
-        }
-        outFile = fileOptional.get();
-
-        // 开始压缩文件到压缩文件流
-        try (OutputStream out = new FileOutputStream(outFile); ZipOutputStream zos = new ZipOutputStream(out)) {
-            compressFile(file, zos, file.getName());
-        } catch (IOException e) {
-            Logger.error("it is IOException when zip fileToZip error!!!");
-        }
-        return outFile;
-    }
-
-    /**
      * zip文件解压
      *
      * @param inputZipFile 待解压zip文件
-     * @param destDirPath 解压路径
+     * @param destDirPath  解压路径
      */
     public static void unzipFile(String inputZipFile, String destDirPath) {
         if (!FileUtil.validateFilePath(inputZipFile) || !FileUtil.validateFilePath(destDirPath)) {
@@ -318,33 +226,6 @@ public class FileUtil {
             Logger.error("unzipFile, the file does not exist.");
         }
         doUnzipDetails(srcFile, destDirPath);
-    }
-
-    /**
-     * 是否不是空文件夹
-     *
-     * @param dir dir
-     * @return 是否是空文件夹
-     */
-    public static boolean isNotEmptyDir(File dir) {
-        if (dir == null) {
-            return false;
-        }
-        if (dir.isFile()) {
-            return true;
-        }
-        if (dir.exists()) {
-            File[] files = dir.listFiles();
-            if (files == null) {
-                return false;
-            }
-            for (File file : files) {
-                if (isNotEmptyDir(file)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private static void doUnzipDetails(File srcFile, String destDirPath) {
@@ -485,48 +366,6 @@ public class FileUtil {
     }
 
     /**
-     * 递归压缩文件夹
-     *
-     * @param folder 文件夹
-     * @param zos zip输出流
-     * @param fileName 文件名
-     */
-    private static void compressFile(File folder, ZipOutputStream zos, String fileName) {
-        byte[] buf = new byte[2 * 1024];
-        FileInputStream in = null;
-        try {
-            if (folder.isFile()) {
-                int length;
-                // 向zip输出流中添加zip实体
-                zos.putNextEntry(new ZipEntry(fileName));
-                in = new FileInputStream(folder);
-                while ((length = in.read(buf)) != -1) {
-                    zos.write(buf, 0, length);
-                }
-
-                // 压缩文件
-                zos.closeEntry();
-            } else {
-                File[] listFiles = folder.listFiles();
-                if (listFiles == null || listFiles.length == 0) {
-                    // 空文件夹
-                    zos.putNextEntry(new ZipEntry(fileName + IDEConstant.PATH_SEPARATOR));
-                    zos.closeEntry();
-                    return;
-                }
-                // 递归压缩
-                for (File file : listFiles) {
-                    compressFile(file, zos, fileName + IDEConstant.PATH_SEPARATOR + file.getName());
-                }
-            }
-        } catch (IOException e) {
-            Logger.error("it is Exception when zip compressFile error!!!");
-        } finally {
-            closeStreams(in, null);
-        }
-    }
-
-    /**
      * 递归删除目录，file不为null时，以file为准
      *
      * @param dirFile 需要删除的文件
@@ -563,9 +402,9 @@ public class FileUtil {
     /**
      * 写内容到文本文件,传file则以file为准
      *
-     * @param content 内容
+     * @param content  内容
      * @param filePath 文件地址
-     * @param file 文件
+     * @param file     文件
      */
     public static void writeFile(String content, String filePath, File file) {
         File fileDef = file;
@@ -584,18 +423,88 @@ public class FileUtil {
     }
 
     /**
-     * string内容写入到TXT文件
+     * 根据文件路径创建新文件，写内容到其中
      *
-     * @param content 内容
-     * @param filePath 文件路徑
+     * @param content  内容
+     * @param filePath 文件地址
+     * @throws IOException 写入文件io异常
      */
-    public static void saveAsFileWriter(String content, String filePath) {
-        // true表示不覆盖原来的内容，而是加到文件的后面。若要覆盖原来的内容，直接省略这个参数就好
-        try (FileWriter fwt = new FileWriter(filePath, true)) {
-            fwt.write(content);
-        } catch (IOException e) {
-            Logger.error("IOException when writeFile error!!");
+    public static void writeFile(String content, String filePath) throws IOException {
+        File fileDef = new File(filePath);
+        changeFoldersPermission600(fileDef);
+
+        // 写入文件
+        Writer writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(fileDef), StandardCharsets.UTF_8));
+        writer.write(content);
+        writer.flush();
+    }
+
+    /**
+     * 将json数据保存到指定的目录下的指定文件中
+     *
+     * @param jsonString json字符串
+     * @param filePath   文件路径
+     * @param fileName   文件名称
+     * @return 是否保存成功
+     * @throws IOException IOException
+     */
+    public static boolean createJsonFile(String jsonString, String filePath, String fileName) throws IOException {
+        String strFormat = jsonString;
+        if (fileName.endsWith(".json")) {
+            // 生成json格式文件
+            if (strFormat.contains("'")) {
+                // 将单引号转义一下，因为JSON串中的字符串类型可以单引号引起来的
+                strFormat = strFormat.replaceAll("'", "\\'");
+            }
+            if (strFormat.contains("\"")) {
+                // 将双引号转义一下，因为JSON串中的字符串类型可以单引号引起来的
+                strFormat = strFormat.replaceAll("\"", "\\\"");
+            }
+            if (strFormat.contains("\r\n")) {
+                // 将回车换行转换一下，因为JSON串中字符串不能出现显式的回车换行
+                strFormat = strFormat.replaceAll("\r\n", "\\u000d\\u000a");
+            }
+            if (strFormat.contains("\n")) {
+                // 将换行转换一下，因为JSON串中字符串不能出现显式的换行
+                strFormat = strFormat.replaceAll("\n", "\\u000a");
+            }
         }
+        // 拼接文件完整路径
+        String fullPath = filePath + File.separator + fileName;
+        if (!validateFilePath(fullPath)) {
+            Logger.error("File path invalid.");
+            return false;
+        }
+        // 保证创建一个新文件
+        File file = new File(fullPath);
+        if (!file.getParentFile().exists()) {
+            // 如果父目录不存在，创建父目录
+            file.getParentFile().mkdirs();
+        }
+        if (file.exists()) {
+            // 如果已存在,删除旧文件
+            file.delete();
+        }
+        // 标记文件生成是否成功
+        boolean flag = true;
+        boolean isFile = file.createNewFile();
+        if (!isFile) {
+            Logger.error("Its create new File fail when export Profiling sampling!");
+            flag = false;
+        }
+        // 将格式化后的字符串写入文件
+        try (
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                Writer write = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
+        ) {
+            write.write(strFormat);
+            write.flush();
+        } catch (IOException ex) {
+            throw new IOException("Its IOException when export Profiling sampling!");
+        }
+        // 返回是否成功的标记
+        return flag;
     }
 
     /**
@@ -645,8 +554,8 @@ public class FileUtil {
     /**
      * 从插件安装的jar包中读取文件basePath并写到destFile
      *
-     * @param destFile 目标地址
-     * @param basePath 在jar包中的性对路径
+     * @param destFile        目标地址
+     * @param basePath        在jar包中的性对路径
      * @param inExistentIsNew 不存在是否创建
      */
     public static void readAndWriterFileFromJar(File destFile, String basePath, boolean inExistentIsNew) {
@@ -750,24 +659,6 @@ public class FileUtil {
     }
 
     /**
-     * 检查字符串是否包含中文
-     *
-     * @param str 待校验字符串
-     * @return true 包含中文字符， 反之则然
-     */
-    public static boolean isContainChinese(String str) {
-        if (!StringUtil.stringIsEmpty(str)) {
-            String tempStr = Normalizer.normalize(str, Normalizer.Form.NFKC);
-            Matcher check = FILE_NAME_CHECK_CN.matcher(tempStr);
-            if (check.find()) {
-                Logger.info("The string is contain chinese.");
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * validate name of the file，return false when '^`/|;&$><!' or spaces exists in name
      *
      * @param fileName name
@@ -823,259 +714,21 @@ public class FileUtil {
     }
 
     /**
-     * 清理指定文件内容
+     * 检查字符串是否包含中文
      *
-     * @param path 文件路径
+     * @param str 待校验字符串
+     * @return true 包含中文字符， 反之则然
      */
-    public static void clearFileContent(String path) {
-        writeDataToFile("", path);
-    }
-
-    /**
-     * 将特定content写入到指定文件中，同时修改目录/文件权限
-     *
-     * @param content content
-     * @param path 文件路径
-     */
-    public static void writeDataToFile(String content, String path) {
-        try {
-            writeToFile(content, path);
-            RestrictedFileUtils.restrictSecurityFileAccess(path);
-        } catch (IOException e) {
-            Logger.error("failed to write content to file {}. stack trace : ", path, e);
-        }
-    }
-
-    /**
-     * 将内容写到指定的文件中
-     *
-     * @param content content
-     * @param path 文件路径
-     * @throws IOException
-     */
-    public static void writeToFile(String content, String path) throws IOException {
-        File file = new File(path);
-        String firstNoExistParentPath = findFirstNoExistParentPath(path);
-        if (!file.exists() && !file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
-        if (!StringUtil.stringIsEmpty(firstNoExistParentPath)) {
-            RestrictedFileUtils.restrictReadOnlyFileAccess(firstNoExistParentPath);
-        }
-        try (FileWriter writer = new FileWriter(path)) {
-            writer.write(content);
-            writer.flush();
-        }
-    }
-
-    /**
-     * 给定路径path，获取不存在的最上层目录
-     *
-     * @param path path
-     * @return 最上层目录
-     */
-    public static String findFirstNoExistParentPath(String path) {
-        String tempPath = null;
-        File file = new File(path);
-        while (!file.exists()) {
-            tempPath = file.getPath();
-            file = file.getParentFile();
-        }
-        return tempPath;
-    }
-
-    /**
-     * 从.p文件读取对应key的val
-     *
-     * @param keyStr use key to find value from property file
-     * @return val
-     */
-    public static Optional<String> getPropertiesVal(String keyStr) {
-        String filePath = getPropertiesFilePath();
-        Properties prop = new Properties();
-        String result = null;
-        try (
-                FileInputStream fi = new FileInputStream(filePath);
-                InputStreamReader in = new InputStreamReader(fi, StandardCharsets.UTF_8)
-        ) {
-            prop.load(in);
-            result = prop.getProperty(keyStr);
-        } catch (IOException e) {
-            Logger.warn("failed to get properties val. The prop file does not exist.");
-        }
-        return Optional.ofNullable(result);
-    }
-
-    /**
-     * get .p file path
-     *
-     * @return .p file path
-     */
-    public static String getPropertiesFilePath() {
-        if (!validateFilePath(CommonUtil.getCurUserCryptRootPath())) {
-            return "";
-        }
-        return Paths.get(CommonUtil.getCurUserCryptRootPath(), IDEConstant.CRYPT_DIR,
-                IDEConstant.PROPERTIES_NAME).toString();
-    }
-
-    /**
-     * save working key to .p file
-     *
-     * @param keyStr           key id
-     * @param workingKeyCipher cipher text
-     * @return the result
-     */
-    public static boolean saveWorkingKeyCipherText(String keyStr, String workingKeyCipher) {
-        boolean result = false;
-        String filePath = getPropertiesFilePath();
-        File file = Paths.get(filePath).toFile();
-        if (!Files.exists(Paths.get(filePath))) {
-            try {
-                touch(file);
-                RestrictedFileUtils.restrictSecurityFileAccess(filePath);
-            } catch (IOException e) {
-                Logger.warn("failed to get working key. The certificate file does not exist.");
-                return false;
+    public static boolean isContainChinese(String str) {
+        if (!StringUtil.stringIsEmpty(str)) {
+            String tempStr = Normalizer.normalize(str, Normalizer.Form.NFKC);
+            Matcher check = FILE_NAME_CHECK_CN.matcher(tempStr);
+            if (check.find()) {
+                Logger.info("The string is contain chinese.");
+                return true;
             }
         }
-        try (
-                InputStream inputStream = new FileInputStream(filePath)
-        ) {
-            Properties prop = new Properties();
-            prop.load(inputStream);
-            prop.setProperty(keyStr, workingKeyCipher);
-            try (
-                    OutputStream outputStream = new FileOutputStream(filePath);
-                    OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)
-            ) {
-                prop.store(outputStreamWriter, "Update value");
-            }
-            result = true;
-            Logger.info("success to save the cipher text of working key.");
-        } catch (IOException e) {
-            Logger.error("failed to save the cipher text of working key. e.getMessage() : {}", e.getMessage());
-        }
-        return result;
+        return false;
     }
 
-    /**
-     * 指定文件路径创建文件
-     *
-     * @param file 文件路径
-     * @throws IOException
-     */
-    private static void touch(File file) throws IOException {
-        File parentFile = file.getParentFile();
-        if (parentFile != null && !parentFile.mkdirs() && !parentFile.isDirectory()) {
-            throw new IOException();
-        }
-        new FileOutputStream(file).close();
-    }
-
-    /**
-     * 获取指定文件的内容
-     *
-     * @param path filePath
-     * @return content
-     */
-    public static String cat(String path) {
-        try {
-            return new String(Files.readAllBytes(Paths.get(path)));
-        } catch (IOException e) {
-            Logger.error("failed to read file {}. e.getMessage : {}", path, e.getMessage());
-        }
-        return "";
-    }
-
-    /**
-     * 计算文件夹大小，并非实际文件夹大小
-     *
-     * @param file 文件
-     * @param maxSize 限制计算的大小，超过maxSize停止计算
-     * @return 返回文件夹大小
-     */
-    public static long getTotalSizeOfDirectory(File file, long maxSize) {
-        long total = 0;
-        if (file.isFile()) {
-            return file.length();
-        }
-        File[] files = file.listFiles();
-        if (files != null) {
-            for (File child : files) {
-                total = total + getTotalSizeOfDirectory(child, maxSize);
-                if (total > maxSize) {
-                    return total;
-                }
-            }
-        }
-        return total;
-    }
-
-    /**
-     * 将json数据保存到指定的目录下的指定文件中
-     *
-     * @param jsonString json字符串
-     * @param filePath   文件路径
-     * @param fileName   文件名称
-     * @return 是否保存成功
-     * @throws IOException IOException
-     */
-    public static boolean createJsonFile(String jsonString, String filePath, String fileName) throws IOException {
-        String strFormat = jsonString;
-        if (fileName.endsWith(".json")) {
-            // 生成json格式文件
-            if (strFormat.contains("'")) {
-                // 将单引号转义一下，因为JSON串中的字符串类型可以单引号引起来的
-                strFormat = strFormat.replaceAll("'", "\\'");
-            }
-            if (strFormat.contains("\"")) {
-                // 将双引号转义一下，因为JSON串中的字符串类型可以单引号引起来的
-                strFormat = strFormat.replaceAll("\"", "\\\"");
-            }
-            if (strFormat.contains("\r\n")) {
-                // 将回车换行转换一下，因为JSON串中字符串不能出现显式的回车换行
-                strFormat = strFormat.replaceAll("\r\n", "\\u000d\\u000a");
-            }
-            if (strFormat.contains("\n")) {
-                // 将换行转换一下，因为JSON串中字符串不能出现显式的换行
-                strFormat = strFormat.replaceAll("\n", "\\u000a");
-            }
-        }
-        // 拼接文件完整路径
-        String fullPath = filePath + File.separator + fileName;
-        if (!validateFilePath(fullPath)) {
-            Logger.error("File path invalid.");
-            return false;
-        }
-        // 保证创建一个新文件
-        File file = new File(fullPath);
-        if (!file.getParentFile().exists()) {
-            // 如果父目录不存在，创建父目录
-            file.getParentFile().mkdirs();
-        }
-        if (file.exists()) {
-            // 如果已存在,删除旧文件
-            file.delete();
-        }
-        // 标记文件生成是否成功
-        boolean flag = true;
-        boolean isFile = file.createNewFile();
-        if (!isFile) {
-            Logger.error("Its create new File fail when export Profiling sampling!");
-            flag = false;
-        }
-        // 将格式化后的字符串写入文件
-        try (
-                FileOutputStream fileOutputStream = new FileOutputStream(file);
-                Writer write = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
-        ) {
-            write.write(strFormat);
-            write.flush();
-        } catch (IOException ex) {
-            throw new IOException("Its IOException when export Profiling sampling!");
-        }
-        // 返回是否成功的标记
-        return flag;
-    }
 }

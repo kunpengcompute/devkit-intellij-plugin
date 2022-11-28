@@ -16,57 +16,113 @@
 
 package com.huawei.kunpeng.hyper.tuner.toolview.panel.impl;
 
-import com.huawei.kunpeng.hyper.tuner.action.serverconfig.TuningServerConfigAction;
-import com.huawei.kunpeng.hyper.tuner.common.constant.TuningWeakPwdConstant;
+import com.huawei.kunpeng.hyper.tuner.common.constant.enums.PanelType;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
-import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.InstallDisclaimerDialog;
-import com.huawei.kunpeng.intellij.ui.dialog.IDEBaseDialog;
-import com.huawei.kunpeng.intellij.ui.panel.ServerConfigPanel;
-
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigGuideEditor;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.FreeTrialEditor;
+import com.huawei.kunpeng.intellij.common.util.StringUtil;
+import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
+import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.openapi.wm.ex.ToolWindowEx;
 
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.*;
 
 /**
- * 服务器配置面板
+ * 左侧树配置服务器面板
  *
- * @since 2020-09-25
+ * @since 2022-11-15
  */
-public class TuningServerConfigPanel extends ServerConfigPanel {
-    public TuningServerConfigPanel(ToolWindow toolWindow) {
-        super(toolWindow);
+public class TuningServerConfigPanel extends IDEBasePanel {
+    private JLabel configLabel;
+
+    private JLabel freeTrialLabel;
+
+    private JPanel mainPanel;
+
+    // 滚动条面板
+    private JScrollPane scrollPanel;
+
+    private JButton configServerButton;
+
+    private JButton freeTrialButton;
+
+    private JPanel contentPanel;
+
+
+    private Project project;
+
+    /**
+     * 反射调用的构造函数
+     *
+     * @param toolWindow 工具窗口
+     * @param project    当前的项目
+     */
+    public TuningServerConfigPanel(ToolWindow toolWindow, Project project) {
+        this(toolWindow, null, project);
+    }
+
+    /**
+     * 完整的构造函数
+     *
+     * @param toolWindow 工具窗口
+     * @param panelName  面板名称
+     * @param project    当前的项目
+     */
+    public TuningServerConfigPanel(ToolWindow toolWindow, String panelName, Project project) {
+        this.project = project;
+        setToolWindow(toolWindow);
+        this.panelName = StringUtil.stringIsEmpty(panelName) ? PanelType.TUNING_SERVER_CONFIG.panelName() : panelName;
+        initPanel();
+        registerComponentAction();
+        createContent(mainPanel, null, false);
+    }
+
+    private void initPanel() {
+
+        ToolWindowManager instance = ToolWindowManager.getInstance(this.project);
+        ToolWindowEx tw = (ToolWindowEx) instance.getToolWindow("Project");
+        int width = tw.getComponent().getWidth();
+
+        // 去除滚动条面板的边框
+        scrollPanel.setBorder(null);
+        configLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_not_connected"));
+//        contentPanel.setMinimumSize(new Dimension(width, -1));
+        freeTrialLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_text"));
+        configServerButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_config_now"));
+        configServerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        freeTrialButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_button"));
+        freeTrialButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
     @Override
-    protected String getToolConfigDescription() {
-        return TuningI18NServer.toLocale("plugins_hyper_tuner_config_description");
+    protected void registerComponentAction() {
+        MouseAdapter configMouseAdapter = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // 未配置服务器时点击配置按钮打开配置指引页面
+                ConfigGuideEditor.openPage();
+//                ConfigureServerEditor.openPage();
+            }
+        };
+        MouseAdapter freeTrialMouseAdapter = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent event) {
+                FreeTrialEditor.openPage();
+            }
+        };
+        configServerButton.addMouseListener(configMouseAdapter);
+        freeTrialButton.addMouseListener(freeTrialMouseAdapter);
+
     }
 
     @Override
-    protected String getDefaultServerPort() {
-        return TuningI18NServer.toLocale("plugins_hyper_tuner_default_port");
-    }
-
-    @Override
-    protected void customizeRegisterAction() {
-        if (action == null) {
-            action = TuningServerConfigAction.instance;
-        }
-        // 为descriptionLabel2组件添加鼠标事件，鼠标移入、移除、点击、跳转
-        descriptionLabel2.addMouseListener(
-                new MouseAdapter() {
-                    /**
-                     * 发生单击事件时被触发
-                     *
-                     * @param mouseEvent mouseEvent
-                     */
-                    public void mouseClicked(MouseEvent mouseEvent) {
-                        IDEBaseDialog dialog = new InstallDisclaimerDialog(TuningWeakPwdConstant.BEFORE_INSTALL, null);
-                        if (dialog != null) {
-                            dialog.displayPanel();
-                        }
-                    }
-                });
+    protected void setAction(IDEPanelBaseAction action) {
     }
 }

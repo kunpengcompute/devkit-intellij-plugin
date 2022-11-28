@@ -5,10 +5,8 @@
  */
 
 rootProject.name = 'KunpengIntellIJPlugin'
-include 'portingadvisor'
 include 'hypertuner'
 include 'common'
 include 'js2Java'
 include 'ui'
 include 'images'
-include 'devkit'

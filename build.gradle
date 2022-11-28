@@ -2,12 +2,12 @@ buildscript {
     repositories {
         maven {
             // 内网maven库地址，下载依赖的第三方库
-            url 'http://cmc.centralrepo.rnd.huawei.com/maven/'
+            url 'https://mirrors.huaweicloud.com/repository/maven/'
             allowInsecureProtocol true
         }
     }
     dependencies {
-        classpath 'org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.6.1'
+        classpath 'org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.7.3'
     }
 }
 
@@ -21,7 +21,7 @@ allprojects {
     repositories {
         mavenLocal()
         maven {
-            url 'http://cmc.centralrepo.rnd.huawei.com/maven/'
+            url 'https://mirrors.huaweicloud.com/repository/maven/'
             allowInsecureProtocol true
         }
     }
@@ -49,6 +49,7 @@ allprojects {
         implementation group: "ch.qos.logback", name: "logback-core", version: "1.2.9"
         implementation group: 'com.melloware', name: 'jasypt', version: "1.9.3"
         implementation group: 'org.apache.commons', name: 'commons-csv', version: "1.8"
+        implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.21'
         testImplementation "junit:junit:4.13.1"
     }
 

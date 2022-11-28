@@ -89,16 +89,6 @@ public class IDEConstant {
     public static final String PORTING_WEB_VIEW_INDEX_HTML = "index.html";
 
     /**
-     * porting插件临时工作空间
-     */
-    public static final String PORTING_WORKSPACE_TEMP = "workspace";
-
-    /**
-     * porting插件webview页面文件类型
-     */
-    public static final String PORTING_KPS = "kppa";
-
-    /**
      * hyper tuner插件webview页面文件类型
      */
     public static final String TUNING_KPHT = "kpht";
@@ -158,6 +148,36 @@ public class IDEConstant {
      * 加载中动图其他主题色图片
      */
     public static final String LOADING_OTHER_GIF = "/assets/load/loading_w.gif";
+
+    /**
+     * 右上角菜单选项图标资源地址
+     */
+    public static final String MENU_ICONS_PATH = "/assets/img/menu/";
+
+    /**
+     * 右上角菜单-关于-Icon
+     */
+    public static final String MENU_ABOUT_ICON = "about.svg";
+
+    /**
+     * 右上角菜单-申请远程实验室-Icon
+     */
+    public static final String MENU_APPLY_LAB_ICON = "apply_lab.svg";
+
+    /**
+     * 右上角菜单-配置远端服务器-Icon
+     */
+    public static final String MENU_CONFIG_SERVER_ICON = "config_server.svg";
+
+    /**
+     * 右上角菜单-部署服务器-Icon
+     */
+    public static final String MENU_DEPLOY_SERVER_ICON = "deploy_server.svg";
+
+    /**
+     * 右上角菜单-建议反馈-Icon
+     */
+    public static final String MENU_FEEDBACK_ICON = "feedback.svg";
 
     /**
      * a标签head

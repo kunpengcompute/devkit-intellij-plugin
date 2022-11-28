@@ -45,7 +45,7 @@ public class BaseAboutPanel {
     /**
      * 发行时间
      */
-    private JLabel releaseLabel;
+    private JLabel serverVersionLabel;
 
     /**
      * 版权
@@ -60,11 +60,11 @@ public class BaseAboutPanel {
     /**
      * 发布时间
      */
-    private String productReleaseTime;
+    private String productServerVersion;
 
-    public BaseAboutPanel(String productVersion, String productReleaseTime) {
+    public BaseAboutPanel(String productVersion, String productServerVersion) {
         this.productVersion = productVersion;
-        this.productReleaseTime = productReleaseTime;
+        this.productServerVersion = productServerVersion;
     }
 
     /**
@@ -75,7 +75,10 @@ public class BaseAboutPanel {
     public JPanel getComponent() {
         borderLabel.setText(CommonI18NServer.toLocale("common_about_separator"));
         versionLabel.setText(productVersion);
-        releaseLabel.setText(productReleaseTime);
+        if(productServerVersion==null){
+            serverVersionLabel.setVisible(false);
+        }
+        serverVersionLabel.setText(productServerVersion);
         copyRightLabel.setText(CommonI18NServer.toLocale("common_about_product_copyright", "©"));
         return mainPanel;
     }

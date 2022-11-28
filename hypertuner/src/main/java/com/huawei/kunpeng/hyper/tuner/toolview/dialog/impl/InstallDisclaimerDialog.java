@@ -19,11 +19,9 @@ package com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl;
 import com.huawei.kunpeng.hyper.tuner.action.install.TuningInstallAction;
 import com.huawei.kunpeng.hyper.tuner.common.constant.InstallManageConstant;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
-import com.huawei.kunpeng.hyper.tuner.common.constant.TuningWeakPwdConstant;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.wrap.TuningInstallUpgradeWrapDialog;
-import com.huawei.kunpeng.intellij.common.constant.WeakPwdConstant;
+import com.huawei.kunpeng.intellij.common.constant.InstallConstant;
 import com.huawei.kunpeng.intellij.common.log.Logger;
-import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 import com.huawei.kunpeng.intellij.common.util.ValidateUtils;
 import com.huawei.kunpeng.intellij.ui.dialog.IDEBaseDialog;
 import com.huawei.kunpeng.intellij.ui.dialog.IDEComponentManager;
@@ -34,25 +32,24 @@ import com.huawei.kunpeng.intellij.ui.panel.InstallUpgradePanel;
 
 import com.intellij.openapi.util.IconLoader;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Rectangle;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.HyperlinkEvent;
@@ -65,21 +62,13 @@ import javax.swing.event.HyperlinkListener;
  */
 public class InstallDisclaimerDialog extends IdeaDialog {
     /**
-     * 带位置信息的完整构造函数（不推荐使用）
+     * 带位置信息的构造函数
      *
-     * @param title      弹窗标题
-     * @param dialogName 弹框名称
-     * @param panel      需要展示的面板之一
-     * @param resizable  大小是否可变
+     * @param title 弹窗标题
+     * @param panel 需要展示的面板之一
      */
-    public InstallDisclaimerDialog(
-            String title,
-            String dialogName,
-            IDEBasePanel panel,
-            Rectangle rectangle,
-            Dimension dimension,
-            boolean resizable) {
-        this.title = ValidateUtils.isEmptyString(title) ? WeakPwdConstant.BEFORE_INSTALL : title;
+    public InstallDisclaimerDialog(String title, IDEBasePanel panel) {
+        this.title = ValidateUtils.isEmptyString(title) ? InstallConstant.BEFORE_INSTALL : title;
         this.dialogName =
                 ValidateUtils.isEmptyString(dialogName) ? Dialogs.INSTALL_DISCLAIMER.dialogName() : dialogName;
         this.mainPanel = panel;
@@ -88,7 +77,7 @@ public class InstallDisclaimerDialog extends IdeaDialog {
         setDoNotAskOption(
                 new DoNotAskOption.Adapter() {
                     @Override
-                    public void rememberChoice(boolean b, int i) {
+                    public void rememberChoice(boolean isRememberChoice, int num) {
                     }
 
                     @Override
@@ -98,7 +87,7 @@ public class InstallDisclaimerDialog extends IdeaDialog {
 
                     @Override
                     public @NotNull String getDoNotShowMessage() {
-                        return WeakPwdConstant.READ_DEPLOY;
+                        return InstallConstant.READ_DEPLOY;
                     }
                 });
         // 初始化弹框内容
@@ -106,49 +95,6 @@ public class InstallDisclaimerDialog extends IdeaDialog {
         okAction.setEnabled(false);
         addChangeListener();
         setResizable(false);
-    }
-
-    /**
-     * 带位置信息的构造函数
-     *
-     * @param title 弹窗标题
-     * @param panel 需要展示的面板之一
-     */
-    public InstallDisclaimerDialog(String title, IDEBasePanel panel, Rectangle rectangle) {
-        this(title, null, panel, rectangle, null, false);
-    }
-
-    /**
-     * 不带位置信息的完整构造函数（不推荐使用）
-     *
-     * @param title      弹窗标题
-     * @param dialogName 弹框名称
-     * @param panel      需要展示的面板之一
-     * @param resizable  大小是否可变
-     */
-    public InstallDisclaimerDialog(
-            String title, String dialogName, IDEBasePanel panel, Dimension dimension, boolean resizable) {
-        this(title, dialogName, panel, null, dimension, resizable);
-    }
-
-    /**
-     * 带位置信息的构造函数
-     *
-     * @param title 弹窗标题
-     * @param panel 需要展示的面板之一
-     */
-    public InstallDisclaimerDialog(String title, IDEBasePanel panel) {
-        this(title, null, panel, null, false);
-    }
-
-    /**
-     * 不带位置信息的完整构造函数，代理生成时会使用
-     *
-     * @param title 弹窗标题
-     * @param panel 需要展示的面板之一
-     */
-    public InstallDisclaimerDialog(String title, IDEBasePanel panel, Dimension dimension) {
-        this(title, null, panel, null, dimension, false);
     }
 
     /**
@@ -204,14 +150,15 @@ public class InstallDisclaimerDialog extends IdeaDialog {
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
-        JLabel installTitle = new JLabel(TuningWeakPwdConstant.FIRST_CONFIG_TITLE);
-        installTitle.setIcon(BaseIntellijIcons.load(TuningIDEConstant.ICON_INFO));
+        JLabel installTitle = new JLabel(InstallManageConstant.FIRST_CONFIG_TITLE);
+        installTitle.setIcon(IconLoader.findIcon(TuningIDEConstant.ICON_INFO));
+        installTitle.setVerticalTextPosition(SwingConstants.BOTTOM);
 
         // 主面板
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setPreferredSize(new Dimension(600, 230));
         centerPanel.add(installTitle, BorderLayout.NORTH);
-        centerPanel.add(panelWithHtmlListener(TuningWeakPwdConstant.DEPLOY_CONTENT, installTitle), BorderLayout.CENTER);
+        centerPanel.add(panelWithHtmlListener(InstallManageConstant.DEPLOY_CONTENT, installTitle), BorderLayout.CENTER);
         return centerPanel;
     }
 
@@ -262,12 +209,7 @@ public class InstallDisclaimerDialog extends IdeaDialog {
                             }
 
                             private void doEvent(JCheckBox checkBoxObj) {
-                                JCheckBox checkBox = checkBoxObj;
-                                if (checkBox.isSelected()) {
-                                    getOKAction().setEnabled(true);
-                                } else {
-                                    getOKAction().setEnabled(false);
-                                }
+                                getOKAction().setEnabled(checkBoxObj.isSelected());
                             }
                         });
     }
