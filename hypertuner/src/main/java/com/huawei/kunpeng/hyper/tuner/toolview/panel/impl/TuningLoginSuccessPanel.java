@@ -66,7 +66,7 @@ public class TuningLoginSuccessPanel extends IDEBasePanel {
         Map<String, String> serverConfig = CommonUtil.readCurIpAndPortFromConfig();
         ip = serverConfig.get("ip");
         port = serverConfig.get("port");
-        contentPanel.setMinimumSize(new Dimension(width, -1));
+//        contentPanel.setMinimumSize(new Dimension(width, -1));
         ipInfoLabel.setText(ip);
         portInfoLabel.setText(port);
         ipLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_ip_address"));

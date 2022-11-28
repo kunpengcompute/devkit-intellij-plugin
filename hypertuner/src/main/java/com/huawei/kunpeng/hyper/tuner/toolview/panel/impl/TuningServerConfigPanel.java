@@ -93,7 +93,7 @@ public class TuningServerConfigPanel extends IDEBasePanel {
         // 去除滚动条面板的边框
         scrollPanel.setBorder(null);
         configLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_not_connected"));
-        contentPanel.setMinimumSize(new Dimension(width, -1));
+//        contentPanel.setMinimumSize(new Dimension(width, -1));
         freeTrialLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_text"));
         configServerButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_config_now"));
         configServerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
