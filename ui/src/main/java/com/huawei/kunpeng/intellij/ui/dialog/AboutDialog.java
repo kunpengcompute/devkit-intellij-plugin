@@ -16,6 +16,7 @@
 
 package com.huawei.kunpeng.intellij.ui.dialog;
 
+import com.huawei.kunpeng.intellij.common.i18n.CommonI18NServer;
 import com.huawei.kunpeng.intellij.ui.panel.BaseAboutPanel;
 
 import com.intellij.openapi.project.Project;
@@ -28,12 +29,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 /**
  * The class AboutDialog: 弹出关于工具信息BaseDialog
@@ -41,6 +41,8 @@ import javax.swing.SwingConstants;
  * @since v1.0
  */
 public abstract class AboutDialog extends DialogWrapper {
+
+    protected Action cancelAction = getCancelAction();
 
     public AboutDialog(@Nullable Project project) {
         super(project);
@@ -67,7 +69,7 @@ public abstract class AboutDialog extends DialogWrapper {
     protected JPanel createCenterPanel() {
 
         JPanel centerPanel = new JPanel(new BorderLayout());
-        centerPanel.setPreferredSize(new Dimension(625, 125));
+        centerPanel.setPreferredSize(new Dimension(625, 100));
 
         // 添加主面板
         centerPanel.add(new BaseAboutPanel(getProductVersion(), getProductServerVersion()).getComponent());
@@ -82,7 +84,10 @@ public abstract class AboutDialog extends DialogWrapper {
     @NotNull
     @Override
     protected Action[] createActions() {
-        return new Action[] {};
+        List<Action> actions = new ArrayList<>();
+        cancelAction = new DialogWrapperExitAction(CommonI18NServer.toLocale("common_term_operate_close"), CANCEL_EXIT_CODE);
+        actions.add(cancelAction);
+        return actions.toArray(new Action[0]);
     }
 
     /**
