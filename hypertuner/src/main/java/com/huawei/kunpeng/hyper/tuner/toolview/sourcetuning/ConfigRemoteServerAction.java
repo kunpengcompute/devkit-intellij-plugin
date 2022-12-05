@@ -59,8 +59,9 @@ public class ConfigRemoteServerAction extends AnAction implements DumbAware {
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
         // 如果未配置服务器，打开配置指引页面
-        int value = TuningIDEContext.getTuningIDEPluginStatus().value();
-        if (value >= IDEPluginStatus.IDE_STATUS_SERVER_DEPLOY.value()) {
+        String ip = CommonUtil.readCurIpFromConfig();
+        if (!StringUtil.stringIsEmpty(ip)) {
+            // 显示重新配置服务器
             ConfigureServerEditor.openPage();
         } else {
             ConfigGuideEditor.openPage();
