@@ -41,7 +41,6 @@ import javax.swing.SwingConstants;
  * @since v1.0
  */
 public abstract class AboutDialog extends DialogWrapper {
-    private static final String PATH = "/assets/img/lefttree/logo.png";
 
     public AboutDialog(@Nullable Project project) {
         super(project);
@@ -66,24 +65,9 @@ public abstract class AboutDialog extends DialogWrapper {
     @Override
     @Nullable
     protected JPanel createCenterPanel() {
-        // 创建左对齐panel
-        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel iconLabel = new JLabel(new ImageIcon(AboutDialog.class.getResource(PATH)));
-        titlePanel.add(iconLabel);
-        JLabel separator = new JLabel();
-        separator.setPreferredSize(new Dimension(2, 2));
-        titlePanel.add(separator);
-
-        // 添加Title
-        JLabel titleLabel = new JLabel();
-        titleLabel.setText(getProductInfo());
-        titleLabel.setFont(new Font("huawei sans", Font.BOLD, 36));
-        titleLabel.setVerticalTextPosition(SwingConstants.CENTER);
-        titlePanel.add(titleLabel);
 
         JPanel centerPanel = new JPanel(new BorderLayout());
-        centerPanel.setPreferredSize(new Dimension(625, 225));
-        centerPanel.add(titlePanel, BorderLayout.NORTH);
+        centerPanel.setPreferredSize(new Dimension(625, 125));
 
         // 添加主面板
         centerPanel.add(new BaseAboutPanel(getProductVersion(), getProductServerVersion()).getComponent());
