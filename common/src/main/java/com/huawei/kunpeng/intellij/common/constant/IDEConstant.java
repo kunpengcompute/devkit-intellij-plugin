@@ -179,6 +179,8 @@ public class IDEConstant {
      */
     public static final String MENU_FEEDBACK_ICON = "feedback.svg";
 
+    public static final String TITLE_REFRESH_ICON = "refresh.svg";
+
     /**
      * a标签head
      */

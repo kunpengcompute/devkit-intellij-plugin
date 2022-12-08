@@ -91,16 +91,11 @@ public class TuningConfigSuccessPanel extends IDEBasePanel {
     }
 
     private void initPanel() {
-        ToolWindowManager instance = ToolWindowManager.getInstance(this.project);
-        ToolWindowEx tw = (ToolWindowEx) instance.getToolWindow("Project");
-        int width = tw.getComponent().getWidth();
-
         // 取消滚动条面板的边框
         scrollPanel.setBorder(null);
         Map<String, String> serverConfig = CommonUtil.readCurIpAndPortFromConfig();
         ip = serverConfig.get("ip");
         port = serverConfig.get("port");
-//        contentPanel.setMinimumSize(new Dimension(width, -1));
         ipInfoLabel.setText(ip);
         portInfoLabel.setText(port);
         ipLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_ip_address"));

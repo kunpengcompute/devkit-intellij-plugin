@@ -29,12 +29,16 @@ import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.js2java.provider.AbstractWebFileProvider;
 import com.huawei.kunpeng.intellij.ui.action.FeedBackAction;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.openapi.wm.ex.ToolWindowEx;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 左侧窗口ToolWindowFactory
@@ -124,5 +128,10 @@ public class HyperTunerToolWindowFactory implements ToolWindowFactory {
         group.add(new TuningAboutAction());
         group.addSeparator();
         window.setAdditionalGearActions(group);
+
+        // 刷新服务器连接按钮
+        List<AnAction> customActions = new ArrayList<>();
+        customActions.add(new RefreshConnectionAction());
+        window.setTitleActions(customActions);
     }
 }
