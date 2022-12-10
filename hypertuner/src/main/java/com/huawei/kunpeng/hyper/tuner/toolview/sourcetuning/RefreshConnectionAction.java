@@ -3,21 +3,26 @@ package com.huawei.kunpeng.hyper.tuner.toolview.sourcetuning;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEConstant;
+import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.http.TuningHttpsServer;
 import com.huawei.kunpeng.hyper.tuner.toolview.dialog.impl.CompatibilityDialog;
 import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningConfigSuccessPanel;
 import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningConnectFailPanel;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningLoginSuccessPanel;
+import com.huawei.kunpeng.hyper.tuner.toolview.panel.impl.TuningServerConfigPanel;
 import com.huawei.kunpeng.intellij.common.bean.RequestDataBean;
 import com.huawei.kunpeng.intellij.common.bean.ResponseBean;
 import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
 import com.huawei.kunpeng.intellij.common.enums.ConfigProperty;
 import com.huawei.kunpeng.intellij.common.enums.HttpMethod;
+import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.FileUtil;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
+import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 import com.intellij.ide.impl.ProjectUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -38,6 +43,8 @@ public class RefreshConnectionAction extends AnAction implements DumbAware {
     private static final Icon icon = BaseIntellijIcons.load(IDEConstant.MENU_ICONS_PATH + IDEConstant.TITLE_REFRESH_ICON);
 
     private static final String REFRESH_CONNECTION = TuningI18NServer.toLocale("plugins_hyper_tuner_titlebar_refresh_connection");
+
+    private boolean isConnectAndContains = true;
 
     public RefreshConnectionAction() {
         super(REFRESH_CONNECTION, null, icon);
@@ -66,32 +73,32 @@ public class RefreshConnectionAction extends AnAction implements DumbAware {
             ResponseBean responseBean = (ResponseBean) future.get(2, TimeUnit.SECONDS);
             if (responseBean == null) {
                 Logger.info("Server Version not found.");
+                isConnectAndContains = false;
                 failInfo = TuningI18NServer.toLocale("plugins_hyper_tuner_refresh_connect_fail");
             } else {
                 Logger.info(responseBean.toString());
                 String responseBeanDataJsStr = responseBean.getData();
                 JSONObject jsonObject = JSON.parseObject(responseBeanDataJsStr);
                 String serverVersionStr = jsonObject.getString("version");
-                boolean isContains = true; // 默认插件兼容所有版本插件
                 Map config = FileUtil.ConfigParser.parseJsonConfigFromFile(IDEConstant.CONFIG_PATH);
                 Object configVersionObj = config.get(ConfigProperty.CONFIG_VERSION.vaLue());
                 if (configVersionObj instanceof List) {
                     List configList = (List) configVersionObj;
                     if (!configList.isEmpty()) {
                         // 配置文件中兼容性版本不为空，则说明对兼容性有要求
-                        isContains = configList.contains(serverVersionStr);
+                        isConnectAndContains = configList.contains(serverVersionStr);
                     }
                 }
-                if (!isContains) {
+                if (!isConnectAndContains) {
                     failInfo = TuningI18NServer.toLocale("plugins_hyper_tuner_refresh_version_not_match");
                 }
             }
-            if (failInfo != null) synchronizedLeftTree(failInfo);
         } catch (Exception error) {
             Logger.info(error.getMessage());
+            isConnectAndContains = false;
             failInfo = TuningI18NServer.toLocale("plugins_hyper_tuner_refresh_connect_fail");
-            synchronizedLeftTree(failInfo);
         }
+        synchronizedLeftTree(failInfo);
     }
 
     @Override
@@ -107,11 +114,19 @@ public class RefreshConnectionAction extends AnAction implements DumbAware {
     protected void refreshFailPanel(Project proj, String failInfo) {
         ToolWindow toolWindow =
                 ToolWindowManager.getInstance(proj).getToolWindow(TuningIDEConstant.HYPER_TUNER_TOOL_WINDOW_ID);
-        TuningConnectFailPanel tuningConnectFailPanel = new TuningConnectFailPanel(toolWindow, proj, failInfo);
+        int curStatus = TuningIDEContext.getTuningIDEPluginStatus().value();
+        IDEBasePanel mainPanel;
+        if (!isConnectAndContains) {
+            mainPanel = new TuningConnectFailPanel(toolWindow, proj, failInfo);
+        } else if (curStatus >= IDEPluginStatus.IDE_STATUS_LOGIN.value()) {
+            mainPanel = new TuningLoginSuccessPanel(toolWindow, proj);
+        } else {
+            mainPanel = new TuningConfigSuccessPanel(toolWindow, proj);
+        }
         if (toolWindow != null) {
             toolWindow.getContentManager().removeAllContents(true);
-            toolWindow.getContentManager().addContent(tuningConnectFailPanel.getContent());
-            toolWindow.getContentManager().setSelectedContent(tuningConnectFailPanel.getContent());
+            toolWindow.getContentManager().addContent(mainPanel.getContent());
+            toolWindow.getContentManager().setSelectedContent(mainPanel.getContent());
         }
     }
 
