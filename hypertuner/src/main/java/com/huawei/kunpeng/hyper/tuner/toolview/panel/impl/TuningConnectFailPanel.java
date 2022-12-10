@@ -27,6 +27,7 @@ import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
+import com.huawei.kunpeng.intellij.ui.utils.ButtonUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 
@@ -108,9 +109,11 @@ public class TuningConnectFailPanel extends IDEBasePanel {
         connectFailLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_connect_server_fail"));
         configServerButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_config_now"));
         configServerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        ButtonUtil.setCommonButtonStyle(configServerButton);
         freeTrialLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_text"));
         freeTrialButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_button"));
         freeTrialButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        ButtonUtil.setCommonButtonStyle(freeTrialButton);
     }
 
     @Override

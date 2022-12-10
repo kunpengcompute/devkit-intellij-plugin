@@ -26,10 +26,9 @@ import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
 
+import com.huawei.kunpeng.intellij.ui.utils.ButtonUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.openapi.wm.ex.ToolWindowEx;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -103,9 +102,11 @@ public class TuningConfigSuccessPanel extends IDEBasePanel {
         notLoginLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_notlogin_text"));
         loginButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_login_button"));
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        ButtonUtil.setCommonButtonStyle(loginButton);
         freeTrialLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_text"));
         freeTrialButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_button"));
         freeTrialButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        ButtonUtil.setCommonButtonStyle(freeTrialButton);
     }
 
     @Override

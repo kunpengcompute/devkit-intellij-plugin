@@ -19,15 +19,13 @@ package com.huawei.kunpeng.hyper.tuner.toolview.panel.impl;
 import com.huawei.kunpeng.hyper.tuner.common.constant.enums.PanelType;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigGuideEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.FreeTrialEditor;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
+import com.huawei.kunpeng.intellij.ui.utils.ButtonUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.openapi.wm.ex.ToolWindowEx;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -85,20 +83,16 @@ public class TuningServerConfigPanel extends IDEBasePanel {
     }
 
     private void initPanel() {
-
-        ToolWindowManager instance = ToolWindowManager.getInstance(this.project);
-        ToolWindowEx tw = (ToolWindowEx) instance.getToolWindow("Project");
-        int width = tw.getComponent().getWidth();
-
         // 去除滚动条面板的边框
         scrollPanel.setBorder(null);
         configLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_not_connected"));
-//        contentPanel.setMinimumSize(new Dimension(width, -1));
         freeTrialLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_text"));
         configServerButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_config_now"));
         configServerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        ButtonUtil.setCommonButtonStyle(configServerButton);
         freeTrialButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_button"));
         freeTrialButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        ButtonUtil.setCommonButtonStyle(freeTrialButton);
     }
 
     @Override
@@ -108,7 +102,6 @@ public class TuningServerConfigPanel extends IDEBasePanel {
             public void mouseClicked(MouseEvent e) {
                 // 未配置服务器时点击配置按钮打开配置指引页面
                 ConfigGuideEditor.openPage();
-//                ConfigureServerEditor.openPage();
             }
         };
         MouseAdapter freeTrialMouseAdapter = new MouseAdapter() {
