@@ -114,6 +114,11 @@ public class TuningConfigSuccessPanel extends IDEBasePanel {
         MouseAdapter loginMouseAdapter = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (IDELoginEditor.isOpened()) {
+                    System.out.println("login page is opened");
+                    IDELoginEditor.openPage();
+                    return;
+                }
                 String localPort = NginxUtil.getLocalPort();
                 NginxUtil.updateNginxConfig(ip, port, localPort);
                 IDELoginEditor.openPage(localPort);

@@ -51,6 +51,7 @@ import com.huawei.kunpeng.intellij.ui.enums.CheckConnResponse;
 import com.huawei.kunpeng.intellij.ui.enums.MaintenanceResponse;
 import com.huawei.kunpeng.intellij.ui.utils.DeployUtil;
 import com.intellij.ide.impl.ProjectUtil;
+import com.intellij.ide.script.IDE;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooser;
@@ -400,6 +401,10 @@ public class CommonHandler extends FunctionHandler {
                 ConfigureServerEditor.openPage();
                 break;
             case "login":
+                if (IDELoginEditor.isOpened()) {
+                    IDELoginEditor.openPage();
+                    break;
+                }
                 Map<String, String> serverConfig = CommonUtil.readCurIpAndPortFromConfig();
                 String localPort = NginxUtil.getLocalPort();
                 NginxUtil.updateNginxConfig(serverConfig.get("ip"), serverConfig.get("port"), localPort);

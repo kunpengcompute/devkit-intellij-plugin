@@ -81,4 +81,19 @@ public class IDELoginEditor extends TuningWebFileEditor {
         closeWebView(fileName);
         openWebView(fileName);
     }
+    public static void openPage() {
+        String fileName = TuningIDEConstant.TUNING_KPHT +
+                IDEConstant.PATH_SEPARATOR +
+                PageType.PROXY_INDEX.value() +
+                IDEConstant.PATH_SEPARATOR +
+                "HyperTuner" +
+                "." +
+                TuningIDEConstant.TUNING_KPHT;
+        openWebView(fileName);
+    }
+
+    public static boolean isOpened() {
+        String fileName = "HyperTuner." + TuningIDEConstant.TUNING_KPHT;
+        return IDELoginEditor.isWebViewOpen(fileName);
+    }
 }
