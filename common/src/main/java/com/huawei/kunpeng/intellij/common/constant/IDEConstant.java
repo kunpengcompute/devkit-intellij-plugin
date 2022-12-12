@@ -150,6 +150,11 @@ public class IDEConstant {
     public static final String LOADING_OTHER_GIF = "/assets/load/loading_w.gif";
 
     /**
+     * 红点图片
+     */
+    public static final String RED_POINT_PATH = "/assets/img/red_point.img";
+
+    /**
      * 右上角菜单选项图标资源地址
      */
     public static final String MENU_ICONS_PATH = "/assets/img/menu/";
@@ -178,6 +183,8 @@ public class IDEConstant {
      * 右上角菜单-建议反馈-Icon
      */
     public static final String MENU_FEEDBACK_ICON = "feedback.svg";
+
+    public static final String TITLE_REFRESH_ICON = "refresh.svg";
 
     /**
      * a标签head

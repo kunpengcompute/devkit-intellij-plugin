@@ -10,7 +10,9 @@ import java.awt.*;
 public enum PanelType {
     TUNING_SERVER_CONFIG("TUNING_SERVER_CONFIG"),
     TUNING_CONFIG_SUCCESS("TUNING_CONFIG_SUCCESS"),
-    TUNING_LOGIN_SUCCESS("TUNING_LOGIN_SUCCESS");
+    TUNING_LOGIN_SUCCESS("TUNING_LOGIN_SUCCESS"),
+
+    TUNING_CONNECT_FAIL("TUNING_CONNECT_FAIL");
 
     private final String panelName;
     PanelType(String panelName) {

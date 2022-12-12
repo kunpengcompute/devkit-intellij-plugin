@@ -153,7 +153,7 @@ public class TuningUninstallAction extends SshAction {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                newCheckStatus(session, timer, dir, actionOperate, InstallManageConstant.INSTALL_TITLE);
+                newCheckStatus(session, timer, dir, actionOperate, InstallManageConstant.UNINSTALL_TITLE);
             }
         };
         timer.schedule(task, 0, 1000);

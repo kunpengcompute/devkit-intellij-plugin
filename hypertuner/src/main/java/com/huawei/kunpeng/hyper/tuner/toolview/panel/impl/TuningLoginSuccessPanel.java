@@ -6,13 +6,11 @@ import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
+import com.huawei.kunpeng.intellij.ui.utils.ButtonUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.openapi.wm.ex.ToolWindowEx;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.Map;
 
 /**
@@ -57,24 +55,19 @@ public class TuningLoginSuccessPanel extends IDEBasePanel {
     }
 
     private void initPanel() {
-        ToolWindowManager instance = ToolWindowManager.getInstance(this.project);
-        ToolWindowEx tw = (ToolWindowEx) instance.getToolWindow("Project");
-        int width = tw.getComponent().getWidth();
-
         // 取消滚动条面板的边框
         scrollPanel.setBorder(null);
         Map<String, String> serverConfig = CommonUtil.readCurIpAndPortFromConfig();
         ip = serverConfig.get("ip");
         port = serverConfig.get("port");
-//        contentPanel.setMinimumSize(new Dimension(width, -1));
         ipInfoLabel.setText(ip);
         portInfoLabel.setText(port);
         ipLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_ip_address"));
         portLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_port"));
+        ButtonUtil.setCommonButtonStyle(unableLoginButton);
+        unableLoginButton.setOpaque(false);
         unableLoginButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_login_button"));
         unableLoginButton.setEnabled(false);
-
-//        unableLoginButton.setCursor(new Cursor(Cursor.WAIT_CURSOR));
     }
 
     @Override

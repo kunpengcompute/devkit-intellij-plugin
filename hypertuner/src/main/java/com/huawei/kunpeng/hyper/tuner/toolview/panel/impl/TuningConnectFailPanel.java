@@ -16,33 +16,28 @@
 
 package com.huawei.kunpeng.hyper.tuner.toolview.panel.impl;
 
+
 import com.huawei.kunpeng.hyper.tuner.common.constant.enums.PanelType;
 import com.huawei.kunpeng.hyper.tuner.common.i18n.TuningI18NServer;
-import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
+import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.ConfigureServerEditor;
 import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.FreeTrialEditor;
-import com.huawei.kunpeng.hyper.tuner.webview.tuning.pageeditor.IDELoginEditor;
+import com.huawei.kunpeng.intellij.common.constant.IDEConstant;
+import com.huawei.kunpeng.intellij.common.util.BaseIntellijIcons;
 import com.huawei.kunpeng.intellij.common.util.CommonUtil;
 import com.huawei.kunpeng.intellij.common.util.StringUtil;
 import com.huawei.kunpeng.intellij.ui.action.IDEPanelBaseAction;
 import com.huawei.kunpeng.intellij.ui.panel.IDEBasePanel;
-
 import com.huawei.kunpeng.intellij.ui.utils.ButtonUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Map;
 
-import javax.swing.*;
-
-/**
- * 左侧树配置服务器成功面板
- *
- * @since 2022-11-15
- */
-public class TuningConfigSuccessPanel extends IDEBasePanel {
+public class TuningConnectFailPanel extends IDEBasePanel {
     // 滚动条面板
     private JScrollPane scrollPanel;
 
@@ -51,17 +46,23 @@ public class TuningConfigSuccessPanel extends IDEBasePanel {
     private JLabel portLabel;
     private JLabel ipInfoLabel;
     private JLabel portInfoLabel;
-    private JLabel notLoginLabel;
-    private JButton loginButton;
+    private JLabel connectFailLabel;
+    private JButton configServerButton;
     private JLabel freeTrialLabel;
     private JButton freeTrialButton;
     private JPanel contentPanel;
+    private JLabel statusLabel;
+    private JLabel statusInfoLabel;
+    private JLabel failLabel;
+    private JLabel failInfoLabel;
 
     private Project project;
 
     // 已配置服务器的ip和端口
     private String ip;
     private String port;
+
+    private String failInfo;
 
     /**
      * 左侧树登录面板构造函数
@@ -70,10 +71,11 @@ public class TuningConfigSuccessPanel extends IDEBasePanel {
      * @param panelName  面板名称
      * @param project    当前的项目
      */
-    public TuningConfigSuccessPanel(ToolWindow toolWindow, String panelName, Project project) {
+    public TuningConnectFailPanel(ToolWindow toolWindow, String panelName, Project project, String failInfo) {
+        this.failInfo = failInfo;
         this.project = project;
         setToolWindow(toolWindow);
-        this.panelName = StringUtil.stringIsEmpty(panelName) ? PanelType.TUNING_CONFIG_SUCCESS.panelName() : panelName;
+        this.panelName = StringUtil.stringIsEmpty(panelName) ? PanelType.TUNING_CONNECT_FAIL.panelName() : panelName;
         initPanel();
         registerComponentAction();
         createContent(mainPanel, null, false);
@@ -85,8 +87,8 @@ public class TuningConfigSuccessPanel extends IDEBasePanel {
      * @param toolWindow 工具窗口
      * @param project    当前的项目
      */
-    public TuningConfigSuccessPanel(ToolWindow toolWindow, Project project) {
-        this(toolWindow, null, project);
+    public TuningConnectFailPanel(ToolWindow toolWindow, Project project, String failInfo) {
+        this(toolWindow, null, project, failInfo);
     }
 
     private void initPanel() {
@@ -99,10 +101,15 @@ public class TuningConfigSuccessPanel extends IDEBasePanel {
         portInfoLabel.setText(port);
         ipLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_ip_address"));
         portLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_port"));
-        notLoginLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_notlogin_text"));
-        loginButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_login_button"));
-        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        ButtonUtil.setCommonButtonStyle(loginButton);
+        statusLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_status"));
+        statusInfoLabel.setIcon(BaseIntellijIcons.load(IDEConstant.RED_POINT_PATH));
+        statusInfoLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_fail_status"));
+        failLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_fail_info"));
+        failInfoLabel.setText(this.failInfo);
+        connectFailLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_connect_server_fail"));
+        configServerButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_server_config_now"));
+        configServerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        ButtonUtil.setCommonButtonStyle(configServerButton);
         freeTrialLabel.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_text"));
         freeTrialButton.setText(TuningI18NServer.toLocale("plugins_hyper_tuner_lefttree_free_trial_button"));
         freeTrialButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -111,17 +118,10 @@ public class TuningConfigSuccessPanel extends IDEBasePanel {
 
     @Override
     protected void registerComponentAction() {
-        MouseAdapter loginMouseAdapter = new MouseAdapter() {
+        MouseAdapter configMouseAdapter = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (IDELoginEditor.isOpened()) {
-                    System.out.println("login page is opened");
-                    IDELoginEditor.openPage();
-                    return;
-                }
-                String localPort = NginxUtil.getLocalPort();
-                NginxUtil.updateNginxConfig(ip, port, localPort);
-                IDELoginEditor.openPage(localPort);
+                ConfigureServerEditor.openPage();
             }
         };
         MouseAdapter freeTrialMouseAdapter = new MouseAdapter() {
@@ -130,7 +130,7 @@ public class TuningConfigSuccessPanel extends IDEBasePanel {
                 FreeTrialEditor.openPage();
             }
         };
-        loginButton.addMouseListener(loginMouseAdapter);
+        configServerButton.addMouseListener(configMouseAdapter);
         freeTrialButton.addMouseListener(freeTrialMouseAdapter);
 
     }

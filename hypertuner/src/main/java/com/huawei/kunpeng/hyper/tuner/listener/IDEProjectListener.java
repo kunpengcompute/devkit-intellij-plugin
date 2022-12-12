@@ -22,6 +22,7 @@ import com.huawei.kunpeng.intellij.common.enums.BaseCacheVal;
 import com.huawei.kunpeng.intellij.common.log.Logger;
 import com.huawei.kunpeng.intellij.js2java.fileditor.IDEFileEditorManager;
 
+import com.huawei.kunpeng.intellij.js2java.provider.AbstractWebFileProvider;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerListener;
 
@@ -36,6 +37,8 @@ import org.jetbrains.annotations.NotNull;
 public class IDEProjectListener implements ProjectManagerListener {
     @Override
     public void projectClosing(@NotNull Project project) {
+        Logger.info("======project {} closing======", project.getName());
+        AbstractWebFileProvider.closeAllWebViewPage();
     }
 
     /**

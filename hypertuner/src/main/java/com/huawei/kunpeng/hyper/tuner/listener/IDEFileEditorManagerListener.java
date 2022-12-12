@@ -16,8 +16,10 @@
 
 package com.huawei.kunpeng.hyper.tuner.listener;
 
+import com.huawei.kunpeng.hyper.tuner.common.constant.TuningIDEContext;
 import com.huawei.kunpeng.hyper.tuner.common.utils.NginxUtil;
 import com.huawei.kunpeng.hyper.tuner.common.utils.TuningCommonUtil;
+import com.huawei.kunpeng.intellij.common.enums.IDEPluginStatus;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -36,6 +38,7 @@ public class IDEFileEditorManagerListener implements FileEditorManagerListener.B
         if (file.getName().contains("HyperTuner")) {
             NginxUtil.stopNginx();
             TuningCommonUtil.refreshServerConfigSuccessPanel();
+            TuningIDEContext.setTuningIDEPluginStatus(IDEPluginStatus.IDE_STATUS_SERVER_CONFIG);
             // 清空本地 ip 缓存
 //            ConfigUtils.fillIp2JsonFile(TuningIDEConstant.TOOL_NAME_TUNING, "", "","");
         }
