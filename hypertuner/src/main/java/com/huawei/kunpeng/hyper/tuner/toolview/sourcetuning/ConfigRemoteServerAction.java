@@ -79,11 +79,11 @@ public class ConfigRemoteServerAction extends AnAction implements DumbAware {
         event.getPresentation().setText(CONFIG_SERVER);
         // 更新左侧树配置服务器Label
         String ip = CommonUtil.readCurIpFromConfig();
-        if (!StringUtil.stringIsEmpty(ip)) {
-            // 显示重新配置服务器
-            event.getPresentation().setText(TuningI18NServer.toLocale("plugins_hyper_tuner_menu_reconfig_server"));
-//            event.getPresentation().setText(ip);
-        }
+//        if (!StringUtil.stringIsEmpty(ip)) {
+//            // 显示重新配置服务器
+//            event.getPresentation().setText(TuningI18NServer.toLocale("plugins_hyper_tuner_menu_reconfig_server"));
+////            event.getPresentation().setText(ip);
+//        }
 //        int value = TuningIDEContext.getTuningIDEPluginStatus().value();
 //        setConfigRemoteServerStatus(event, value);
     }
